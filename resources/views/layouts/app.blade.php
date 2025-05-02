@@ -87,13 +87,19 @@
 
                         {{-- ইউজার --}}
                         <li class="nav-item dropdown {{ Route::is('users.*') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown"
-                                data-bs-toggle="dropdown">ইউজার</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item {{ Route::is('users.index') ? 'active' : '' }}"
-                                        href="{{ route('users.index') }}">সব ইউজার</a></li>
-                                <li><a class="dropdown-item {{ Route::is('users.create') ? 'active' : '' }}"
-                                        href="{{ route('users.create') }}">নতুন ইউজার</a></li>
+                            @can('user-list')
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown"
+                                    data-bs-toggle="dropdown">ইউজার</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item {{ Route::is('users.index') ? 'active' : '' }}"
+                                            href="{{ route('users.index') }}">সব ইউজার</a></li>
+                                @endcan
+
+                                @can('user-create')
+                                    <li><a class="dropdown-item {{ Route::is('users.create') ? 'active' : '' }}"
+                                            href="{{ route('users.create') }}">নতুন ইউজার</a></li>
+                                @endcan
+
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
@@ -146,7 +152,7 @@
                                 </ul>
                             </li>
                         @endcan
-                        
+
                     </ul>
                 @endauth
 

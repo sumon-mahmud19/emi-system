@@ -18,7 +18,11 @@
 
                         <div class="table-responsive">
                             <table class="table">
-                                <a href="{{ route('users.create') }}" class="mb-3 btn btn-success">Create User</a>
+
+                                @can('user-create')
+                                    <a href="{{ route('users.create') }}" class="mb-3 btn btn-success">Create User</a>
+                                @endcan
+
                                 <thead>
                                     <tr>
                                         <th scope="col">ID</th>
@@ -40,18 +44,24 @@
                                                 @endforeach
                                             </td>
                                             <td class="d-flex">
-                                                <a href="{{ route('users.edit', $user->id) }}"
-                                                    class="btn btn-success">Edit</a>
+
+                                                @can('user-edit')
+                                                    <a href="{{ route('users.edit', $user->id) }}"
+                                                        class="btn btn-success">Edit</a>
+                                                @endcan
 
                                                 <a href="{{ route('users.show', $user->id) }}"
                                                     class="btn btn-primary mx-2">View</a>
 
-                                                <form action="{{ route('users.destroy', $user->id) }}" method="post">
-                                                    @csrf
-                                                    @method('DELETE')
+                                                @can('user-delete')
+                                                    <form action="{{ route('users.destroy', $user->id) }}" method="post">
+                                                        @csrf
+                                                        @method('DELETE')
 
-                                                    <input type="submit" value="Delete" class="btn btn-danger">
-                                                </form>
+                                                        <input type="submit" value="Delete" class="btn btn-danger">
+                                                    </form>
+                                                @endcan
+                                                
                                             </td>
 
                                         </tr>
