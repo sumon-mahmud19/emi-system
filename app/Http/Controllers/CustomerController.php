@@ -14,13 +14,13 @@ class CustomerController extends Controller
      * Display a listing of the resource.
      */
 
-    // public function __construct()
-    // {
-    //     $this->middleware(['permission:customer-list|customer-create|customer-edit|customer-delete'], ['only' => ['index', 'show']]);
-    //     $this->middleware(['permission:customer-create'], ['only' => ['create', 'store']]);
-    //     $this->middleware(['permission:customer-edit'], ['only' => ['edit', 'update']]);
-    //     $this->middleware(['permission:customer-delete'], ['only' => ['destroy']]);
-    // }
+    public function __construct()
+    {
+        $this->middleware(['permission:customer-list|customer-create|customer-edit|customer-delete'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:customer-create'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:customer-edit'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:customer-delete'], ['only' => ['destroy']]);
+    }
 
 
     public function index(Request $request)

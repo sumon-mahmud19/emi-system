@@ -7,9 +7,9 @@
         <div
             class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
 
-            {{-- @can('customer-create') --}}
+            @can('customer-create')
                 <a href="{{ route('customers.create') }}" class="btn btn-primary">Add Customer</a>
-            {{-- @endcan --}}
+            @endcan
 
             <input type="text" id="liveSearch" class="form-control w-50 w-md-auto"
                 placeholder="Search customer (e.g. shakil-fan-pl)">
@@ -57,18 +57,21 @@
 
                             </td>
                             <td>
+                                @can('customer-edit')
+                                    <a href="{{ route('customers.edit', $customer->id) }}"
+                                        class="btn btn-warning btn-sm">Edit</a>
+                                @endcan
 
+                                @can('customer-delete')
+                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
+                                        style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure?')">Delete</button>
+                                    </form>
+                                @endcan
 
-                                <a href="{{ route('customers.edit', $customer->id) }}"
-                                    class="btn btn-warning btn-sm">Edit</a>
-
-                                <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
-                                    style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Are you sure?')">Delete</button>
-                                </form>
 
                                 <a href="{{ route('customers.emi_plans', $customer->id) }}"
                                     class="btn btn-sm btn-primary">EMI Details</a>
