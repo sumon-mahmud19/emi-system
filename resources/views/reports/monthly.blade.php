@@ -5,7 +5,7 @@
         <h2 class="mb-4 text-center">📊 Monthly EMI Report</h2>
 
         <!-- Month Picker Form -->
-        @can('report-list')
+        
             <form method="GET" action="{{ route('monthly.reports') }}" class="row g-3 justify-content-center mb-5">
                 <div class="col-md-3">
                     <input type="month" name="month" class="form-control" value="{{ request('month', now()->format('Y-m')) }}">
@@ -14,7 +14,7 @@
                     <button type="submit" class="btn btn-primary w-100">🔎 Search</button>
                 </div>
             </form>
-        @endcan
+       
 
         <!-- Summary Cards -->
         <div class="row mb-4">

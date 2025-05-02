@@ -44,7 +44,9 @@ Route::resource('roles', RoleController::class);
 
 Route::post('/installments/pay-multiple', [InstallmentController::class, 'payMultiple'])->name('installments.pay-multiple');
 
-Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])->name('monthly.reports');
+Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])
+    ->name('monthly.reports')
+    ->middleware('can:report-list');
 
 Auth::routes();
 
