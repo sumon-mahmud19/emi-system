@@ -57,10 +57,15 @@
                             <a class="nav-link dropdown-toggle" href="#" id="purchaseDropdown"
                                 data-bs-toggle="dropdown">পারচেস</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item {{ Route::is('purchases.index') ? 'active' : '' }}"
-                                        href="{{ route('purchases.index') }}">সব পারচেস</a></li>
-                                <li><a class="dropdown-item {{ Route::is('purchases.create') ? 'active' : '' }}"
-                                        href="{{ route('purchases.create') }}">নতুন পারচেস</a></li>
+                                @can('purchase-list')
+                                    <li><a class="dropdown-item {{ Route::is('purchases.index') ? 'active' : '' }}"
+                                            href="{{ route('purchases.index') }}">সব পারচেস</a></li>
+                                @endcan
+
+                                @can('purchase-create')
+                                    <li><a class="dropdown-item {{ Route::is('purchases.create') ? 'active' : '' }}"
+                                            href="{{ route('purchases.create') }}">নতুন পারচেস</a></li>
+                                @endcan
                             </ul>
                         </li>
 
@@ -159,7 +164,6 @@
 
                     @guest
                         <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">লগইন</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">রেজিস্টার</a></li>
                     @endguest
                 </ul>
             </div>

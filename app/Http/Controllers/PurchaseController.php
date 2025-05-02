@@ -14,13 +14,13 @@ use Carbon\Carbon;
 
 class PurchaseController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware(['permission:purchase-list|purchase-create|purchase-edit|purchase-delete'], ['only' => ['index', 'show']]);
-    //     $this->middleware(['permission:purchase-create'], ['only' => ['create', 'store']]);
-    //     $this->middleware(['permission:purchase-edit'], ['only' => ['edit', 'update']]);
-    //     $this->middleware(['permission:purchase-delete'], ['only' => ['destroy']]);
-    // }
+    public function __construct()
+    {
+        $this->middleware(['permission:purchase-list|purchase-create|purchase-edit|purchase-delete'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:purchase-create'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:purchase-edit'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:purchase-delete'], ['only' => ['destroy']]);
+    }
 
 
     /**
