@@ -12,7 +12,7 @@
                 <img src="{{ asset($customer->customer_image) }}" alt="Customer Image" width="80" height="80"
                     class="img-thumbnail" style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#customerModal"
                     data-name="{{ $customer->customer_name }}" data-id="{{ $customer->customer_id }}"
-                    data-phone="{{ $customer->customer_phone }}"
+                    data-phone="tel:{{ $customer->customer_phone }}"
                     data-location="{{ optional($customer->location)->name }}"
                     data-image="{{ asset($customer->customer_image) }}">
             @endif
