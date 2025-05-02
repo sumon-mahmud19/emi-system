@@ -26,46 +26,58 @@ class DatabaseSeeder extends Seeder
 
 
 
+        // $permissions = [
+        //     'role-list',
+        //     'role-create',
+        //     'role-edit',
+        //     'role-delete',
+
+        //     'customer-list',
+        //     'customer-create',
+        //     'customer-edit',
+        //     'customer-delete',
+
+        //     'product-list',
+        //     'product-create',
+        //     'product-edit',
+        //     'product-delete',
+
+        //     'user-list',
+        //     'user-create',
+        //     'user-edit',
+        //     'user-delete',
+
+        //     'location-list',
+        //     'location-create',
+        //     'location-edit',
+        //     'location-delete',
+
+        //     'report-list',
+        //     'report-create',
+        //     'report-edit',
+        //     'report-delete',
+
+        //     'purchase-list',
+        //     'purchase-create',
+        //     'purchase-edit',
+        //     'purchase-delete',
+
+        //     'installment-list',
+        //     'installment-create',
+        //     'installment-edit',
+        //     'installment-delete',
+        // ];
+
+        // foreach ($permissions as $permission) {
+        //     Permission::firstOrCreate(['name' => $permission]);
+        // }
+
+
         $permissions = [
-            'role-list',
-            'role-create',
-            'role-edit',
-            'role-delete',
-
-            'customer-list',
-            'customer-create',
-            'customer-edit',
-            'customer-delete',
-
-            'product-list',
-            'product-create',
-            'product-edit',
-            'product-delete',
-
-            'user-list',
-            'user-create',
-            'user-edit',
-            'user-delete',
-
-            'location-list',
-            'location-create',
-            'location-edit',
-            'location-delete',
-
-            'report-list',
-            'report-create',
-            'report-edit',
-            'report-delete',
-
-            'purchase-list',
-            'purchase-create',
-            'purchase-edit',
-            'purchase-delete',
-
-            'installment-list',
-            'installment-create',
-            'installment-edit',
-            'installment-delete',
+            'product-model-list',
+            'product-model-create',
+            'product-model-edit',
+            'product-model-delete',
         ];
 
         foreach ($permissions as $permission) {
