@@ -21,7 +21,12 @@
                 <input type="text" name="name" class="form-control" value="{{ old('name', $location->name) }}" required>
             </div>
             <button type="submit" class="btn btn-primary">আপডেট করুন</button>
+            
+               
+            @can('location-list')
             <a href="{{ route('locations.index') }}" class="btn btn-secondary">বাতিল</a>
+            @endcan
+            
         </form>
     </div>
 </div>

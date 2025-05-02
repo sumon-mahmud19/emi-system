@@ -74,10 +74,16 @@
                             লোকেশন
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item {{ Route::is('locations.index') ? 'active' : '' }}"
-                                    href="{{ route('locations.index') }}">সব লোকেশন</a></li>
-                            <li><a class="dropdown-item {{ Route::is('locations.create') ? 'active' : '' }}"
-                                    href="{{ route('locations.create') }}">নতুন লোকেশন</a></li>
+                            @can('location-list')
+                                <li><a class="dropdown-item {{ Route::is('locations.index') ? 'active' : '' }}"
+                                        href="{{ route('locations.index') }}">সব লোকেশন</a></li>
+                            @endcan
+
+                            @can('location-create')
+                                <li><a class="dropdown-item {{ Route::is('locations.create') ? 'active' : '' }}"
+                                        href="{{ route('locations.create') }}">নতুন লোকেশন</a></li>
+                            @endcan
+                            
                         </ul>
                     </li>
 
@@ -138,7 +144,7 @@
                                 <li><a class="dropdown-item {{ Route::is('product-models.create') ? 'active' : '' }}"
                                         href="{{ route('models.create') }}">নতুন মডেল</a></li>
                             @endcan
-                            
+
                         </ul>
                     </li>
 
