@@ -15,7 +15,7 @@
 
         <div class="col-md-3 mb-3">
             <div class="card bg-success text-white shadow rounded-4 p-4">
-                <h5>Total Paid</h5>
+                <h5>Customer Total Paid</h5>
                 <h2>৳{{ number_format($totalPaid, 2) }}</h2>
             </div>
         </div>
