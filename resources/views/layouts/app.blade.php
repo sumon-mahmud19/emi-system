@@ -128,11 +128,17 @@
                                 </li>
                             @endcan
 
+
+                            @can('product-model-list')
+                                <li><a class="dropdown-item {{ Route::is('product-models.index') ? 'active' : '' }}"
+                                        href="{{ route('models.index') }}">মডেল তালিকা</a></li>
+                            @endcan
+
+                            @can('product-model-create')
+                                <li><a class="dropdown-item {{ Route::is('product-models.create') ? 'active' : '' }}"
+                                        href="{{ route('models.create') }}">নতুন মডেল</a></li>
+                            @endcan
                             
-                            <li><a class="dropdown-item {{ Route::is('product-models.index') ? 'active' : '' }}"
-                                    href="{{ route('models.index') }}">মডেল তালিকা</a></li>
-                            <li><a class="dropdown-item {{ Route::is('product-models.create') ? 'active' : '' }}"
-                                    href="{{ route('models.create') }}">নতুন মডেল</a></li>
                         </ul>
                     </li>
 
