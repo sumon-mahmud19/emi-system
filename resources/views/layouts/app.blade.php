@@ -102,11 +102,11 @@
                                                 href="{{ route('users.create') }}">নতুন ইউজার</a></li>
                                     @endcan
 
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-
                                     @can('role-list')
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+
                                         <a class="dropdown-item {{ Route::is('roles.index') ? 'active' : '' }}"
                                             href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a>
                                     @endcan
@@ -115,7 +115,7 @@
                                         <a class="dropdown-item {{ Route::is('roles.create') ? 'active' : '' }}"
                                             href="{{ route('roles.create') }}">নতুন রোল</a>
                                     @endcan
-                                    
+
                                 </ul>
                             </li>
                         @endcan
@@ -133,14 +133,18 @@
                                 @can('product-create')
                                     <li><a class="dropdown-item {{ Route::is('products.create') ? 'active' : '' }}"
                                             href="{{ route('products.create') }}">নতুন পণ্য</a></li>
+                                @endcan
+
+                                @can('product-model-list')
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item {{ Route::is('product-models.index') ? 'active' : '' }}"
+                                            href="{{ route('models.index') }}">মডেল তালিকা</a>
+                                    </li>
                                 @endcan
-                                @can('product-model-list')
-                                    <li><a class="dropdown-item {{ Route::is('product-models.index') ? 'active' : '' }}"
-                                            href="{{ route('models.index') }}">মডেল তালিকা</a></li>
-                                @endcan
+
                                 @can('product-model-create')
                                     <li><a class="dropdown-item {{ Route::is('product-models.create') ? 'active' : '' }}"
                                             href="{{ route('models.create') }}">নতুন মডেল</a></li>
