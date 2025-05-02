@@ -38,7 +38,10 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $customer->customer_name }}</td>
                             <td>{{ $customer->customer_id }}</td>
-                            <td>{{ $customer->customer_phone }}</td>
+                            <td>
+                                <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
+
+                            </td>
                             <td>
                                 <a class="show-customer-modal" data-bs-toggle="modal" data-bs-target="#customerModal"
                                     data-name="{{ $customer->customer_name }}" data-id="{{ $customer->customer_id }}"
