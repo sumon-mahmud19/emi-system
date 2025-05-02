@@ -22,7 +22,8 @@
 <body>
 
     {{-- Navbar --}}
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    
+    <nav class="navbar navbar-expand-lg" style="background-color: #330867" data-bs-theme="dark">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">Roman Emi System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">

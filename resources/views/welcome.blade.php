@@ -3,7 +3,8 @@
 @section('content')
 <style>
     .hero-section {
-        background: linear-gradient(135deg, #0d6efd, #6610f2);
+        margin-top: 2.5rem;
+        background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
         color: #fff;
         padding: 100px 0;
         text-align: center;
@@ -22,7 +23,7 @@
         margin-top: 15px;
     }
     .feature-box {
-        background: #fff;
+        background: #ddd;
         border-radius: 12px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
         padding: 30px 20px;
