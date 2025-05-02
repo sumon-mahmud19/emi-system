@@ -133,18 +133,20 @@
                         </li>
 
                         {{-- রিপোর্ট --}}
-                        <li class="nav-item dropdown {{ Request::is('reports/*') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" href="#" id="reportDropdown"
-                                data-bs-toggle="dropdown">রিপোর্ট</a>
-                            <ul class="dropdown-menu">
-                                @can('report-list')
+                        @can('report-list')
+                            <li class="nav-item dropdown {{ Request::is('reports/*') ? 'active' : '' }}">
+                                <a class="nav-link dropdown-toggle" href="#" id="reportDropdown"
+                                    data-bs-toggle="dropdown">রিপোর্ট</a>
+                                <ul class="dropdown-menu">
+
                                     <li>
                                         <a class="dropdown-item {{ Request::is('reports/monthly') ? 'active' : '' }}"
                                             href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a>
                                     </li>
-                                @endcan
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
+                        @endcan
+                        
                     </ul>
                 @endauth
 
