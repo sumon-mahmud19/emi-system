@@ -89,7 +89,7 @@
                             <a class="dropdown-item {{ Route::is('roles.index') ? 'active' : '' }}"
                                 href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a>
                             <a class="dropdown-item {{ Route::is('roles.create') ? 'active' : '' }}"
-                                href="{{ route('roles.create') }}">রোল ম্যানেজমেন্ট</a>
+                                href="{{ route('roles.create') }}">নতুন রোল</a>
                         </ul>
 
                     </li>
@@ -132,22 +132,7 @@
                         </ul>
                     </li>
 
-                    {{-- ইনস্টলমেন্ট --}}
-                    <li class="nav-item dropdown {{ Route::is('installments.*') ? 'active' : '' }}">
-                        <a class="nav-link dropdown-toggle" href="#" id="installmentDropdown"
-                            data-bs-toggle="dropdown">
-                            ইনস্টলমেন্ট
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item {{ Route::is('installments.index') ? 'active' : '' }}"
-                                    href="{{ route('installments.index') }}">সব ইনস্টলমেন্ট</a></li>
-                            {{-- Future: Paid/Due Installments --}}
-                            {{-- <li><a class="dropdown-item" href="#">পরিশোধকৃত</a></li>
-                            <li><a class="dropdown-item" href="#">বাকি</a></li> --}}
-                        </ul>
-                    </li>
-                </ul>
-
+                   
                 {{-- Right-side Auth Menu --}}
                 <ul class="navbar-nav ms-auto">
                     @auth
