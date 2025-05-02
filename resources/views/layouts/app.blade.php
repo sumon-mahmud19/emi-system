@@ -137,8 +137,12 @@
                             <a class="nav-link dropdown-toggle" href="#" id="reportDropdown"
                                 data-bs-toggle="dropdown">রিপোর্ট</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item {{ Request::is('reports/monthly') ? 'active' : '' }}"
-                                        href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a></li>
+                                @can('report-list')
+                                    <li>
+                                        <a class="dropdown-item {{ Request::is('reports/monthly') ? 'active' : '' }}"
+                                            href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a>
+                                    </li>
+                                @endcan
                             </ul>
                         </li>
                     </ul>

@@ -11,13 +11,13 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware(['permission:report-list|report-create|report-edit|report-delete'], ['only' => ['index', 'show']]);
-    //     $this->middleware(['permission:report-create'], ['only' => ['create', 'store']]);
-    //     $this->middleware(['permission:report-edit'], ['only' => ['edit', 'update']]);
-    //     $this->middleware(['permission:report-delete'], ['only' => ['destroy']]);
-    // }
+    public function __construct()
+    {
+        $this->middleware(['permission:report-list|report-create|report-edit|report-delete'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:report-create'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:report-edit'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:report-delete'], ['only' => ['destroy']]);
+    }
 
 
 
