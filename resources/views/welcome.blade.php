@@ -1,52 +1,6 @@
-<!doctype html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roman Electronic & Furnitures - EMI System</title>
+@extends('layouts.app')
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bangla Font -->
-    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'SolaimanLipi', sans-serif;
-        }
-        .hero-section {
-            background: #f8f9fa;
-            padding: 60px 0;
-            text-align: center;
-        }
-        .hero-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-        .hero-subtitle {
-            font-size: 1.2rem;
-            color: #555;
-        }
-        .footer {
-            background: #343a40;
-            color: white;
-            padding: 15px 0;
-        }
-    </style>
-</head>
-<body>
-
-    {{-- Navbar --}}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">Roman EMI System</a>
-            <div>
-                <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm">লগইন</a>
-            </div>
-        </div>
-    </nav>
-
+@section('content')
     {{-- Hero Section --}}
     <section class="hero-section">
         <div class="container">
@@ -83,15 +37,4 @@
             </div>
         </div>
     </section>
-
-    {{-- Footer --}}
-    <footer class="footer text-center">
-        <div class="container">
-            <small>© {{ date('Y') }} রোমান ইলেকট্রনিক্স ও ফার্নিচার - EMI ম্যানেজমেন্ট সিস্টেম</small>
-        </div>
-    </footer>
-
-    {{-- Bootstrap JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection
