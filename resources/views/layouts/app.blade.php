@@ -116,7 +116,7 @@
                     </li>
 
                     {{-- রিপোর্ট --}}
-                    @can('report-list')
+                    @can('report-create')
                     <li class="nav-item dropdown {{ Request::is('reports/*') ? 'active' : '' }}">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">রিপোর্ট</a>
                         <ul class="dropdown-menu">
