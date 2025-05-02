@@ -86,6 +86,9 @@
                                     href="{{ route('users.index') }}">সব ইউজার</a></li>
                             <li><a class="dropdown-item {{ Route::is('users.create') ? 'active' : '' }}"
                                     href="{{ route('users.create') }}">নতুন ইউজার</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <a class="dropdown-item {{ Route::is('roles.index') ? 'active' : '' }}"
                                 href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a>
                             <a class="dropdown-item {{ Route::is('roles.create') ? 'active' : '' }}"
@@ -132,7 +135,9 @@
                         </ul>
                     </li>
 
-                   
+
+                </ul>
+
                 {{-- Right-side Auth Menu --}}
                 <ul class="navbar-nav ms-auto">
                     @auth
