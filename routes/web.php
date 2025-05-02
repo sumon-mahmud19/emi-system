@@ -50,7 +50,7 @@ Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('role:admin');
 
 
 // ?aaz,hH.{b5p
