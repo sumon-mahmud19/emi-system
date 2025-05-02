@@ -80,7 +80,7 @@ class CustomerController extends Controller
             'customer_name'    => 'required|string|max:255',
             'customer_id'      => 'required|integer',
             'customer_phone'   => 'required|string|unique:customers,customer_phone',
-            'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
             'landlord_name'    => 'nullable|string|max:255',
             'location_id'      => 'required|exists:locations,id',
             'location_details' => 'nullable|string|max:255',
@@ -94,6 +94,7 @@ class CustomerController extends Controller
             $image->move(public_path('image/customers'), $imageName);
             $customerImage = 'image/customers/' . $imageName;
         }
+        
 
         // Insert the customer data in a single query
         Customer::create([
@@ -146,7 +147,7 @@ class CustomerController extends Controller
             'customer_name'    => 'required|string|max:255',
             'customer_id'      => 'required|integer',
             'customer_phone'   => 'required|string|unique:customers,customer_phone,' . $customer->id,
-            'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
             'landlord_name'    => 'nullable|string|max:255',
             'location_id'      => 'required|exists:locations,id',
             'location_details' => 'nullable|string|max:255',
