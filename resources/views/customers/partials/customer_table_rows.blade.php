@@ -3,7 +3,10 @@
         <td>{{ $loop->iteration }}</td>
         <td>{{ $customer->customer_name }}</td>
         <td>{{ $customer->customer_id }}</td>
-        <td>{{ $customer->customer_phone }}</td>
+        <td>
+            <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
+
+        </td>
         <td>
             @if ($customer->customer_image)
                 <img src="{{ asset($customer->customer_image) }}" alt="Customer Image" width="80" height="80"
