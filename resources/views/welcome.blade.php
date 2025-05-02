@@ -4,7 +4,7 @@
 <style>
     .hero-section {
         margin-top: 2.5rem;
-        background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+        background-color: #0d6efd;
         color: #fff;
         padding: 100px 0;
         text-align: center;
