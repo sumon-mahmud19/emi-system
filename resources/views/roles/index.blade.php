@@ -18,9 +18,11 @@
 
                         <div class="table-responsive">
                             <table class="table">
-                                {{-- @can('role-create') --}}
+
+                                @can('role-create')
                                     <a href="{{ route('roles.create') }}" class="mb-3 btn btn-success">Create Role</a>
-                                {{-- @endcan --}}
+                                @endcan
+
                                 <thead>
                                     <tr>
                                         <th scope="col">ID</th>
@@ -34,24 +36,26 @@
                                             <td scope="row">{{ $loop->iteration }}</td>
                                             <td>{{ $role->name }}</td>
                                             <td class="d-flex">
-                                                {{-- @can('role-edit') --}}
+
+                                                @can('role-edit')
                                                     <a href="{{ route('roles.edit', $role->id) }}"
                                                         class="btn btn-success">Edit</a>
-                                                {{-- @endcan --}}
+                                                @endcan
 
-                                                {{-- @can('role-show') --}}
+                                                @can('role-show')
                                                     <a href="{{ route('roles.show', $role->id) }}"
                                                         class="btn btn-primary mx-2">View</a>
-                                                {{-- @endcan --}}
+                                                @endcan
 
-                                                {{-- @can('role-delete') --}}
-                                                <form action="{{ route('roles.destroy', $role->id) }}" method="post">
-                                                    @csrf
-                                                    @method('DELETE')
+                                                @can('role-delete')
+                                                    <form action="{{ route('roles.destroy', $role->id) }}" method="POST"
+                                                        onsubmit="return confirm('আপনি কি নিশ্চিতভাবে ডিলিট করতে চান?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <input type="submit" value="Delete" class="btn btn-danger">
+                                                    </form>
+                                                @endcan
 
-                                                    <input type="submit" value="Delete" class="btn btn-danger">
-                                                </form>
-                                                {{-- @endcan --}}
                                             </td>
 
                                         </tr>

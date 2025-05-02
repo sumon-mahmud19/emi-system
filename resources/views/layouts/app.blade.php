@@ -86,29 +86,39 @@
                         </li>
 
                         {{-- ইউজার --}}
-                        <li class="nav-item dropdown {{ Route::is('users.*') ? 'active' : '' }}">
-                            @can('user-list')
+                        @can('user-list')
+                            <li class="nav-item dropdown {{ Route::is('users.*') ? 'active' : '' }}">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown"
                                     data-bs-toggle="dropdown">ইউজার</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item {{ Route::is('users.index') ? 'active' : '' }}"
-                                            href="{{ route('users.index') }}">সব ইউজার</a></li>
-                                @endcan
 
-                                @can('user-create')
-                                    <li><a class="dropdown-item {{ Route::is('users.create') ? 'active' : '' }}"
-                                            href="{{ route('users.create') }}">নতুন ইউজার</a></li>
-                                @endcan
+                                    @can('user-list')
+                                        <li><a class="dropdown-item {{ Route::is('users.index') ? 'active' : '' }}"
+                                                href="{{ route('users.index') }}">সব ইউজার</a></li>
+                                    @endcan
 
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <a class="dropdown-item {{ Route::is('roles.index') ? 'active' : '' }}"
-                                    href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a>
-                                <a class="dropdown-item {{ Route::is('roles.create') ? 'active' : '' }}"
-                                    href="{{ route('roles.create') }}">নতুন রোল</a>
-                            </ul>
-                        </li>
+                                    @can('user-create')
+                                        <li><a class="dropdown-item {{ Route::is('users.create') ? 'active' : '' }}"
+                                                href="{{ route('users.create') }}">নতুন ইউজার</a></li>
+                                    @endcan
+
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+
+                                    @can('role-list')
+                                        <a class="dropdown-item {{ Route::is('roles.index') ? 'active' : '' }}"
+                                            href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a>
+                                    @endcan
+
+                                    @can('role-create')
+                                        <a class="dropdown-item {{ Route::is('roles.create') ? 'active' : '' }}"
+                                            href="{{ route('roles.create') }}">নতুন রোল</a>
+                                    @endcan
+                                    
+                                </ul>
+                            </li>
+                        @endcan
 
                         {{-- পণ্য --}}
                         <li

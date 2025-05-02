@@ -33,9 +33,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="my-3 ">
-                                        <a href="{{ route('roles.index') }}" class="btn btn-info">Back</a>
-                                    </div>
+                                    @can('role-list')
+                                        <div class="my-3 ">
+                                            <a href="{{ route('roles.index') }}" class="btn btn-info">Back</a>
+                                        </div>
+                                    @endcan
+
                                 </div>
                             </div>
                         </div>
