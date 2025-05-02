@@ -43,7 +43,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
             <div class="login-form">
-                Roman Electronic & Furnitures
+               
                 <h3>Login</h3>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
