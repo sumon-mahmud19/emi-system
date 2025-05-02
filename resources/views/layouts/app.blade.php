@@ -26,7 +26,7 @@
     {{-- Navbar --}}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">Roman Emi</a>
+            <a class="navbar-brand" href="{{ url('/') }}">Roman Emi System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -111,13 +111,24 @@
                             পণ্য
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item {{ Route::is('products.index') ? 'active' : '' }}"
-                                    href="{{ route('products.index') }}">সব পণ্য</a></li>
-                            <li><a class="dropdown-item {{ Route::is('products.create') ? 'active' : '' }}"
-                                    href="{{ route('products.create') }}">নতুন পণ্য</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+
+                            @can('product-list')
+                                <li>
+                                    <a class="dropdown-item {{ Route::is('products.index') ? 'active' : '' }}"
+                                        href="{{ route('products.index') }}">সব পণ্য</a>
+                                </li>
+                            @endcan
+
+                            @can('product-create')
+                                <li><a class="dropdown-item {{ Route::is('products.create') ? 'active' : '' }}"
+                                        href="{{ route('products.create') }}">নতুন পণ্য</a></li>
+                                <li>
+
+                                    <hr class="dropdown-divider">
+                                </li>
+                            @endcan
+
+                            
                             <li><a class="dropdown-item {{ Route::is('product-models.index') ? 'active' : '' }}"
                                     href="{{ route('models.index') }}">মডেল তালিকা</a></li>
                             <li><a class="dropdown-item {{ Route::is('product-models.create') ? 'active' : '' }}"
