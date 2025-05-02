@@ -41,10 +41,15 @@
                             কাস্টমার
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item {{ Route::is('customers.index') ? 'active' : '' }}"
-                                    href="{{ route('customers.index') }}">সব কাস্টমার</a></li>
-                            <li><a class="dropdown-item {{ Route::is('customers.create') ? 'active' : '' }}"
-                                    href="{{ route('customers.create') }}">নতুন কাস্টমার</a></li>
+                            @can('customer-list')
+                                <li><a class="dropdown-item {{ Route::is('customers.index') ? 'active' : '' }}"
+                                        href="{{ route('customers.index') }}">সব কাস্টমার</a></li>
+                            @endcan
+
+                            @can('customer-create')
+                                <li><a class="dropdown-item {{ Route::is('customers.create') ? 'active' : '' }}"
+                                        href="{{ route('customers.create') }}">নতুন কাস্টমার</a></li>
+                            @endcan
                         </ul>
                     </li>
 
