@@ -10,10 +10,7 @@
     </style>
 </head>
 <body>
-    <h2>চালান রশিদ</h2>
-    <p>নাম: মোঃ হাসান</p>
-    <p>ফোন: ০১৭৬৩৪১৭০৭১</p>
-    <p>পরিমাণ: ৫০০ টাকা</p>
-    <p>ধন্যবাদ!</p>
+    {{ $customer->customer_name }}
+    {{ $customer->location_details }}
 </body>
 </html>
