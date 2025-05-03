@@ -132,12 +132,11 @@ class PurchaseController extends Controller
             'product' => $purchase->product,   // Load the product relationship
         ];
 
-        // // Generate PDF from the view and return as a download
-        // $pdf = PDF::loadView('reports.pdf', $data)
-        //     ->setOption('isHtml5ParserEnabled', true)
-        //     ->setOption('isPhpEnabled', true);
-        return $data;
-        return $pdf->stream('invoice.pdf');
+        // Generate PDF from the view and return as a download
+        $pdf = PDF::loadView('reports.pdf', $data)
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isPhpEnabled', true);
+        return $pdf->download('invoice.pdf');
     }
 
 
