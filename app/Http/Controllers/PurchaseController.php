@@ -133,9 +133,7 @@ class PurchaseController extends Controller
         ];
 
         // Generate PDF from the view and return as a download
-        $pdf = PDF::loadView('reports.pdf', $data)
-            ->setOption('isHtml5ParserEnabled', true)
-            ->setOption('isPhpEnabled', true);
+        $pdf = PDF::loadView('reports.pdf', $data);
         return $pdf->download('invoice.pdf');
     }
 
