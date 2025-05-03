@@ -45,10 +45,10 @@
                                             </td>
                                             <td class="d-flex">
 
-                                                @can('user-edit')
+                                                {{-- @can('user-edit') --}}
                                                     <a href="{{ route('users.edit', $user->id) }}"
                                                         class="btn btn-success">Edit</a>
-                                                @endcan
+                                                {{-- @endcan --}}
 
                                                 <a href="{{ route('users.show', $user->id) }}"
                                                     class="btn btn-primary mx-2">View</a>
@@ -61,7 +61,7 @@
                                                         <input type="submit" value="Delete" class="btn btn-danger">
                                                     </form>
                                                 @endcan
-                                                
+
                                             </td>
 
                                         </tr>
