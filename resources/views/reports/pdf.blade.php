@@ -44,7 +44,7 @@
 <body>
 
     <div class="invoice-header">
-        ইনভয়েস - Roman Electronics & Furnitures
+ইনভয়েস বাংলা- Roman Electronics & Furnitures
     </div>
 
     <div class="section-title">কাস্টমার তথ্য</div>
