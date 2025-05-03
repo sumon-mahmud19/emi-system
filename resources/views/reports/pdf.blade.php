@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
     <meta charset="UTF-8">
     <style>
@@ -9,8 +10,10 @@
         }
     </style>
 </head>
+
 <body>
     {{ $customer->customer_name }}
-    {{ $customer->location_details }}
+
 </body>
+
 </html>
