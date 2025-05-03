@@ -8,7 +8,7 @@
             class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
 
             @can('customer-create')
-                <a href="{{ route('customers.create') }}" class="btn btn-primary">Add Customer</a>
+                <a href="{{ route('customers.create') }}" class="btn btn-primary">New Customer</a>
             @endcan
 
             <input type="text" id="liveSearch" class="form-control w-50 w-md-auto"
