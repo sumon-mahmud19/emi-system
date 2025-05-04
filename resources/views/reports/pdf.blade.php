@@ -44,53 +44,50 @@
 <body>
 
     <div class="invoice-header">
-ইনভয়েস বাংলা- Roman Electronics & Furnitures
+    {{ $invoice->header_name }}
     </div>
 
-    <div class="section-title">কাস্টমার তথ্য</div>
+    <div class="section-title">{{ $invoice->bill_to }}</div>
     <table>
         <tr>
-            <th>নাম</th>
+            <th>{{ $invoice->name }}</th>
             <td>{{ $customer->customer_name }}</td>
         </tr>
         <tr>
-            <th>ফোন</th>
+            <th>{{ $invoice->phone }}</th>
             <td>{{ $customer->customer_phone }}</td>
         </tr>
         <tr>
-            <th>লোকেশন</th>
+            <th>{{ $invoice->location }}</th>
             <td>{{ $customer->location->name ?? 'N/A' }}</td>
         </tr>
     </table>
 
-    <div class="section-title">পণ্যের তথ্য</div>
+    <div class="section-title"></div>
     <table>
         <tr>
-            <th>পণ্যের নাম</th>
+            <th> {{ $invoice->product_name }}</th>
             <td>{{ $product->name }}</td>
         </tr>
         <tr>
-            <th>মডেল</th>
+            <th>{{ $invoice->product_model }}</th>
             <td>{{ $purchase->model->name ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>মূল্য</th>
+            <th>{{ $invoice->total_price }}</th>
             <td>{{ number_format($purchase->total_price) }} টাকা</td>
         </tr>
+
         <tr>
-            <th>বিক্রয় মূল্য</th>
-            <td>{{ number_format($purchase->sales_price) }} টাকা</td>
-        </tr>
-        <tr>
-            <th>ডাউন পেমেন্ট</th>
+            <th> {{ $invoice->down_payment }}</th>
             <td>{{ number_format($purchase->down_payment) }} টাকা</td>
         </tr>
         <tr>
-            <th>EMI সংখ্যা</th>
+            <th>{{ $invoice->emi_month }}</th>
             <td>{{ $purchase->emi_plan }} মাস</td>
         </tr>
         <tr>
-            <th>প্রতি মাসে কিস্তি</th>
+            <th>{{ $invoice->next_emi_amount }}</th>
             <td>{{ number_format($emiAmount) }} টাকা</td>
         </tr>
     </table>

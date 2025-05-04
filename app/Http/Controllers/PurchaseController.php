@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Installment;
+use App\Models\Invoice;
 use App\Models\Location;
 use App\Models\Product;
 use App\Models\ProductModel;
@@ -123,8 +124,10 @@ class PurchaseController extends Controller
 
         // Prepare data to be passed to the view for PDF generation
 
+        $invoices = Invoice::all();
         // Return prepared data
         $data = [
+            'invoices' => $invoices,
             'purchase' => $purchase,
             'emiAmount' => $emiAmount,
             'installments' => $installments,
