@@ -1,22 +1,40 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ইনভয়েস</title>
+    <title>Invoice</title>
 
     <style>
         @font-face {
-            font-family: 'NotoSansBengali';
-            font-style: normal;
+            font-family: 'NotoSans';
+            src: url('{{ public_path('fonts/NotoSans-Regular.ttf') }}') format('truetype');
             font-weight: normal;
-            src: url('{{ public_path('fonts/NotoSansBengali-Regular.ttf') }}') format('truetype');
+            font-style: normal;
         }
 
         body {
-            font-family: 'NotoSansBengali', sans-serif;
-            font-size: 16px;
-            line-height: 26px;
-            direction: ltr;
+            font-family: 'NotoSans', sans-serif;
+            font-size: 14px;
+            color: #333;
+            margin: 20px;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
         }
 
         table {
@@ -25,89 +43,105 @@
             margin-bottom: 20px;
         }
 
-        th, td {
+        th {
+            background-color: #3498db;
+            color: white;
+            text-align: left;
+            padding: 8px;
+        }
+
+        td {
             padding: 8px;
             border: 1px solid #ccc;
-            text-align: left;
         }
 
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        .invoice-header {
+        .footer {
             text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 20px;
+            font-size: 13px;
+            color: #888;
+            margin-top: 40px;
+        }
+
+        .signatures {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .signature-box {
+            text-align: center;
+            width: 45%;
+        }
+
+        .signature-line {
+            margin-top: 40px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="invoice-header">
-        ইনভয়েস - রোমান ইলেকট্রনিকস এন্ড ফার্নিচারস
+    <div class="header">
+        Invoice - Roman Electronics & Furnitures
     </div>
 
-    <div class="section-title">কাস্টমার তথ্য</div>
+    <div class="section-title">Customer Information</div>
     <table>
         <tr>
-            <th>নাম</th>
+            <th>Name</th>
             <td>{{ $customer->customer_name }}</td>
         </tr>
         <tr>
-            <th>ফোন</th>
+            <th>Phone</th>
             <td>{{ $customer->customer_phone }}</td>
         </tr>
         <tr>
-            <th>লোকেশন</th>
+            <th>Location</th>
             <td>{{ $customer->location->name ?? 'N/A' }}</td>
         </tr>
     </table>
 
-    <div class="section-title">পণ্যের তথ্য</div>
+    <div class="section-title">Product Information</div>
     <table>
         <tr>
-            <th>পণ্যের নাম</th>
+            <th>Product Name</th>
             <td>{{ $product->name }}</td>
         </tr>
         <tr>
-            <th>মডেল</th>
+            <th>Model</th>
             <td>{{ $purchase->model->name ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>মূল্য</th>
-            <td>{{ number_format($purchase->total_price) }} টাকা</td>
+            <th>Total Price</th>
+            <td>{{ number_format($purchase->total_price) }} Tk</td>
         </tr>
         <tr>
-            <th>বিক্রয় মূল্য</th>
-            <td>{{ number_format($purchase->sales_price) }} টাকা</td>
+            <th>Sales Price</th>
+            <td>{{ number_format($purchase->sales_price) }} Tk</td>
         </tr>
         <tr>
-            <th>ডাউন পেমেন্ট</th>
-            <td>{{ number_format($purchase->down_payment) }} টাকা</td>
+            <th>Down Payment</th>
+            <td>{{ number_format($purchase->down_payment) }} Tk</td>
         </tr>
         <tr>
-            <th>EMI সংখ্যা</th>
-            <td>{{ $purchase->emi_plan }} মাস</td>
+            <th>EMI Duration</th>
+            <td>{{ $purchase->emi_plan }} months</td>
         </tr>
         <tr>
-            <th>প্রতি মাসে কিস্তি</th>
-            <td>{{ number_format($emiAmount) }} টাকা</td>
+            <th>Monthly Installment</th>
+            <td>{{ number_format($emiAmount) }} Tk</td>
         </tr>
     </table>
 
-    <div class="section-title">EMI কিস্তির তালিকা</div>
+    <div class="section-title">EMI Schedule</div>
     <table>
         <thead>
             <tr>
-                <th>ক্রমিক</th>
-                <th>তারিখ</th>
-                <th>পরিমাণ</th>
-                <th>অবস্থা</th>
+                <th>#</th>
+                <th>Due Date</th>
+                <th>Amount</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -115,12 +149,12 @@
             <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ \Carbon\Carbon::parse($inst->due_date)->format('F Y') }}</td>
-                <td>{{ number_format($inst->amount) }} টাকা</td>
+                <td>{{ number_format($inst->amount) }} Tk</td>
                 <td>
                     @if ($inst->status == 'paid')
-                        পরিশোধিত
+                        Paid
                     @else
-                        বকেয়া
+                        Due
                     @endif
                 </td>
             </tr>
@@ -128,23 +162,17 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 50px;">
-        <table style="width:100%; border: none;">
-            <tr>
-                <td style="text-align: left; border: none;">
-                    <strong>গ্রাহকের স্বাক্ষর</strong><br><br><br>
-                    _________________________
-                </td>
-                <td style="text-align: right; border: none;">
-                    <strong>বিক্রেতার স্বাক্ষর</strong><br><br><br>
-                    _________________________
-                </td>
-            </tr>
-        </table>
+    <div class="signatures">
+        <div class="signature-box">
+            <div class="signature-line">Customer Signature</div>
+        </div>
+        <div class="signature-box">
+            <div class="signature-line">Seller Signature</div>
+        </div>
     </div>
 
-    <div style="text-align:center; margin-top: 30px;">
-        <strong>সর্বস্বত্ব সংরক্ষিত © {{ date('Y') }} - রোমান ইলেকট্রনিকস এন্ড ফার্নিচারস</strong>
+    <div class="footer">
+        &copy; {{ date('Y') }} Roman Electronics & Furnitures. All rights reserved.
     </div>
 
 </body>
