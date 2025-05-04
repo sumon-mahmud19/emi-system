@@ -31,8 +31,8 @@
                     @forelse ($purchases as $purchase)
                         <tr data-bs-toggle="collapse" data-bs-target="#emiDetails{{ $purchase->id }}"
                             class="clickable text-center" style="cursor:pointer;">
-                            <td>{{ $purchase->customer->customer_name }}</td>
-                            <td>{{ $purchase->product->product_name }}</td>
+                            <td>{{ $purchase->customer->customer_name ? " " }}</td>
+                            <td>{{ $purchase->product->product_name ? " " }}</td>
                             <td>{{ $purchase->location->name ?? 'N/A' }}</td>
                             <td>{{ number_format($purchase->total_price, 2) }} ৳</td>
                             <td>{{ number_format($purchase->down_payment, 2) }} ৳</td>
