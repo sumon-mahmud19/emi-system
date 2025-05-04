@@ -2,20 +2,17 @@
 
 return [
 
-    'font_dir' => public_path('fonts'),
-    'font_cache' => storage_path('fonts'),
-    'default_font' => 'NotoSansBengali',
+    
+'font_dir' => base_path('public/fonts/'), // public path instead of storage
+'font_cache' => storage_path('fonts/'),
 
+'default_font' => 'notosansbengali',
 
-    'font_data' => [
-        'notosansbengali' => [
-            'R' => 'NotoSansBengali-Regular.ttf',
-            'useOTL' => 0xFF, // Required for complex scripts like Bangla
-            'useKashida' => 75,
-        ],
+'fonts' => [
+    'notosansbengali' => [
+        'R' => 'NotoSansBengali-Regular.ttf',
     ],
-
-
+],
 
 
 
