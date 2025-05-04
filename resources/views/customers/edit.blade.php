@@ -50,6 +50,18 @@
             </select>
         </div>
 
+        <!-- Landlord Name (optional) -->
+        <div class="mb-3">
+            <label for="landlord_name">Landlord Name (optional)</label>
+            <input type="text" name="landlord_name" class="form-control" value="{{ old('landlord_name', $customer->landlord_name) }}">
+        </div>
+
+        <!-- Location Details (optional) -->
+        <div class="mb-3">
+            <label for="location_details">Location Details (optional)</label>
+            <input type="text" name="location_details" class="form-control" value="{{ old('location_details', $customer->location_details) }}">
+        </div>
+
         <!-- Customer Image -->
         <div class="mb-3">
             <label for="customer_image">Customer Image</label>
