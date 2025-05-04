@@ -5,16 +5,15 @@
     <title>ইনভয়েস</title>
 
     <style>
-        /* Only works if generating PDF via dompdf and font is loaded properly */
         @font-face {
-            font-family: 'NotoSansBengali';
+            font-family: 'notosansbengali';
             font-style: normal;
             font-weight: normal;
             src: url('{{ public_path('fonts/NotoSansBengali-Regular.ttf') }}') format('truetype');
         }
 
         body {
-            font-family: 'NotoSansBengali', sans-serif;
+            font-family: 'notosansbengali', sans-serif;
             font-size: 16px;
             line-height: 26px;
             direction: ltr;
@@ -44,6 +43,23 @@
             font-size: 22px;
             font-weight: bold;
             margin-bottom: 20px;
+        }
+
+        .footer-signature {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        .signature-box {
+            width: 45%;
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 60px;
+            padding-top: 5px;
         }
     </style>
 </head>
@@ -129,19 +145,13 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 50px;">
-        <table style="width:100%; border: none;">
-            <tr>
-                <td style="text-align: left; border: none;">
-                    <strong>গ্রাহকের স্বাক্ষর</strong><br><br><br>
-                    _________________________
-                </td>
-                <td style="text-align: right; border: none;">
-                    <strong>বিক্রেতার স্বাক্ষর</strong><br><br><br>
-                    _________________________
-                </td>
-            </tr>
-        </table>
+    <div class="footer-signature">
+        <div class="signature-box">
+            <div class="signature-line">ত্রেতা স্বাক্ষর</div>
+        </div>
+        <div class="signature-box">
+            <div class="signature-line">বিত্রেতার স্বাক্ষর</div>
+        </div>
     </div>
 
     <div style="text-align:center; margin-top: 30px;">
