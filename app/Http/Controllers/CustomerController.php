@@ -94,7 +94,7 @@ class CustomerController extends Controller
             $image->move(public_path('image/customers'), $imageName);
             $customerImage = 'image/customers/' . $imageName;
         }
-        
+
 
         // Insert the customer data in a single query
         Customer::create([
@@ -140,8 +140,12 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Customer $customer)
+
+    public function update(Request $request, $id)
     {
+        // Find the customer
+        $customer = Customer::findOrFail($id);
+
         // Validate the request data
         $validated = $request->validate([
             'customer_name'    => 'required|string|max:255',
@@ -153,32 +157,26 @@ class CustomerController extends Controller
             'location_details' => 'nullable|string|max:255',
         ]);
 
-        // Handle image upload (only if an image is provided)
-        $customerImage = $customer->customer_image; // Default to current image
+        // Handle image upload (if a new image is uploaded)
         if ($request->hasFile('customer_image')) {
-            // Delete the old image if it's not the default one
-            if ($customerImage && $customerImage != 'images/default.png' && file_exists(public_path($customerImage))) {
-                unlink(public_path($customerImage));
-            }
-
             $image = $request->file('customer_image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('image/customers'), $imageName);
-            $customerImage = 'image/customers/' . $imageName;
+            $customer->customer_image = 'image/customers/' . $imageName;
         }
 
-        // Update customer record
-        $customer->update([
-            'customer_name'    => $validated['customer_name'],
-            'customer_id'      => $validated['customer_id'],
-            'customer_phone'   => $validated['customer_phone'],
-            'customer_image'   => $customerImage,
-            'landlord_name'    => $validated['landlord_name'],
-            'location_id'      => $validated['location_id'],
-            'location_details' => $validated['location_details'],
-        ]);
+        // Update other fields
+        $customer->customer_name    = $validated['customer_name'];
+        $customer->customer_id      = $validated['customer_id'];
+        $customer->customer_phone   = $validated['customer_phone'];
+        $customer->landlord_name    = $validated['landlord_name'];
+        $customer->location_id      = $validated['location_id'];
+        $customer->location_details = $validated['location_details'];
 
-        // Redirect to the customer index page with a success message
+        // Save changes
+        $customer->save();
+
+        // Redirect with success message
         return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
     }
 
