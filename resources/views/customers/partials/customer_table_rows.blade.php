@@ -3,42 +3,28 @@
         <td>{{ $loop->iteration }}</td>
         <td>{{ $customer->customer_name }}</td>
         <td>{{ $customer->customer_id }}</td>
+        <td><a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a></td>
         <td>
-            <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
-
+            <a class="show-customer-modal" data-bs-toggle="modal" data-bs-target="#customerModal"
+                data-name="{{ $customer->customer_name }}"
+                data-id="{{ $customer->customer_id }}"
+                data-phone="tel:{{ $customer->customer_phone }}"
+                data-location="{{ $customer->location->name ?? 'N/A' }}"
+                data-image="{{ asset($customer->customer_image ?? 'images/default.png') }}">
+                <img src="{{ asset($customer->customer_image ?? 'images/default.png') }}"
+                    class="img-fluid rounded-circle"
+                    style="height: 50px; width: 50px; object-fit: cover;">
+            </a>
         </td>
+        <td>{{ $customer->location->name ?? 'N/A' }}</td>
         <td>
-            @if ($customer->customer_image)
-                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image" width="80" height="80"
-                    class="img-thumbnail" style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#customerModal"
-                    data-name="{{ $customer->customer_name }}" data-id="{{ $customer->customer_id }}"
-                    data-phone="tel:{{ $customer->customer_phone }}"
-                    data-location="{{ optional($customer->location)->name }}"
-                    data-image="{{ asset($customer->customer_image) }}">
-            @endif
-        </td>
-        <td>
-            @if ($customer->location)
-                <a href="{{ route('customers.show', $customer->location->id) }}">
-                    {{ $customer->location->name }}
-                </a>
-            @else
-                <span class="text-muted">No location</span>
-            @endif
-        </td>
-        <td>
-            @can('customer-edit')
-                <a href="{{ route('customers.edit', $customer) }}" class="btn btn-sm btn-warning mb-1">Edit</a>
-            @endcan
-
-            @can('customer-delete')
-                <form action="{{ route('customers.destroy', $customer) }}" method="POST" style="display:inline;">
-                    @csrf @method('DELETE')
-                    <button onclick="return confirm('Delete this customer?')"
-                        class="btn btn-sm btn-danger mb-1">Delete</button>
-                </form>
-            @endcan
-
+            <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">Edit</a>
+            <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure?')">Delete</button>
+            </form>
             <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-sm btn-primary">EMI Details</a>
         </td>
     </tr>
