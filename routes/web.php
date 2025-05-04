@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InstallmentController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductModelController;
@@ -18,6 +19,7 @@ Route::get('/', function () {
 
 // Users Route:
 Route::resource('users', UserController::class);
+
 
 Route::resource('customers', CustomerController::class);
 Route::get('/customers/{id}/emi-plans', [CustomerController::class, 'customerEmiPlans'])->name('customers.emi_plans');
@@ -47,10 +49,11 @@ Route::post('/installments/pay-multiple', [InstallmentController::class, 'payMul
 Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])
     ->name('monthly.reports')
     ->middleware('role:admin');
-
-Auth::routes();
-
+    
+    Auth::routes();
+    
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('role:admin');
 
 
 // ?aaz,hH.{b5p
+Route::resource('invoices', InvoiceController::class);
