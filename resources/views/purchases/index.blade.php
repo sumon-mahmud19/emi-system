@@ -33,6 +33,9 @@
                             class="clickable text-center" style="cursor:pointer;">
                             <td>{{ optional($purchase->customer)->customer_name }}</td>
                             <td>{{ optional($purchase->product)->customer_name }}</td>
+
+                            <td>{{ $purchase->product->product_name ?? 'N/A' }}</td>
+
                             <td>{{ $purchase->location->name ?? 'N/A' }}</td>
                             <td>{{ number_format($purchase->total_price, 2) }} ৳</td>
                             <td>{{ number_format($purchase->down_payment, 2) }} ৳</td>
