@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>ইনভয়েস</title>
+    <title>&#x987;&#x9A8;&#x9AD;&#x9DF;&#x9C7;&#x9B8;</title>
 
     <style>
         @font-face {
@@ -66,65 +66,65 @@
 <body>
 
     <div class="invoice-header">
-        ইনভয়েস - Roman Electronics & Furnitures
+        &#x987;&#x9A8;&#x9AD;&#x9DF;&#x9C7;&#x9B8; - Roman Electronics & Furnitures
     </div>
 
-    <div class="section-title">কাস্টমার তথ্য</div>
+    <div class="section-title">&#x995;&#x9BE;&#x9B8;&#x9CD;&#x99F;&#x9AE;&#x9BE;&#x9B0; &#x9A4;&#x9A5;&#x9CD;&#x9AF;</div>
     <table>
         <tr>
-            <th>নাম</th>
+            <th>&#x9A8;&#x9BE;&#x9AE;</th>
             <td>{{ $customer->customer_name }}</td>
         </tr>
         <tr>
-            <th>ফোন</th>
+            <th>&#x9AB;&#x9CB;&#x9A8;</th>
             <td>{{ $customer->customer_phone }}</td>
         </tr>
         <tr>
-            <th>লোকেশন</th>
+            <th>&#x9B2;&#x9CB;&#x995;&#x9C7;&#x9B6;&#x9A8;</th>
             <td>{{ $customer->location->name ?? 'N/A' }}</td>
         </tr>
     </table>
 
-    <div class="section-title">পণ্যের তথ্য</div>
+    <div class="section-title">&#x9AA;&#x9A3;&#x9CD;&#x9AF;&#x9C7;&#x9B0; &#x9A4;&#x9A5;&#x9CD;&#x9AF;</div>
     <table>
         <tr>
-            <th>পণ্যের নাম</th>
+            <th>&#x9AA;&#x9A3;&#x9CD;&#x9AF;&#x9C7;&#x9B0; &#x9A8;&#x9BE;&#x9AE;</th>
             <td>{{ $product->name }}</td>
         </tr>
         <tr>
-            <th>মডেল</th>
+            <th>&#x9AE;&#x9A1;&#x9C7;&#x9B2;</th>
             <td>{{ $purchase->model->name ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>মূল্য</th>
-            <td>{{ number_format($purchase->total_price) }} টাকা</td>
+            <th>&#x9AE;&#x9C2;&#x9B2;&#x9CD;&#x9AF;</th>
+            <td>{{ number_format($purchase->total_price) }} &#x9A4;&#x9BE;&#x998;&#xBE;</td>
         </tr>
         <tr>
-            <th>বিক্রয় মূল্য</th>
-            <td>{{ number_format($purchase->sales_price) }} টাকা</td>
+            <th>&#x9AC;&#x9BF;&#x995;&#x9CD;&#x9B0;&#x9DF; &#x9AE;&#x9C2;&#x9B2;&#x9CD;&#x9AF;</th>
+            <td>{{ number_format($purchase->sales_price) }} &#x9A4;&#x9BE;&#x998;&#xBE;</td>
         </tr>
         <tr>
-            <th>ডাউন পেমেন্ট</th>
-            <td>{{ number_format($purchase->down_payment) }} টাকা</td>
+            <th>&#x9A1;&#x9BE;&#x0989;&#x9A8; &#x9AA;&#x9C7;&#x9AE;&#x9C7;&#x9A8;&#x9CD;&#x99F;</th>
+            <td>{{ number_format($purchase->down_payment) }} &#x9A4;&#x9BE;&#x998;&#xBE;</td>
         </tr>
         <tr>
-            <th>EMI সংখ্যা</th>
-            <td>{{ $purchase->emi_plan }} মাস</td>
+            <th>EMI &#x9B8;&#x9B9;&#x9CD;&#x9AF;&#x9BE;</th>
+            <td>{{ $purchase->emi_plan }} &#x9AE;&#x9BE;&#x9B8;</td>
         </tr>
         <tr>
-            <th>প্রতি মাসে কিস্তি</th>
-            <td>{{ number_format($emiAmount) }} টাকা</td>
+            <th>&#x9AA;&#x9CD;&#x9B0;&#x9A4;&#x9BF; &#x9AE;&#x9BE;&#x9B8;&#x947; &#x995;&#x9BF;&#x9B8;&#x9CD;&#x9A4;&#x9BF;</th>
+            <td>{{ number_format($emiAmount) }} &#x9A4;&#x9BE;&#x998;&#xBE;</td>
         </tr>
     </table>
 
-    <div class="section-title">EMI কিস্তির তালিকা</div>
+    <div class="section-title">EMI &#x995;&#x9BF;&#x9B8;&#x9CD;&#x9A4;&#x9BF;&#x9B0; &#x9A4;&#x9BE;&#x9B2;&#x9BF;&#x995;&#x9BE;</div>
     <table>
         <thead>
             <tr>
-                <th>ক্রমিক</th>
-                <th>তারিখ</th>
-                <th>পরিমাণ</th>
-                <th>অবস্থা</th>
+                <th>&#x995;&#x9CD;&#x9B0;&#x9AE;&#x9BF;&#x0995;</th>
+                <th>&#x9A4;&#x9BE;&#x9B0;&#x9BF;&#x996;</th>
+                <th>&#x9AA;&#x9B0;&#x9BF;&#x9AE;&#x9BE;&#x9A3;</th>
+                <th>&#x985;&#x9AC;&#x9B8;&#x9CD;&#x9A5;&#x9BE;</th>
             </tr>
         </thead>
         <tbody>
@@ -132,12 +132,12 @@
             <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ \Carbon\Carbon::parse($inst->due_date)->format('F Y') }}</td>
-                <td>{{ number_format($inst->amount) }} টাকা</td>
+                <td>{{ number_format($inst->amount) }} &#x9A4;&#x9BE;&#x998;&#xBE;</td>
                 <td>
                     @if ($inst->status == 'paid')
-                        পরিশোধিত
+                        &#x9AA;&#x9B0;&#x9BF;&#x9B6;&#x9CB;&#x9A7;&#x9BF;&#x9A4;
                     @else
-                        বকেয়া
+                        &#x9AC;&#x0995;&#x9C7;&#x9DF;&#x9BE;
                     @endif
                 </td>
             </tr>
@@ -147,15 +147,15 @@
 
     <div class="footer-signature">
         <div class="signature-box">
-            <div class="signature-line">ত্রেতা স্বাক্ষর</div>
+            <div class="signature-line">&#x99F;&#x9CD;&#x9B0;&#x9C7;&#x9A4;&#x9BE; &#x9B8;&#x9CD;&#x9AC;&#x9BE;&#x995;&#x9CD;&#x9B7;&#x9B0;</div>
         </div>
         <div class="signature-box">
-            <div class="signature-line">বিত্রেতার স্বাক্ষর</div>
+            <div class="signature-line">&#x9AC;&#x9BF;&#x9A4;&#x9CD;&#x9B0;&#x9C7;&#x9A4;&#x9BE;&#x9B0; &#x9B8;&#x9CD;&#x9AC;&#x9BE;&#x995;&#x9CD;&#x9B7;&#x9B0;</div>
         </div>
     </div>
 
     <div style="text-align:center; margin-top: 30px;">
-        <strong>সর্বস্বত্ব সংরক্ষিত © {{ date('Y') }} - Roman Electronics & Furnitures</strong>
+        <strong>&#x9B8;&#x9B0;&#x9CD;&#x9AC;&#x9B8;&#x7D71;&#x9CD;&#x9A4;&#x9CD;&#x9AC; &#x9B8;&#x902;&#x9B0;&#x996;&#x9BF;&#x9A4; © {{ date('Y') }} - Roman Electronics & Furnitures</strong>
     </div>
 
 </body>
