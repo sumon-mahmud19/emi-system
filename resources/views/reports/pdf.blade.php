@@ -42,7 +42,8 @@
     </style>
 </head>
 <body>
-
+@foreach ($invoices as $invoice)
+    
     <div class="invoice-header">
     {{ $invoice->header_name }}
     </div>
@@ -115,8 +116,10 @@
     </table>
 
     <div style="text-align:center; margin-top: 30px;">
-        <strong>সর্বস্বত্ব সংরক্ষিত © {{ date('Y') }} - Roman Electronics & Furnitures</strong>
+        <strong>সর্বস্বত্ব সংরক্ষিত © {{ date('Y') }} -  {{ $invoice->header_footer }}</strong>
     </div>
+
+    @endforeach
 
 </body>
 </html>
