@@ -2,16 +2,22 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
+    <title>ইনভয়েস</title>
+
     <style>
+        /* Only works if generating PDF via dompdf and font is loaded properly */
         @font-face {
-            font-family: 'notosansbengali';
-            src: url('{{ storage_path('fonts/NotoSansBengali-Regular.ttf') }}') format('truetype');
+            font-family: 'NotoSansBengali';
+            font-style: normal;
+            font-weight: normal;
+            src: url('{{ public_path('fonts/NotoSansBengali-Regular.ttf') }}') format('truetype');
         }
 
         body {
-            font-family: 'notosansbengali', sans-serif;
+            font-family: 'NotoSansBengali', sans-serif;
             font-size: 16px;
             line-height: 26px;
+            direction: ltr;
         }
 
         table {
@@ -111,11 +117,32 @@
                 <td>{{ $index + 1 }}</td>
                 <td>{{ \Carbon\Carbon::parse($inst->due_date)->format('F Y') }}</td>
                 <td>{{ number_format($inst->amount) }} টাকা</td>
-                <td>{{ ucfirst($inst->status) }}</td>
+                <td>
+                    @if ($inst->status == 'paid')
+                        পরিশোধিত
+                    @else
+                        বকেয়া
+                    @endif
+                </td>
             </tr>
             @endforeach
         </tbody>
     </table>
+
+    <div style="margin-top: 50px;">
+        <table style="width:100%; border: none;">
+            <tr>
+                <td style="text-align: left; border: none;">
+                    <strong>গ্রাহকের স্বাক্ষর</strong><br><br><br>
+                    _________________________
+                </td>
+                <td style="text-align: right; border: none;">
+                    <strong>বিক্রেতার স্বাক্ষর</strong><br><br><br>
+                    _________________________
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <div style="text-align:center; margin-top: 30px;">
         <strong>সর্বস্বত্ব সংরক্ষিত © {{ date('Y') }} - Roman Electronics & Furnitures</strong>
