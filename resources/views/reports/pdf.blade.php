@@ -42,53 +42,55 @@
     </style>
 </head>
 <body>
-@foreach ($invoices as $invoice)
-    
+
     <div class="invoice-header">
-    {{ $invoice->header_name }}
+        ইনভয়েস - Roman Electronics & Furnitures
     </div>
 
-    <div class="section-title">{{ $invoice->bill_to }}</div>
+    <div class="section-title">কাস্টমার তথ্য</div>
     <table>
         <tr>
-            <th>{{ $invoice->name }}</th>
+            <th>নাম</th>
             <td>{{ $customer->customer_name }}</td>
         </tr>
         <tr>
-            <th>{{ $invoice->phone }}</th>
+            <th>ফোন</th>
             <td>{{ $customer->customer_phone }}</td>
         </tr>
         <tr>
-            <th>{{ $invoice->location }}</th>
+            <th>লোকেশন</th>
             <td>{{ $customer->location->name ?? 'N/A' }}</td>
         </tr>
     </table>
 
-    <div class="section-title"></div>
+    <div class="section-title">পণ্যের তথ্য</div>
     <table>
         <tr>
-            <th> {{ $invoice->product_name }}</th>
+            <th>পণ্যের নাম</th>
             <td>{{ $product->name }}</td>
         </tr>
         <tr>
-            <th>{{ $invoice->product_model }}</th>
+            <th>মডেল</th>
             <td>{{ $purchase->model->name ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>{{ $invoice->total_price }}</th>
+            <th>মূল্য</th>
             <td>{{ number_format($purchase->total_price) }} টাকা</td>
         </tr>
-
         <tr>
-            <th> {{ $invoice->down_payment }}</th>
+            <th>বিক্রয় মূল্য</th>
+            <td>{{ number_format($purchase->sales_price) }} টাকা</td>
+        </tr>
+        <tr>
+            <th>ডাউন পেমেন্ট</th>
             <td>{{ number_format($purchase->down_payment) }} টাকা</td>
         </tr>
         <tr>
-            <th>{{ $invoice->emi_month }}</th>
+            <th>EMI সংখ্যা</th>
             <td>{{ $purchase->emi_plan }} মাস</td>
         </tr>
         <tr>
-            <th>{{ $invoice->next_emi_amount }}</th>
+            <th>প্রতি মাসে কিস্তি</th>
             <td>{{ number_format($emiAmount) }} টাকা</td>
         </tr>
     </table>
@@ -116,10 +118,8 @@
     </table>
 
     <div style="text-align:center; margin-top: 30px;">
-        <strong>সর্বস্বত্ব সংরক্ষিত © {{ date('Y') }} -  {{ $invoice->header_footer }}</strong>
+        <strong>সর্বস্বত্ব সংরক্ষিত © {{ date('Y') }} - Roman Electronics & Furnitures</strong>
     </div>
-
-    @endforeach
 
 </body>
 </html>
