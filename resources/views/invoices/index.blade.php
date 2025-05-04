@@ -38,7 +38,7 @@
             </tbody>
         </table>
 
-        {{ $invoices->links() }}
+       
     </div>
 </div>
 @endsection
