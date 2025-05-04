@@ -4,11 +4,6 @@
 <div class="container">
     <h2>Invoices</h2>
 
-    <div class="d-flex justify-content-between mb-3">
-        <input type="text" id="liveSearch" class="form-control w-50" placeholder="Search by name or phone">
-    </div>
-
-    <div><strong>Total:</strong> <span id="resultCount">{{ $invoices->total() }}</span></div>
 
     <div class="table-responsive">
         <table class="table table-bordered" id="invoiceTable">
@@ -48,24 +43,4 @@
 </div>
 @endsection
 
-@push('scripts')
-<script>
-    $(function() {
-        let debounce;
-        $('#liveSearch').on('keyup', function() {
-            clearTimeout(debounce);
-            let query = $(this).val();
-            debounce = setTimeout(() => {
-                $.ajax({
-                    url: '{{ route("invoices.index") }}',
-                    data: { search: query },
-                    success: function(response) {
-                        $('#invoiceBody').html(response.html);
-                        $('#resultCount').text(response.count);
-                    }
-                });
-            }, 500);
-        });
-    });
-</script>
-@endpush
+
