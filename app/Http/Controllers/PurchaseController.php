@@ -142,7 +142,7 @@ class PurchaseController extends Controller
 
         // Enable auto language/font detection (optional but useful)
         $mpdf->autoScriptToLang = true;
-        $mpdf->autoLangToFont = true;
+        // $mpdf->autoLangToFont = true;
         $mpdf->WriteHTML($data);
 
         // Render the view to HTML
