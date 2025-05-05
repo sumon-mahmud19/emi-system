@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Mpdf\Mpdf;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
 use App\Models\Customer;
 use App\Models\Installment;
 use App\Models\Invoice;
 use App\Models\Location;
 use App\Models\Product;
-use App\Models\ProductModel;
 use App\Models\Purchase;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -131,13 +132,36 @@ class PurchaseController extends Controller
             'purchase' => $purchase,
             'emiAmount' => $emiAmount,
             'installments' => $installments,
-            'customer' => $purchase->customer, // Load the customer relationship
-            'product' => $purchase->product,   // Load the product relationship
+            'customer' => $purchase->customer,
+            'product' => $purchase->product,
         ];
 
-        // Generate PDF from the view and return as a download
-        $pdf = PDF::loadView('reports.pdf', $data);
-        return $pdf->download('invoice.pdf');
+
+        // mPDF font configuration
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
+
+        $defaultFontConfig = (new FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font' => 'noto_bangla',
+            'fontDir' => array_merge($fontDirs, [
+                resource_path('fonts'),
+            ]),
+            'fontdata' => $fontData + [
+                'noto_bangla' => [
+                    'R' => 'NotoSansBengali-Regular.ttf',
+                ],
+            ]
+        ]);
+
+        $html = view('reports.pdf', $data)->render();
+
+        $mpdf->WriteHTML($html);
+        return $mpdf->Output('invoice.pdf', 'D');
     }
 
 
