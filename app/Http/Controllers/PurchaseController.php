@@ -144,7 +144,7 @@ class PurchaseController extends Controller
         $defaultFontConfig = (new FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
 
-        // Initialize mPDF
+        // Initialize mPDF with Bangla font config
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
@@ -159,17 +159,18 @@ class PurchaseController extends Controller
             'default_font' => 'noto_bangla',
         ]);
 
-        $html = view('reports.pdf', $data)->render();
+        // Enable auto language/font detection (optional but useful)
         $mpdf->autoScriptToLang = true;
-        $mpdf->autoLangToFont=true;
+        $mpdf->autoLangToFont = true;
 
-        // Render view to HTML
+        // Render the view to HTML
+        $html = view('reports.pdf', $data)->render();
 
-        // Generate PDF
+        // Write HTML to PDF
         $mpdf->WriteHTML($html);
-        return $mpdf->Output('invoice.pdf', 'D'); // D = Download, I = Inline
 
-
+        // Return PDF for download
+        return $mpdf->Output('invoice.pdf', 'D');
     }
 
 
