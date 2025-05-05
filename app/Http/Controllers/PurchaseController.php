@@ -136,28 +136,8 @@ class PurchaseController extends Controller
             'product' => $purchase->product,
         ];
 
-
-        // Define custom font config
-        $defaultConfig = (new ConfigVariables())->getDefaults();
-        $fontDirs = $defaultConfig['fontDir'];
-
-        $defaultFontConfig = (new FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata'];
-
         // Initialize mPDF with Bangla font config
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'fontDir' => array_merge($fontDirs, [
-                resource_path('fonts'),
-            ]),
-            'fontdata' => $fontData + [
-                'noto_bangla' => [
-                    'R' => 'NotoSansBengali-Regular.ttf',
-                ],
-            ],
-            'default_font' => 'noto_bangla',
-        ]);
+        $mpdf = new Mpdf();
 
         // Enable auto language/font detection (optional but useful)
         $mpdf->autoScriptToLang = true;
