@@ -136,18 +136,18 @@ class PurchaseController extends Controller
             'product' => $purchase->product,
         ];
 
+        $html = view('reports.pdf', compact('data'))->render();
         // Initialize mPDF with Bangla font config
         $mpdf = new Mpdf();
 
         // Enable auto language/font detection (optional but useful)
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
+        $mpdf->WriteHTML($data);
 
         // Render the view to HTML
-        $html = view('reports.pdf', $data)->render();
 
         // Write HTML to PDF
-        $mpdf->WriteHTML($html);
 
         // Return PDF for download
         return $mpdf->Output('invoice.pdf', 'D');
