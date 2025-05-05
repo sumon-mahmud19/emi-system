@@ -159,8 +159,11 @@ class PurchaseController extends Controller
             'default_font' => 'noto_bangla',
         ]);
 
-        // Render view to HTML
         $html = view('reports.pdf', $data)->render();
+        $mpdf->autoScriptToLang = true;
+        $mpdf->autoLangToFont=true;
+
+        // Render view to HTML
 
         // Generate PDF
         $mpdf->WriteHTML($html);
