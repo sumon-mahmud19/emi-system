@@ -56,4 +56,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 // ?aaz,hH.{b5p
-Route::resource('invoices', InvoiceController::class);
+// Route::get('invoices', InvoiceController::class);
+Route::get('/pdf', [InvoiceController::class, 'getPdf']);

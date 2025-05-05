@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Mpdf\Mpdf;
-use Mpdf\Config\ConfigVariables;
-use Mpdf\Config\FontVariables;
 use App\Models\Customer;
 use App\Models\Installment;
 use App\Models\Invoice;
@@ -13,6 +10,9 @@ use App\Models\Product;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Mpdf\Mpdf;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
 
 class PurchaseController extends Controller
 {
@@ -137,17 +137,17 @@ class PurchaseController extends Controller
         ];
 
 
-        // mPDF font configuration
+        // Define custom font config
         $defaultConfig = (new ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
 
         $defaultFontConfig = (new FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
 
+        // Initialize mPDF
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
-            'default_font' => 'noto_bangla',
             'fontDir' => array_merge($fontDirs, [
                 resource_path('fonts'),
             ]),
@@ -155,13 +155,18 @@ class PurchaseController extends Controller
                 'noto_bangla' => [
                     'R' => 'NotoSansBengali-Regular.ttf',
                 ],
-            ]
+            ],
+            'default_font' => 'noto_bangla',
         ]);
 
+        // Render view to HTML
         $html = view('reports.pdf', $data)->render();
 
+        // Generate PDF
         $mpdf->WriteHTML($html);
-        return $mpdf->Output('invoice.pdf', 'D');
+        return $mpdf->Output('invoice.pdf', 'D'); // D = Download, I = Inline
+
+
     }
 
 
