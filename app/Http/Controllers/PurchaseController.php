@@ -136,21 +136,40 @@ class PurchaseController extends Controller
             'product' => $purchase->product,
         ];
 
-        $html = view('reports.pdf', compact('data'))->render();
-        // Initialize mPDF with Bangla font config
-        $mpdf = new Mpdf();
+       
+        // Get default configurations
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
 
-        // Enable auto language/font detection (optional but useful)
-        $mpdf->autoScriptToLang = true;
-        // $mpdf->autoLangToFont = true;
-        $mpdf->WriteHTML($data);
+        $defaultFontConfig = (new FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
 
-        // Render the view to HTML
+        // Path to custom fonts
+        $path = public_path('/fonts');
+
+        // Create new mPDF instance with custom font settings
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'fontDir' => array_merge($fontDirs, [$path]),
+            'fontdata' => $fontData + [
+                'solaimanlipi' => [
+                    'R' => 'SolaimanLipi.ttf',
+                    'useOTL' => 0xFF,
+                ],
+            ],
+            'default_font' => 'solaimanlipi'
+        ]);
+
+        // Load HTML view
+        $html = view('pdf', $data)->render();
 
         // Write HTML to PDF
+        $mpdf->WriteHTML($html);
 
-        // Return PDF for download
-        return $mpdf->Output('invoice.pdf', 'D');
+        // Output PDF to browser
+        return $mpdf->Output('BracApprovalDocument.pdf', 'I');
+
     }
 
 
