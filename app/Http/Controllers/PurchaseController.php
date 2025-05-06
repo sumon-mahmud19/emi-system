@@ -168,7 +168,7 @@ class PurchaseController extends Controller
         $mpdf->WriteHTML($html);
 
         // Output PDF to browser
-        return $mpdf->Output('BracApprovalDocument.pdf', 'S');
+        return $mpdf->Output('BracApprovalDocument.pdf', 'I');
 
     }
 
