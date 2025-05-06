@@ -25,11 +25,21 @@
             </td>
         </tr>
 
-        
-    <p><strong>Customer Name:</strong> {{ $customer->customer_name }}</p>
-    <p><strong>Customer Phone:</strong> {{ $customer->customer_phone }}</p>
-    <p><strong>Product:</strong> {{ $product->product_name }}</p>
-    <p><strong>Total EMI Amount:</strong> {{ number_format($emiAmount, 2) }}</p>
+
+        <p><strong>Customer Name:</strong> {{ $customer->customer_name }}</p>
+        <p><strong>Customer Phone:</strong> {{ $customer->customer_phone }}</p>
+        <p><strong>Product:</strong> {{ $product->product_name }}</p>
+        <p><strong>Total EMI Amount:</strong> {{ number_format($emiAmount, 2) }}</p>
+
+
+        @foreach ($installments as $index => $installment)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ \Carbon\Carbon::parse($installment->installment_date)->format('d-m-Y') }}</td>
+                <td>{{ number_format($installment->installment_amount, 2) }}</td>
+                <td>{{ $installment->is_paid ? 'Paid' : 'Due' }}</td>
+            </tr>
+        @endforeach
 
         <tfoot>
             <tr>
