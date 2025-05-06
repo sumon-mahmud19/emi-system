@@ -162,7 +162,7 @@ class PurchaseController extends Controller
         ]);
 
         // Load HTML view
-        $html = view('pdf', $data)->render();
+        $html = view('reports.pdf', $data)->render();
 
         // Write HTML to PDF
         $mpdf->WriteHTML($html);
