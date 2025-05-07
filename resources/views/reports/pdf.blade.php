@@ -12,15 +12,29 @@
 
         .header {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             border-bottom: 2px solid #000;
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
 
+        .customer-image {
+            width: 30%;
+            text-align: left;
+        }
+
+        .customer-image img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #555;
+            object-fit: cover;
+        }
+
         .customer-info {
-            width: 65%;
+            width: 70%;
+            padding-left: 20px;
         }
 
         .customer-info h2 {
@@ -32,16 +46,10 @@
             margin: 4px 0;
         }
 
-        .customer-image {
-            width: 30%;
-            text-align: right;
-        }
-
-        .customer-image img {
-            max-width: 100px;
-            max-height: 100px;
-            border-radius: 8px;
-            border: 1px solid #aaa;
+        .title {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 15px;
         }
 
         table {
@@ -61,16 +69,6 @@
             padding-top: 40px;
             text-align: center;
         }
-
-        .title {
-            text-align: center;
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-
-        .summary {
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
@@ -78,6 +76,13 @@
     <div class="title">রোমান ইলেকট্রনিক্স এবং আসবাবপত্র</div>
 
     <div class="header">
+        <div class="customer-image">
+            @php
+                $imgPath = public_path('image/customers/' . ($customer->customer_image ?? 'default.png'));
+            @endphp
+            <img src="{{ $imgPath }}" alt="Customer Image">
+        </div>
+
         <div class="customer-info">
             <h2>ক্রেতার তথ্য</h2>
             <p><strong>নাম:</strong> {{ $customer->customer_name }}</p>
@@ -86,14 +91,6 @@
             <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
             <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
         </div>
-
-        <div class="customer-image">
-        
-        <img src="{{ $customer->customer_image }}" alt="Customer Image">
-           
-        </div>
-
-        
     </div>
 
     <table>
