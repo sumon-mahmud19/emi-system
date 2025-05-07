@@ -88,11 +88,9 @@
         </div>
 
         <div class="customer-image">
-            @php
-                $imagePath = public_path('image/customers/' . ($customer->customer_image ?? 'default.png'));
-            @endphp
         
-            <img src="{{ $imagePath }}" alt="Customer Image">
+        <img src="{{ $customer->customer_image }}" alt="Customer Image">
+           
         </div>
 
         
