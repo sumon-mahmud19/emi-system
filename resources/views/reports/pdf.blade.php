@@ -1,61 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>ইএমআই ইনভয়েস</title>
+    <style>
+        body {
+            font-family: 'solaimanlipi';
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 6px;
+            text-align: left;
+        }
+        .signature-row td {
+            border: none;
+            padding-top: 40px;
+        }
+    </style>
 </head>
-
 <body>
 
     <h1>রোমান ইলেকট্রনিক্স এবং আসবাবপত্র</h1>
 
+    <p><strong>ক্রেতার নাম:</strong> {{ $customer->customer_name }}</p>
+    <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
+    <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
+    <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
+
     <table>
-        <tr>
-            <th>পণ্যের নাম</th>
-            <th>পণ্যের দাম</th>
-            <th>মাস</th>
-        </tr>
-
-        <tr>
-            <td>
-                মাস hello
-            </td>
-        </tr>
-
-        <h1>hello world</h1>
-
-        <p><strong>Customer Name:</strong> {{ $customer->customer_name }}</p>
-        <p><strong>Customer Phone:</strong> {{ $customer->customer_phone }}</p>
-        <p><strong>Product:</strong> {{ $product->product_name }}</p>
-        <p><strong>Total EMI Amount:</strong> {{ number_format($emiAmount, 2) }}</p>
-
-
-        @foreach ($installments as $index => $installment)
+        <thead>
             <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ \Carbon\Carbon::parse($installment->installment_date)->format('d-m-Y') }}</td>
-                <td>{{ number_format($installment->installment_amount, 2) }}</td>
-                <td>{{ $installment->is_paid ? 'Paid' : 'Due' }}</td>
+                <th>ক্রমিক</th>
+                <th>তারিখ</th>
+                <th>পরিমাণ</th>
+                <th>অবস্থা</th>
             </tr>
-        @endforeach
-
+        </thead>
+        <tbody>
+            @foreach ($installments as $index => $installment)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ \Carbon\Carbon::parse($installment->due_date)->format('d-m-Y') }}</td>
+                    <td>{{ number_format($installment->amount, 2) }}</td>
+                    <td>{{ $installment->status === 'paid' ? 'পরিশোধিত' : 'বাকি' }}</td>
+                </tr>
+            @endforeach
+        </tbody>
         <tfoot>
-            <tr>
-                <td>
-                    ক্রেতার স্বাক্ষর
-                </td>
-                <td>
-
-                </td>
-                <td>
-                    বিক্রেতার স্বাক্ষরhhhh
-                </td>
+            <tr class="signature-row">
+                <td>ক্রেতার স্বাক্ষর</td>
+                <td></td>
+                <td></td>
+                <td>বিক্রেতার স্বাক্ষর</td>
             </tr>
         </tfoot>
     </table>
-</body>
 
+</body>
 </html>
