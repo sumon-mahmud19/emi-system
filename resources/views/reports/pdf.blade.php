@@ -30,11 +30,27 @@
             font-size: 24px;
         }
 
-        #image {
+        .customer-section {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            gap: 20px;
             margin-bottom: 20px;
+        }
+
+        .customer-details {
+            flex: 2;
+        }
+
+        .customer-details p {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+
+        .customer-image {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
         }
 
         .customer-image img {
@@ -43,16 +59,6 @@
             border-radius: 10px;
             border: 2px solid #ccc;
             object-fit: cover;
-        }
-
-        .customer-details {
-            flex: 1;
-            padding-left: 20px;
-        }
-
-        .customer-details p {
-            margin: 5px 0;
-            font-size: 15px;
         }
 
         .section-title {
@@ -69,7 +75,8 @@
             margin-top: 15px;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #aaa;
             padding: 8px;
             text-align: center;
@@ -100,15 +107,15 @@
         </div>
 
         <div class="customer-section">
-            <div class="customer-image" id="image">
-                <img src="{{ $customer->customer_image }}" alt="Customer Image">
-            </div>
             <div class="customer-details">
                 <p><strong>নাম:</strong> {{ $customer->customer_name }}</p>
                 <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
                 <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
                 <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
                 <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
+            </div>
+            <div class="customer-image">
+                <img src="{{ $customer->customer_image }}" alt="Customer Image">
             </div>
         </div>
 
