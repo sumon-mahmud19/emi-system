@@ -142,7 +142,7 @@ class PurchaseController extends Controller
         $fontDirs = $defaultConfig['fontDir'];
         $defaultFontConfig = (new FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
-        $path = public_path('/fonts');
+        $path = public_path('fonts');
     
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
