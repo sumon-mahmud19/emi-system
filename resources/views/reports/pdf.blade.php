@@ -25,6 +25,7 @@
             </td>
         </tr>
 
+        <h1>hello world</h1>
 
         <p><strong>Customer Name:</strong> {{ $customer->customer_name }}</p>
         <p><strong>Customer Phone:</strong> {{ $customer->customer_phone }}</p>
