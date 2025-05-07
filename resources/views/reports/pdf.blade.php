@@ -77,10 +77,8 @@
 
     <div class="header">
         <div class="customer-image">
-            @php
-                $imgPath = public_path('image/customers/' . ($customer->customer_image ?? 'default.png'));
-            @endphp
-            <img src="{{ $imgPath }}" alt="Customer Image">
+           
+            <img src="{{ $customer->customer_image }}" alt="Customer Image">
         </div>
 
         <div class="customer-info">
