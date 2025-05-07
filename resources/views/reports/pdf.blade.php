@@ -82,18 +82,20 @@
             <h2>ক্রেতার তথ্য</h2>
             <p><strong>নাম:</strong> {{ $customer->customer_name }}</p>
             <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
-            <p><strong>ঠিকানা:</strong> {{ $customer->address ?? 'N/A' }}</p>
+            <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
             <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
             <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
         </div>
 
         <div class="customer-image">
-            @if($customer->customer_image)
-                <img src="{{ public_path('image/customers/' . $customer->customer_image) }}" alt="Customer Image">
-            @else
-                <img src="{{ public_path('image/customers/default.png') }}" alt="No Image">
-            @endif
+            @php
+                $imagePath = public_path('image/customers/' . ($customer->customer_image ?? 'default.png'));
+            @endphp
+        
+            <img src="{{ $imagePath }}" alt="Customer Image">
         </div>
+
+        
     </div>
 
     <table>
