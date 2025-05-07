@@ -136,18 +136,14 @@ class PurchaseController extends Controller
             'product' => $purchase->product,
         ];
 
-       
-        // Get default configurations
+
+        
         $defaultConfig = (new ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
-
         $defaultFontConfig = (new FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
-
-        // Path to custom fonts
         $path = public_path('/fonts');
-
-        // Create new mPDF instance with custom font settings
+    
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
@@ -160,16 +156,13 @@ class PurchaseController extends Controller
             ],
             'default_font' => 'solaimanlipi'
         ]);
-
-        // Load HTML view
+    
         $html = view('reports.pdf', $data)->render();
-
-        // Write HTML to PDF
         $mpdf->WriteHTML($html);
+    
+        return $mpdf->Output('Invoice.pdf', 'I');
 
-        // Output PDF to browser
-        return $mpdf->Output('BracApprovalDocument.pdf', 'I');
-
+        
     }
 
 
