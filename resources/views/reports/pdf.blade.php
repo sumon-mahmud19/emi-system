@@ -30,9 +30,10 @@
             font-size: 24px;
         }
 
-        .customer-section {
+        #image {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 20px;
         }
 
@@ -99,7 +100,7 @@
         </div>
 
         <div class="customer-section">
-            <div class="customer-image">
+            <div class="customer-image" id="image">
                 <img src="{{ $customer->customer_image }}" alt="Customer Image">
             </div>
             <div class="customer-details">
