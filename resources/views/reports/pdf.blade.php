@@ -89,7 +89,7 @@
 
         <div class="customer-image">
             @if($customer->customer_image)
-                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image">
+                <img src="{{ public_path('image/customers/' . $customer->customer_image) }}" alt="Customer Image">
             @else
                 <img src="{{ public_path('image/customers/default.png') }}" alt="No Image">
             @endif
