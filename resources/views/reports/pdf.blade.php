@@ -132,7 +132,8 @@
                 ঢাকা, বাংলাদেশ
             </div>
             <div class="logo">
-                <img src="your-logo.png" alt="Logo">
+                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image">
+                
             </div>
         </div>
 
