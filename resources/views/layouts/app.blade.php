@@ -6,15 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Roman Electronic & Furnitures @yield('title')</title>
 
-    {{-- Bootstrap 5 --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    {{-- Flowbite & Bootstrap --}}
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     {{-- Bangla Font --}}
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
-    {{-- @vite('resources/css/app.css') --}}
+
+    {{-- Custom Styles --}}
     <style>
         body {
             font-family: 'SolaimanLipi', sans-serif;
+        }
+
+        .navbar-nav .nav-link.active {
+            font-weight: bold;
+            color: #fff !important;
         }
     </style>
 </head>
@@ -22,8 +29,7 @@
 <body>
 
     {{-- Navbar --}}
-    
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0d6efd;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">Roman System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -31,128 +37,101 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarContent">
-
                 {{-- Left Menu --}}
                 @auth
-                    <ul class="navbar-nav me-auto">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {{-- কাস্টমার --}}
-                        <li class="nav-item dropdown {{ Route::is('customers.*') ? 'active' : '' }}">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">কাস্টমার</a>
                             <ul class="dropdown-menu">
                                 @can('customer-list')
-                                    <li><a class="dropdown-item {{ Route::is('customers.index') ? 'active' : '' }}"
-                                            href="{{ route('customers.index') }}">সব কাস্টমার</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('customers.index') }}">সব কাস্টমার</a></li>
                                 @endcan
                                 @can('customer-create')
-                                    <li><a class="dropdown-item {{ Route::is('customers.create') ? 'active' : '' }}"
-                                            href="{{ route('customers.create') }}">নতুন কাস্টমার</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('customers.create') }}">নতুন কাস্টমার</a></li>
                                 @endcan
                             </ul>
                         </li>
 
                         {{-- পারচেস --}}
-                        <li class="nav-item dropdown {{ Route::is('purchases.*') ? 'active' : '' }}">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">পারচেস</a>
                             <ul class="dropdown-menu">
                                 @can('purchase-list')
-                                    <li><a class="dropdown-item {{ Route::is('purchases.index') ? 'active' : '' }}"
-                                            href="{{ route('purchases.index') }}">সব পারচেস</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('purchases.index') }}">সব পারচেস</a></li>
                                 @endcan
                                 @can('purchase-create')
-                                    <li><a class="dropdown-item {{ Route::is('purchases.create') ? 'active' : '' }}"
-                                            href="{{ route('purchases.create') }}">নতুন পারচেস</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('purchases.create') }}">নতুন পারচেস</a></li>
                                 @endcan
                             </ul>
                         </li>
 
                         {{-- লোকেশন --}}
-                        <li class="nav-item dropdown {{ Route::is('locations.*') ? 'active' : '' }}">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">লোকেশন</a>
                             <ul class="dropdown-menu">
                                 @can('location-list')
-                                    <li><a class="dropdown-item {{ Route::is('locations.index') ? 'active' : '' }}"
-                                            href="{{ route('locations.index') }}">সব লোকেশন</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('locations.index') }}">সব লোকেশন</a></li>
                                 @endcan
                                 @can('location-create')
-                                    <li><a class="dropdown-item {{ Route::is('locations.create') ? 'active' : '' }}"
-                                            href="{{ route('locations.create') }}">নতুন লোকেশন</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('locations.create') }}">নতুন লোকেশন</a></li>
                                 @endcan
                             </ul>
                         </li>
 
-                        {{-- ইউজার ও রোল --}}
+                        {{-- ইউজার --}}
                         @can('user-list')
-                            <li class="nav-item dropdown {{ Route::is('users.*') ? 'active' : '' }}">
+                            <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">ইউজার</a>
                                 <ul class="dropdown-menu">
-                                    @can('user-list')
-                                        <li><a class="dropdown-item {{ Route::is('users.index') ? 'active' : '' }}"
-                                                href="{{ route('users.index') }}">সব ইউজার</a></li>
-                                    @endcan
+                                    <li><a class="dropdown-item" href="{{ route('users.index') }}">সব ইউজার</a></li>
                                     @can('user-create')
-                                        <li><a class="dropdown-item {{ Route::is('users.create') ? 'active' : '' }}"
-                                                href="{{ route('users.create') }}">নতুন ইউজার</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('users.create') }}">নতুন ইউজার</a></li>
                                     @endcan
                                     @can('role-list')
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li><a class="dropdown-item {{ Route::is('roles.index') ? 'active' : '' }}"
-                                                href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a></li>
                                     @endcan
                                     @can('role-create')
-                                        <li><a class="dropdown-item {{ Route::is('roles.create') ? 'active' : '' }}"
-                                                href="{{ route('roles.create') }}">নতুন রোল</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('roles.create') }}">নতুন রোল</a></li>
                                     @endcan
                                 </ul>
                             </li>
                         @endcan
 
                         {{-- পণ্য --}}
-                        <li
-                            class="nav-item dropdown {{ Route::is('products.*') || Route::is('product-models.*') ? 'active' : '' }}">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">পণ্য</a>
                             <ul class="dropdown-menu">
                                 @can('product-list')
-                                    <li><a class="dropdown-item {{ Route::is('products.index') ? 'active' : '' }}"
-                                            href="{{ route('products.index') }}">সব পণ্য</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('products.index') }}">সব পণ্য</a></li>
                                 @endcan
                                 @can('product-create')
-                                    <li><a class="dropdown-item {{ Route::is('products.create') ? 'active' : '' }}"
-                                            href="{{ route('products.create') }}">নতুন পণ্য</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('products.create') }}">নতুন পণ্য</a></li>
                                 @endcan
                                 @can('product-model-list')
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item {{ Route::is('product-models.index') ? 'active' : '' }}"
-                                            href="{{ route('models.index') }}">মডেল তালিকা</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ route('models.index') }}">মডেল তালিকা</a></li>
                                 @endcan
                                 @can('product-model-create')
-                                    <li><a class="dropdown-item {{ Route::is('product-models.create') ? 'active' : '' }}"
-                                            href="{{ route('models.create') }}">নতুন মডেল</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('models.create') }}">নতুন মডেল</a></li>
                                 @endcan
                             </ul>
                         </li>
 
                         {{-- রিপোর্ট --}}
                         @role('admin')
-                            <li class="nav-item dropdown {{ Request::is('reports/*') ? 'active' : '' }}">
-                                <a class="nav-link dropdown-toggle" href="#" id="reportDropdown"
-                                    data-bs-toggle="dropdown">রিপোর্ট</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">রিপোর্ট</a>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item {{ Request::is('reports/monthly') ? 'active' : '' }}"
-                                            href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a>
-                                    </li>
+                                    <li><a class="dropdown-item" href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a></li>
                                 </ul>
                             </li>
                         @endrole
-
                     </ul>
                 @endauth
 
-                {{-- Right-side Auth --}}
+                {{-- Right Menu --}}
                 <ul class="navbar-nav ms-auto">
                     @auth
                         <li class="nav-item dropdown">
@@ -163,7 +142,7 @@
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-                                        <button type="submit" class="dropdown-item">লগআউট</button>
+                                        <button class="dropdown-item">লগআউট</button>
                                     </form>
                                 </li>
                             </ul>
@@ -178,21 +157,21 @@
         </div>
     </nav>
 
-    {{-- Main Content --}}
-    <main class="container mb-5">
+    {{-- Content --}}
+    <main class="container mt-4 mb-5">
         @yield('content')
     </main>
 
     {{-- Footer --}}
-    <footer class="bg-light text-center py-3">
+    <footer class="bg-light text-center py-3 mt-auto">
         <small>© {{ date('Y') }} রোমান ইলেকট্রনিক্স ও ফার্নিচার</small>
     </footer>
 
     {{-- Scripts --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     @stack('scripts')
     @yield('scripts')
-
 </body>
 
 </html>
