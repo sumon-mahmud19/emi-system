@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h2>Create Customer</h2>
+        <h2>কাস্টমার তৈরি করুন</h2>
 
         <form action="{{ route('customers.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="customer_name">Customer Name</label>
+                        <label for="customer_name">কাস্টমারের নাম</label>
                         <input type="text" name="customer_name" class="form-control" value="{{ old('customer_name') }}">
                         @error('customer_name')
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
@@ -18,7 +18,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="customer_id">Register ID</label>
+                        <label for="customer_id">রেজিস্টার আইডি</label>
                         <input type="number" name="customer_id" class="form-control" value="{{ old('customer_id') }}">
                         @error('customer_id')
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="customer_phone">Customer Phone</label>
+                        <label for="customer_phone">মোবাইল নম্বর</label>
                         <input type="text" name="customer_phone" class="form-control" value="{{ old('customer_phone') }}">
                         @error('customer_phone')
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="landlord_name">Landlord Name</label>
+                        <label for="landlord_name">বাড়িওয়ালার নাম</label>
                         <input type="text" name="landlord_name" class="form-control" value="{{ old('landlord_name') }}">
                         @error('landlord_name')
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
@@ -44,21 +44,20 @@
 
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="customer_image">Customer Image</label>
+                        <label for="customer_image">কাস্টমারের ছবি</label>
                         <input type="file" name="customer_image" class="form-control" id="customer_image_input" accept="image/*">
                         @error('customer_image')
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                         @enderror
-                        <!-- Image preview -->
                         <div class="mt-3">
                             <img id="image_preview" src="#" alt="Preview" class="img-thumbnail d-none" style="width: 100px; height: 100px;">
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="location_id">Location</label>
+                        <label for="location_id">অবস্থান নির্বাচন করুন</label>
                         <select name="location_id" class="form-control">
-                            <option value="">Select Location</option>
+                            <option value="">অবস্থান নির্বাচন করুন</option>
                             @foreach ($locations as $location)
                                 <option value="{{ $location->id }}" {{ old('location_id') == $location->id ? 'selected' : '' }}>
                                     {{ $location->name }}
@@ -71,7 +70,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="location_details">Address Details</label>
+                        <label for="location_details">ঠিকানা</label>
                         <input type="text" name="location_details" class="form-control" value="{{ old('location_details') }}">
                         @error('location_details')
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
@@ -81,8 +80,8 @@
             </div>
 
             <div class="d-flex justify-content-between mt-3">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{ route('customers.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">সেভ করুন</button>
+                <a href="{{ route('customers.index') }}" class="btn btn-secondary">বাতিল করুন</a>
             </div>
         </form>
     </div>
