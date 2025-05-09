@@ -4,7 +4,7 @@
     <div class="container">
         <h2 class="mb-4">Customers</h2>
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3 gap-3">
             @can('customer-create')
                 <a href="{{ route('customers.create') }}" class="btn btn-success">New Customer</a>
             @endcan
@@ -34,24 +34,7 @@
                     @foreach ($customers as $customer)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td class="d-flex align-items-center justify-content-between">
-                                <span>{{ $customer->customer_name }}</span>
-                                <div class="btn-group btn-group-sm">
-                                    @can('customer-edit')
-                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning">Edit</a>
-                                    @endcan
-
-                                    @can('customer-delete')
-                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                                        </form>
-                                    @endcan
-
-                                    <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-primary">EMI Details</a>
-                                </div>
-                            </td>
+                            <td>{{ $customer->customer_name }}</td>
                             <td>{{ $customer->customer_id }}</td>
                             <td>
                                 <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
@@ -72,19 +55,19 @@
                                 </a>
                             </td>
                             <td>
-                                <div class="btn-group">
-                                    @can('customer-edit')
-                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                    @endcan
-                                    @can('customer-delete')
-                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
-                                        </form>
-                                    @endcan
-                                    <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-sm btn-primary">EMI Details</a>
-                                </div>
+                                @can('customer-edit')
+                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                @endcan
+
+                                @can('customer-delete')
+                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                                    </form>
+                                @endcan
+
+                                <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-primary btn-sm">EMI Details</a>
                             </td>
                         </tr>
                     @endforeach
