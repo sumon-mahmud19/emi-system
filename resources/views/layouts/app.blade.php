@@ -6,11 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Roman Electronic & Furnitures @yield('title')</title>
 
-    {{-- Bootstrap 5 --}}
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    {{-- Bangla Font --}}
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Bangla Font -->
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+
 
     <style>
         body {
@@ -21,109 +25,131 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top" style="background-color: #0d6efd; border-radius: 0 0 12px 12px;">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top"
+        style="background-color: #0d6efd; border-radius: 0 0 12px 12px;">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url('/') }}">Roman EMI System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
-    
+
             <div class="collapse navbar-collapse" id="navbarContent">
                 @auth
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {{-- কাস্টমার --}}
                         <li class="nav-item dropdown {{ request()->is('customers*') ? 'active' : '' }}">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">কাস্টমার</a>
+                            <a class="nav-link dropdown-toggle" href="#" role="button"
+                                data-bs-toggle="dropdown">কাস্টমার</a>
                             <ul class="dropdown-menu dropdown-menu-light">
                                 @can('customer-list')
-                                    <li><a class="dropdown-item {{ request()->is('customers') ? 'active' : '' }}" href="{{ route('customers.index') }}">সব কাস্টমার</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('customers') ? 'active' : '' }}"
+                                            href="{{ route('customers.index') }}">সব কাস্টমার</a></li>
                                 @endcan
                                 @can('customer-create')
-                                    <li><a class="dropdown-item {{ request()->is('customers/create') ? 'active' : '' }}" href="{{ route('customers.create') }}">নতুন কাস্টমার</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('customers/create') ? 'active' : '' }}"
+                                            href="{{ route('customers.create') }}">নতুন কাস্টমার</a></li>
                                 @endcan
                             </ul>
                         </li>
-    
+
                         {{-- পারচেস --}}
                         <li class="nav-item dropdown {{ request()->is('purchases*') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">পারচেস</a>
                             <ul class="dropdown-menu">
                                 @can('purchase-list')
-                                    <li><a class="dropdown-item {{ request()->is('purchases') ? 'active' : '' }}" href="{{ route('purchases.index') }}">সব পারচেস</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('purchases') ? 'active' : '' }}"
+                                            href="{{ route('purchases.index') }}">সব পারচেস</a></li>
                                 @endcan
                                 @can('purchase-create')
-                                    <li><a class="dropdown-item {{ request()->is('purchases/create') ? 'active' : '' }}" href="{{ route('purchases.create') }}">নতুন পারচেস</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('purchases/create') ? 'active' : '' }}"
+                                            href="{{ route('purchases.create') }}">নতুন পারচেস</a></li>
                                 @endcan
                             </ul>
                         </li>
-    
+
                         {{-- লোকেশন --}}
                         <li class="nav-item dropdown {{ request()->is('locations*') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">লোকেশন</a>
                             <ul class="dropdown-menu">
                                 @can('location-list')
-                                    <li><a class="dropdown-item {{ request()->is('locations') ? 'active' : '' }}" href="{{ route('locations.index') }}">সব লোকেশন</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('locations') ? 'active' : '' }}"
+                                            href="{{ route('locations.index') }}">সব লোকেশন</a></li>
                                 @endcan
                                 @can('location-create')
-                                    <li><a class="dropdown-item {{ request()->is('locations/create') ? 'active' : '' }}" href="{{ route('locations.create') }}">নতুন লোকেশন</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('locations/create') ? 'active' : '' }}"
+                                            href="{{ route('locations.create') }}">নতুন লোকেশন</a></li>
                                 @endcan
                             </ul>
                         </li>
-    
+
                         {{-- ইউজার --}}
                         @can('user-list')
                             <li class="nav-item dropdown {{ request()->is('users*') ? 'active' : '' }}">
                                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">ইউজার</a>
                                 <ul class="dropdown-menu">
                                     @can('user-list')
-                                        <li><a class="dropdown-item {{ request()->is('users') ? 'active' : '' }}" href="{{ route('users.index') }}">সব ইউজার</a></li>
+                                        <li><a class="dropdown-item {{ request()->is('users') ? 'active' : '' }}"
+                                                href="{{ route('users.index') }}">সব ইউজার</a></li>
                                     @endcan
                                     @can('user-create')
-                                        <li><a class="dropdown-item {{ request()->is('users/create') ? 'active' : '' }}" href="{{ route('users.create') }}">নতুন ইউজার</a></li>
+                                        <li><a class="dropdown-item {{ request()->is('users/create') ? 'active' : '' }}"
+                                                href="{{ route('users.create') }}">নতুন ইউজার</a></li>
                                     @endcan
                                     @can('role-list')
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item {{ request()->is('roles') ? 'active' : '' }}" href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item {{ request()->is('roles') ? 'active' : '' }}"
+                                                href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a></li>
                                     @endcan
                                     @can('role-create')
-                                        <li><a class="dropdown-item {{ request()->is('roles/create') ? 'active' : '' }}" href="{{ route('roles.create') }}">নতুন রোল</a></li>
+                                        <li><a class="dropdown-item {{ request()->is('roles/create') ? 'active' : '' }}"
+                                                href="{{ route('roles.create') }}">নতুন রোল</a></li>
                                     @endcan
                                 </ul>
                             </li>
                         @endcan
-    
+
                         {{-- পণ্য --}}
-                        <li class="nav-item dropdown {{ request()->is('products*') || request()->is('product-models*') ? 'active' : '' }}">
+                        <li
+                            class="nav-item dropdown {{ request()->is('products*') || request()->is('product-models*') ? 'active' : '' }}">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">পণ্য</a>
                             <ul class="dropdown-menu">
                                 @can('product-list')
-                                    <li><a class="dropdown-item {{ request()->is('products') ? 'active' : '' }}" href="{{ route('products.index') }}">সব পণ্য</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('products') ? 'active' : '' }}"
+                                            href="{{ route('products.index') }}">সব পণ্য</a></li>
                                 @endcan
                                 @can('product-create')
-                                    <li><a class="dropdown-item {{ request()->is('products/create') ? 'active' : '' }}" href="{{ route('products.create') }}">নতুন পণ্য</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('products/create') ? 'active' : '' }}"
+                                            href="{{ route('products.create') }}">নতুন পণ্য</a></li>
                                 @endcan
                                 @can('product-model-list')
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item {{ request()->is('product-models') ? 'active' : '' }}" href="{{ route('models.index') }}">মডেল তালিকা</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item {{ request()->is('product-models') ? 'active' : '' }}"
+                                            href="{{ route('models.index') }}">মডেল তালিকা</a></li>
                                 @endcan
                                 @can('product-model-create')
-                                    <li><a class="dropdown-item {{ request()->is('product-models/create') ? 'active' : '' }}" href="{{ route('models.create') }}">নতুন মডেল</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('product-models/create') ? 'active' : '' }}"
+                                            href="{{ route('models.create') }}">নতুন মডেল</a></li>
                                 @endcan
                             </ul>
                         </li>
-    
+
                         {{-- রিপোর্ট --}}
                         @role('admin')
                             <li class="nav-item dropdown {{ request()->is('reports/*') ? 'active' : '' }}">
                                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">রিপোর্ট</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item {{ request()->is('reports/monthly') ? 'active' : '' }}" href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a></li>
+                                    <li><a class="dropdown-item {{ request()->is('reports/monthly') ? 'active' : '' }}"
+                                            href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a></li>
                                 </ul>
                             </li>
                         @endrole
                     </ul>
                 @endauth
-    
+
                 {{-- Right side --}}
                 <ul class="navbar-nav ms-auto">
                     @auth
@@ -141,7 +167,7 @@
                             </ul>
                         </li>
                     @endauth
-    
+
                     @guest
                         <li class="nav-item"><a class="nav-link fw-semibold" href="{{ route('login') }}">লগইন</a></li>
                     @endguest
