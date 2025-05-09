@@ -11,7 +11,7 @@
 
     {{-- Bangla Font --}}
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
-
+    @vite('resources/css/app.css')
     <style>
         body {
             font-family: 'SolaimanLipi', sans-serif;
