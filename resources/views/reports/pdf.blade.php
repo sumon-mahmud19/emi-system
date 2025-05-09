@@ -11,54 +11,70 @@
             font-family: 'solaimanlipi', sans-serif;
         }
 
-        img.rounded-img {
+        .rounded-img {
             border-radius: 50%;
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
-            border: 2px solid #ccc;
+            border: 2px solid #ddd;
         }
 
         .signature {
-            margin-top: 50px;
             text-align: center;
-        }
-
-        table {
-            margin-top: 20px;
+            padding-top: 30px;
+            font-size: 16px;
+            font-weight: bold;
         }
 
         th, td {
             text-align: center;
+            vertical-align: middle;
+        }
+
+        .invoice-header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .customer-image-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .table th, .table td {
+            border: 1px solid #000 !important;
         }
     </style>
 </head>
 
 <body>
-
     <div class="container py-4">
-        <div class="text-center mb-4">
-            <h2>রোমান ইলেকট্রিক এন্ড ফার্নিচার</h2>
-            <strong>লক্ষীপুরা রোড , বায়তুল ওমর জামে মসজিদ, (তিন রাস্তার মোড়), জয়দেবপুর, গাজীপুর।</strong><br>
-            <p>মোবাইল- ০১৮৭৫-৯৫৯২১৮</p>
+
+        <!-- Header -->
+        <div class="text-center invoice-header">
+            <h3 class="fw-bold">রোমান ইলেকট্রিক এন্ড ফার্নিচার</h3>
+            <div>লক্ষীপুরা রোড, বায়তুল ওমর জামে মসজিদ, (তিন রাস্তার মোড়), জয়দেবপুর, গাজীপুর।</div>
+            <div>মোবাইল: ০১৮৭৫-৯৫৯২১৮</div>
         </div>
 
-        <div class="row mb-3">
+        <!-- Customer Info & Image -->
+        <div class="row mb-4">
             <div class="col-md-8">
-                <div class="customer-info">
-                    <p><strong>ক্রেতার নাম:</strong> {{ $customer->customer_name }}</p>
-                    <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
-                    <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
-                    <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
-                </div>
+                <p><strong>ক্রেতার নাম:</strong> {{ $customer->customer_name }}</p>
+                <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
+                <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
+                <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
             </div>
-            <div class="col-md-4 text-end">
-                <img src="{{ asset($customer->customer_image) }}" class="rounded-img" alt="Customer Image">
+            <div class="col-md-4 customer-image-wrapper">
+                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image" class="rounded-img">
             </div>
         </div>
 
+        <!-- Installment Table -->
         <div class="table-responsive">
-            <table class="table table-bordered">
+            <table class="table">
                 <thead class="table-light">
                     <tr>
                         <th>ক্রমিক</th>
@@ -80,6 +96,7 @@
             </table>
         </div>
 
+        <!-- Signature Section -->
         <div class="row mt-5">
             <div class="col-md-6 signature">
                 ___________________________<br>
@@ -90,6 +107,7 @@
                 বিক্রেতার স্বাক্ষর
             </div>
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
