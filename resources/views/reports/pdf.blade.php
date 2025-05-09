@@ -1,178 +1,158 @@
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
     <meta charset="UTF-8">
+    <title>ইএমআই ইনভয়েস</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>ইএমআই ইনভয়েস - রোমান ইলেকট্রনিক্স</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 0;
-        }
-
-        .invoice-area {
-            padding: 40px 20px;
-            background-color: #f7f7f7;
+            font-family: 'solaimanlipi', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
         }
 
         .invoice-wrapper {
-            background-color: #fff;
             max-width: 800px;
             margin: auto;
-            padding: 30px;
+            padding: 20px;
             border: 1px solid #ddd;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         }
 
         .invoice-header {
             text-align: center;
             border-bottom: 2px solid #000;
-            padding-bottom: 10px;
             margin-bottom: 20px;
         }
 
-        .invoice-title {
+        .invoice-header h1 {
+            margin: 0;
             font-size: 24px;
-            font-weight: 700;
         }
 
-        .invoice-details-flex {
+        .customer-section {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: flex-start;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        .invoice-single-details {
-            width: 48%;
+        .customer-details {
+            flex: 2;
         }
 
-        .details-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            line-height: 1.8;
-        }
-
-        .details-list .list {
+        .customer-details p {
+            margin: 5px 0;
             font-size: 15px;
         }
 
         .customer-image {
-            text-align: center;
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
         }
 
         .customer-image img {
+            max-width: 100%;
             width: 120px;
-            height: 120px;
-            border-radius: 50%;
+            height: auto;
+            border-radius: 10px;
             border: 2px solid #ccc;
             object-fit: cover;
         }
 
-        .table-title {
+        .section-title {
             font-size: 18px;
-            margin: 20px 0 10px;
-            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #aaa;
             padding-bottom: 5px;
         }
 
-        .custom--table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-top: 15px;
         }
 
-        .custom--table th, .custom--table td {
-            border: 1px solid #ddd;
-            padding: 10px;
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
             text-align: center;
-            font-size: 14px;
         }
 
-        .custom--table th {
-            background-color: #f2f2f2;
+        th {
+            background: #f5f5f5;
         }
 
-        .data-span {
-            font-weight: 600;
+        .signature-row td {
+            border: none;
+            padding-top: 40px;
+            text-align: center;
         }
 
         footer {
-            text-align: center;
             margin-top: 30px;
-            font-size: 14px;
-            color: #777;
         }
     </style>
 </head>
 
 <body>
 
-<!-- Invoice area Starts -->
-<div class="invoice-area">
     <div class="invoice-wrapper">
         <div class="invoice-header">
-            <h1 class="invoice-title">রোমান ইলেকট্রনিক্স এবং ফার্নিচার</h1>
-            <p>মোবাইল: 01875959218</p>
+            <h1>রোমান ইলেকট্রনিক্স এবং ফার্নিচার</h1>
             <p>ইএমআই ইনভয়েস</p>
         </div>
 
-        <div class="invoice-details">
-            <div class="invoice-details-flex">
-                <div class="invoice-single-details">
-                    <h2 class="invoice-details-title">ক্রেতার তথ্য:</h2>
-                    <ul class="details-list">
-                        <li class="list"><strong>নাম:</strong> {{ $customer->customer_name }}</li>
-                        <li class="list"><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</li>
-                        <li class="list"><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</li>
-                        <li class="list"><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</li>
-                        <li class="list"><strong>মোট কিস্তি:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</li>
-                    </ul>
-                </div>
-                <div class="invoice-single-details customer-image">
-                    <img src="{{ $customer->customer_image }}" alt="Customer Image">
-                </div>
+        <div class="customer-section">
+            <div class="customer-details">
+                <p><strong>নাম:</strong> {{ $customer->customer_name }}</p>
+                <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
+                <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
+                <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
+                <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
+            </div>
+            <div class="customer-image">
+                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image">
             </div>
         </div>
 
-        <div class="item-description">
-            <h5 class="table-title">কিস্তির তালিকা</h5>
-            <table class="custom--table">
+        <div>
+            <div class="section-title">কিস্তির বিস্তারিত</div>
+            <table>
                 <thead>
-                <tr>
-                    <th>ক্রমিক</th>
-                    <th>তারিখ</th>
-                    <th>পরিমাণ</th>
-                    <th>অবস্থা</th>
-                </tr>
+                    <tr>
+                        <th>ক্রমিক</th>
+                        <th>তারিখ</th>
+                        <th>পরিমাণ</th>
+                        <th>অবস্থা</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach ($installments as $index => $installment)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ \Carbon\Carbon::parse($installment->due_date)->format('d-m-Y') }}</td>
-                        <td>{{ number_format($installment->amount, 2) }}</td>
-                        <td>{{ $installment->status === 'paid' ? 'পরিশোধিত' : 'বাকি' }}</td>
-                    </tr>
-                @endforeach
+                    @foreach ($installments as $index => $installment)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ \Carbon\Carbon::parse($installment->due_date)->format('d-m-Y') }}</td>
+                            <td>{{ number_format($installment->amount, 2) }}</td>
+                            <td>{{ $installment->status === 'paid' ? 'পরিশোধিত' : 'বাকি' }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
 
         <footer>
-            <p>Copyright © {{ now()->year }} - রোমান ইলেকট্রনিক্স</p>
+            <table style="width:100%; margin-top: 40px;">
+                <tr class="signature-row">
+                    <td colspan="2">ক্রেতার স্বাক্ষর</td>
+                    <td colspan="2">বিক্রেতার স্বাক্ষর</td>
+                </tr>
+            </table>
         </footer>
     </div>
-</div>
-<!-- Invoice area end -->
 
 </body>
-
 </html>
