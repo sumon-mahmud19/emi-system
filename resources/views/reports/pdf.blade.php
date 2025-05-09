@@ -41,7 +41,6 @@
 
         .logo img {
             height: auto;
-            border-radius: 40%;
             object-fit: contain;
         }
 
