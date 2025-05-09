@@ -1,177 +1,136 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="bn">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Roman Electronic & Furnitures @yield('title')</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roman Electronic & Furnitures | @yield('title')</title>
 
-    {{-- Flowbite & Bootstrap --}}
+    {{-- Flowbite and Tailwind --}}
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
 
     {{-- Bangla Font --}}
-    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet" />
 
-    {{-- Custom Styles --}}
     <style>
         body {
             font-family: 'SolaimanLipi', sans-serif;
         }
 
-        .navbar-nav .nav-link.active {
-            font-weight: bold;
-            color: #fff !important;
+        .active {
+            @apply text-blue-600 font-semibold;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-gray-100">
 
     {{-- Navbar --}}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">Roman System</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-                <span class="navbar-toggler-icon"></span>
+    <nav class="bg-blue-600 border-gray-200 px-4 py-2.5 dark:bg-blue-800">
+        <div class="container flex flex-wrap items-center justify-between mx-auto">
+            <a href="{{ url('/') }}" class="flex items-center text-white text-xl font-bold">
+                রোমান সিস্টেম
+            </a>
+            <button data-collapse-toggle="navbar-dropdown" type="button"
+                class="inline-flex items-center p-2 ml-3 text-sm text-white rounded-lg md:hidden hover:bg-blue-700 focus:outline-none"
+                aria-controls="navbar-dropdown" aria-expanded="false">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarContent">
-                {{-- Left Menu --}}
+            <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
                 @auth
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="flex flex-col md:flex-row md:space-x-6 md:mt-0 text-white text-sm font-medium">
+
                         {{-- কাস্টমার --}}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">কাস্টমার</a>
-                            <ul class="dropdown-menu">
-                                @can('customer-list')
-                                    <li><a class="dropdown-item" href="{{ route('customers.index') }}">সব কাস্টমার</a></li>
-                                @endcan
-                                @can('customer-create')
-                                    <li><a class="dropdown-item" href="{{ route('customers.create') }}">নতুন কাস্টমার</a></li>
-                                @endcan
-                            </ul>
-                        </li>
-
-                        {{-- পারচেস --}}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">পারচেস</a>
-                            <ul class="dropdown-menu">
-                                @can('purchase-list')
-                                    <li><a class="dropdown-item" href="{{ route('purchases.index') }}">সব পারচেস</a></li>
-                                @endcan
-                                @can('purchase-create')
-                                    <li><a class="dropdown-item" href="{{ route('purchases.create') }}">নতুন পারচেস</a></li>
-                                @endcan
-                            </ul>
-                        </li>
-
-                        {{-- লোকেশন --}}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">লোকেশন</a>
-                            <ul class="dropdown-menu">
-                                @can('location-list')
-                                    <li><a class="dropdown-item" href="{{ route('locations.index') }}">সব লোকেশন</a></li>
-                                @endcan
-                                @can('location-create')
-                                    <li><a class="dropdown-item" href="{{ route('locations.create') }}">নতুন লোকেশন</a></li>
-                                @endcan
-                            </ul>
-                        </li>
-
-                        {{-- ইউজার --}}
-                        @can('user-list')
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">ইউজার</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('users.index') }}">সব ইউজার</a></li>
-                                    @can('user-create')
-                                        <li><a class="dropdown-item" href="{{ route('users.create') }}">নতুন ইউজার</a></li>
+                        <li>
+                            <button id="dropdownCustomer" data-dropdown-toggle="dropdownCustomerMenu"
+                                class="flex items-center gap-1">কাস্টমার <svg class="w-4 h-4" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg></button>
+                            <div id="dropdownCustomerMenu"
+                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                                <ul class="py-2 text-sm text-gray-700">
+                                    @can('customer-list')
+                                        <li><a href="{{ route('customers.index') }}"
+                                                class="block px-4 py-2 hover:bg-gray-100">সব কাস্টমার</a></li>
                                     @endcan
-                                    @can('role-list')
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a></li>
-                                    @endcan
-                                    @can('role-create')
-                                        <li><a class="dropdown-item" href="{{ route('roles.create') }}">নতুন রোল</a></li>
+                                    @can('customer-create')
+                                        <li><a href="{{ route('customers.create') }}"
+                                                class="block px-4 py-2 hover:bg-gray-100">নতুন কাস্টমার</a></li>
                                     @endcan
                                 </ul>
-                            </li>
-                        @endcan
+                            </div>
+                        </li>
 
-                        {{-- পণ্য --}}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">পণ্য</a>
-                            <ul class="dropdown-menu">
-                                @can('product-list')
-                                    <li><a class="dropdown-item" href="{{ route('products.index') }}">সব পণ্য</a></li>
-                                @endcan
-                                @can('product-create')
-                                    <li><a class="dropdown-item" href="{{ route('products.create') }}">নতুন পণ্য</a></li>
-                                @endcan
-                                @can('product-model-list')
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ route('models.index') }}">মডেল তালিকা</a></li>
-                                @endcan
-                                @can('product-model-create')
-                                    <li><a class="dropdown-item" href="{{ route('models.create') }}">নতুন মডেল</a></li>
-                                @endcan
-                            </ul>
+                        {{-- অন্যান্য মেনু যেমনঃ পারচেস, পণ্য, ইউজার, রিপোর্ট একইভাবে যোগ করুন --}}
+                        {{-- উদাহরণ: --}}
+                        {{-- <li><a href="{{ route('purchases.index') }}" class="hover:underline">পারচেস</a></li> --}}
+
+                        {{-- ইউজার --}}
+                        <li>
+                            <button id="dropdownUser" data-dropdown-toggle="dropdownUserMenu"
+                                class="flex items-center gap-1">ইউজার</button>
+                            <div id="dropdownUserMenu"
+                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                                <ul class="py-2 text-sm text-gray-700">
+                                    @can('user-list')
+                                        <li><a href="{{ route('users.index') }}"
+                                                class="block px-4 py-2 hover:bg-gray-100">সব ইউজার</a></li>
+                                    @endcan
+                                    @can('role-list')
+                                        <li><a href="{{ route('roles.index') }}"
+                                                class="block px-4 py-2 hover:bg-gray-100">রোল</a></li>
+                                    @endcan
+                                </ul>
+                            </div>
                         </li>
 
                         {{-- রিপোর্ট --}}
                         @role('admin')
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">রিপোর্ট</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="{{ route('monthly.reports') }}"
+                                    class="hover:underline">মাসিক রিপোর্ট</a></li>
                         @endrole
+
+                        {{-- লগআউট --}}
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="hover:underline">লগআউট</button>
+                            </form>
+                        </li>
                     </ul>
                 @endauth
 
-                {{-- Right Menu --}}
-                <ul class="navbar-nav ms-auto">
-                    @auth
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                {{ Auth::user()->name }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button class="dropdown-item">লগআউট</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    @endauth
-
-                    @guest
-                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">লগইন</a></li>
-                    @endguest
-                </ul>
+                @guest
+                    <ul class="flex flex-col md:flex-row md:space-x-4 text-white">
+                        <li><a href="{{ route('login') }}" class="hover:underline">লগইন</a></li>
+                    </ul>
+                @endguest
             </div>
         </div>
     </nav>
 
-    {{-- Content --}}
-    <main class="container mt-4 mb-5">
+    {{-- Main Content --}}
+    <main class="container mx-auto mt-4 px-4">
         @yield('content')
     </main>
 
     {{-- Footer --}}
-    <footer class="bg-light text-center py-3 mt-auto">
-        <small>© {{ date('Y') }} রোমান ইলেকট্রনিক্স ও ফার্নিচার</small>
+    <footer class="text-center mt-10 py-4 text-sm bg-white border-t">
+        © {{ date('Y') }} রোমান ইলেকট্রনিক্স ও ফার্নিচার
     </footer>
 
     {{-- Scripts --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     @stack('scripts')
     @yield('scripts')
+
 </body>
 
 </html>
