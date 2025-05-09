@@ -151,7 +151,7 @@
     </nav>
 
     {{-- Main Content --}}
-    <main class="container mb-5">
+    <main class="container mt-3">
         @yield('content')
     </main>
 
