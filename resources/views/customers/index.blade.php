@@ -45,11 +45,11 @@
                                     <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i></button>
                                     </form>
                                 @endcan
 
-                                <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-primary btn-sm">EMI Details</a>
+                                <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-card-list"></i></a>
                             </td>
                             <td>
                                 <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
