@@ -23,11 +23,11 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Action</th>
                         <th>Customer ID</th>
                         <th>Phone</th>
                         <th>Image</th>
                         <th>Location</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="customerBody">
@@ -35,6 +35,21 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $customer->customer_name }}</td>
+                            <td>
+                                @can('customer-edit')
+                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                @endcan
+
+                                @can('customer-delete')
+                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                                    </form>
+                                @endcan
+
+                                <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-primary btn-sm">EMI Details</a>
+                            </td>
                             <td>{{ $customer->customer_id }}</td>
                             <td>
                                 <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
@@ -54,21 +69,7 @@
                                     {{ $customer->location->name ?? 'N/A' }}
                                 </a>
                             </td>
-                            <td>
-                                @can('customer-edit')
-                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                @endcan
-
-                                @can('customer-delete')
-                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
-                                    </form>
-                                @endcan
-
-                                <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-primary btn-sm">EMI Details</a>
-                            </td>
+                         
                         </tr>
                     @endforeach
                 </tbody>
