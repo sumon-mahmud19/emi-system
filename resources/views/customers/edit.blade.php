@@ -53,7 +53,7 @@
 
                         <div class="mt-3">
                             @if ($customer->customer_image)
-                                <img id="image_preview" src="{{ asset('storage/' . $customer->customer_image) }}" class="img-thumbnail" style="width: 100px; height: 100px;">
+                                <img id="image_preview" src="{{ asset($customer->customer_image) }}" class="img-thumbnail" style="width: 100px; height: 100px;">
                             @else
                                 <img id="image_preview" src="#" class="img-thumbnail d-none" style="width: 100px; height: 100px;">
                             @endif
