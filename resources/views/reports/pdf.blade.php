@@ -53,9 +53,8 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            border: 2px solid #ddd;
             object-fit: cover;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+           overflow: hidden;
         }
 
         .customer-details {
