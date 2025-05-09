@@ -9,13 +9,9 @@
         integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 
     <style>
-        body {
+        * {
             font-family: 'solaimanlipi', sans-serif;
-            font-size: 14px;
-            color: #333;
-            background: #f2f2f2;
-            margin: 0;
-            padding: 0;
+
         }
     </style>
 </head>
@@ -42,7 +38,7 @@
                 </h2>
             </div>
             <div class="col-md-4">
-                <img src="{{ asset($customer->customer_image) }}" alt="customer logo" width="100%">
+                <img src="{{ asset($customer->customer_image) }}" alt="customer logo" style="border-radius: 50%; width:100px">
             </div>
 
             <div class="col-md-12">
@@ -71,22 +67,22 @@
             </div>
 
             <div class="col-md-6">
-                <div class="signature-section">
-                    <div class="signature">
-                        ___________________________<br>
-                        ক্রেতার স্বাক্ষর
-                    </div>
-
-                </div>
-
-            </div>
-            <div class="col-md-6">
                 <div class="signature">
                     ___________________________<br>
+                    ক্রেতার স্বাক্ষর
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="signature">
+                    ___________________________
                     বিক্রেতার স্বাক্ষর
                 </div>
             </div>
+
+
         </div>
+
     </div>
 
 
