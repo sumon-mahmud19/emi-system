@@ -1,15 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roman System | @yield('title')</title>
 
-    {{-- Flowbite CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Roman Electronic & Furnitures @yield('title')</title>
+
+    {{-- Bootstrap 5 --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     {{-- Bangla Font --}}
-    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet" />
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
 
     <style>
         body {
@@ -17,103 +18,181 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900">
+
+<body>
 
     {{-- Navbar --}}
-    <nav class="bg-white border-gray-200 dark:bg-gray-900">
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-            <a href="{{ url('/') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Logo" />
-                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">রোমান সিস্টেম</span>
-            </a>
-            <button data-collapse-toggle="navbar-default" type="button"
-                class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                aria-controls="navbar-default" aria-expanded="false">
-                <span class="sr-only">Open main menu</span>
-                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                     viewBox="0 0 17 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M1 1h15M1 7h15M1 13h15"/>
-                </svg>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0d6efd;">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url('/') }}">Roman Emi System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="hidden w-full md:block md:w-auto" id="navbar-default">
-                <ul
-                    class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50
-                           md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white
-                           dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
 
-                    {{-- Home link --}}
-                    <li>
-                        <a href="{{ url('/') }}"
-                           class="block py-2 px-3 {{ request()->is('/') ? 'text-white bg-blue-700' : 'text-gray-900 hover:text-blue-700' }} rounded-sm md:bg-transparent md:p-0 dark:text-white md:dark:hover:text-blue-500">
-                            হোম
-                        </a>
-                    </li>
+            <div class="collapse navbar-collapse" id="navbarContent">
 
-                    {{-- Dropdown --}}
-                    <li>
-                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
-                            class="flex items-center justify-between w-full py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700">
-                            মেনু
-                            <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                 viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M1 1l4 4 4-4"/>
-                            </svg>
-                        </button>
-                        <!-- Dropdown menu -->
-                        <div id="dropdownNavbar"
-                             class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                aria-labelledby="dropdownNavbarLink">
-                                @auth
-                                    <li>
-                                        <a href="{{ route('customers.index') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">কাস্টমার</a>
-                                    </li>
-                                    @can('user-list')
-                                        <li>
-                                            <a href="{{ route('users.index') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">ইউজার</a>
-                                        </li>
-                                    @endcan
-                                    @role('admin')
-                                        <li>
-                                            <a href="{{ route('monthly.reports') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">রিপোর্ট</a>
-                                        </li>
-                                    @endrole
-                                    <li>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">লগআউট</button>
-                                        </form>
-                                    </li>
-                                @else
-                                    <li>
-                                        <a href="{{ route('login') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">লগইন</a>
-                                    </li>
-                                @endauth
+                {{-- Left Menu --}}
+                @auth
+                    <ul class="navbar-nav me-auto">
+                        {{-- কাস্টমার --}}
+                        <li class="nav-item dropdown {{ Route::is('customers.*') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">কাস্টমার</a>
+                            <ul class="dropdown-menu">
+                                @can('customer-list')
+                                    <li><a class="dropdown-item {{ Route::is('customers.index') ? 'active' : '' }}"
+                                            href="{{ route('customers.index') }}">সব কাস্টমার</a></li>
+                                @endcan
+                                @can('customer-create')
+                                    <li><a class="dropdown-item {{ Route::is('customers.create') ? 'active' : '' }}"
+                                            href="{{ route('customers.create') }}">নতুন কাস্টমার</a></li>
+                                @endcan
                             </ul>
-                        </div>
-                    </li>
+                        </li>
 
+                        {{-- পারচেস --}}
+                        <li class="nav-item dropdown {{ Route::is('purchases.*') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">পারচেস</a>
+                            <ul class="dropdown-menu">
+                                @can('purchase-list')
+                                    <li><a class="dropdown-item {{ Route::is('purchases.index') ? 'active' : '' }}"
+                                            href="{{ route('purchases.index') }}">সব পারচেস</a></li>
+                                @endcan
+                                @can('purchase-create')
+                                    <li><a class="dropdown-item {{ Route::is('purchases.create') ? 'active' : '' }}"
+                                            href="{{ route('purchases.create') }}">নতুন পারচেস</a></li>
+                                @endcan
+                            </ul>
+                        </li>
+
+                        {{-- লোকেশন --}}
+                        <li class="nav-item dropdown {{ Route::is('locations.*') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">লোকেশন</a>
+                            <ul class="dropdown-menu">
+                                @can('location-list')
+                                    <li><a class="dropdown-item {{ Route::is('locations.index') ? 'active' : '' }}"
+                                            href="{{ route('locations.index') }}">সব লোকেশন</a></li>
+                                @endcan
+                                @can('location-create')
+                                    <li><a class="dropdown-item {{ Route::is('locations.create') ? 'active' : '' }}"
+                                            href="{{ route('locations.create') }}">নতুন লোকেশন</a></li>
+                                @endcan
+                            </ul>
+                        </li>
+
+                        {{-- ইউজার ও রোল --}}
+                        @can('user-list')
+                            <li class="nav-item dropdown {{ Route::is('users.*') ? 'active' : '' }}">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">ইউজার</a>
+                                <ul class="dropdown-menu">
+                                    @can('user-list')
+                                        <li><a class="dropdown-item {{ Route::is('users.index') ? 'active' : '' }}"
+                                                href="{{ route('users.index') }}">সব ইউজার</a></li>
+                                    @endcan
+                                    @can('user-create')
+                                        <li><a class="dropdown-item {{ Route::is('users.create') ? 'active' : '' }}"
+                                                href="{{ route('users.create') }}">নতুন ইউজার</a></li>
+                                    @endcan
+                                    @can('role-list')
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item {{ Route::is('roles.index') ? 'active' : '' }}"
+                                                href="{{ route('roles.index') }}">রোল ম্যানেজমেন্ট</a></li>
+                                    @endcan
+                                    @can('role-create')
+                                        <li><a class="dropdown-item {{ Route::is('roles.create') ? 'active' : '' }}"
+                                                href="{{ route('roles.create') }}">নতুন রোল</a></li>
+                                    @endcan
+                                </ul>
+                            </li>
+                        @endcan
+
+                        {{-- পণ্য --}}
+                        <li
+                            class="nav-item dropdown {{ Route::is('products.*') || Route::is('product-models.*') ? 'active' : '' }}">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">পণ্য</a>
+                            <ul class="dropdown-menu">
+                                @can('product-list')
+                                    <li><a class="dropdown-item {{ Route::is('products.index') ? 'active' : '' }}"
+                                            href="{{ route('products.index') }}">সব পণ্য</a></li>
+                                @endcan
+                                @can('product-create')
+                                    <li><a class="dropdown-item {{ Route::is('products.create') ? 'active' : '' }}"
+                                            href="{{ route('products.create') }}">নতুন পণ্য</a></li>
+                                @endcan
+                                @can('product-model-list')
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item {{ Route::is('product-models.index') ? 'active' : '' }}"
+                                            href="{{ route('models.index') }}">মডেল তালিকা</a></li>
+                                @endcan
+                                @can('product-model-create')
+                                    <li><a class="dropdown-item {{ Route::is('product-models.create') ? 'active' : '' }}"
+                                            href="{{ route('models.create') }}">নতুন মডেল</a></li>
+                                @endcan
+                            </ul>
+                        </li>
+
+                        {{-- রিপোর্ট --}}
+                        @role('admin')
+                            <li class="nav-item dropdown {{ Request::is('reports/*') ? 'active' : '' }}">
+                                <a class="nav-link dropdown-toggle" href="#" id="reportDropdown"
+                                    data-bs-toggle="dropdown">রিপোর্ট</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item {{ Request::is('reports/monthly') ? 'active' : '' }}"
+                                            href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endrole
+
+                    </ul>
+                @endauth
+
+                {{-- Right-side Auth --}}
+                <ul class="navbar-nav ms-auto">
+                    @auth
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">লগআউট</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @endauth
+
+                    @guest
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">লগইন</a></li>
+                    @endguest
                 </ul>
             </div>
         </div>
     </nav>
 
     {{-- Main Content --}}
-    <main class="container mx-auto px-4 py-6">
+    <main class="container mb-5">
         @yield('content')
     </main>
 
     {{-- Footer --}}
-    <footer class="text-center py-4 text-sm text-gray-600 dark:text-gray-400">
-        © {{ date('Y') }} রোমান ইলেকট্রনিক্স ও ফার্নিচার
+    <footer class="bg-light text-center py-3">
+        <small>© {{ date('Y') }} রোমান ইলেকট্রনিক্স ও ফার্নিচার</small>
     </footer>
 
-    {{-- Flowbite Scripts --}}
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    {{-- Scripts --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @stack('scripts')
     @yield('scripts')
 
 </body>
+
 </html>
