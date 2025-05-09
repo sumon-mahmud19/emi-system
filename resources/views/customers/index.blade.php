@@ -10,7 +10,8 @@
             @endcan
 
             <div class="d-flex flex-column flex-md-row gap-3">
-                <input type="text" id="liveSearch" class="form-control w-50 w-md-auto" placeholder="Search customer (e.g. shakil-fan-pl)">
+                <input type="text" id="liveSearch" class="form-control w-50 w-md-auto"
+                    placeholder="Search customer (e.g. shakil-fan-pl)">
                 <div class="mb-2 mb-md-0">
                     <strong>Total Results: </strong> <span id="resultCount">{{ $customers->total() }}</span>
                 </div>
@@ -38,30 +39,36 @@
                             <td>{{ $customer->customer_id }}</td>
                             <td>
                                 @can('customer-edit')
-                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm"><i
+                                            class="fas fa-edit"></i></a>
                                 @endcan
 
                                 @can('customer-delete')
-                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
+                                        style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i></button>
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i></button>
                                     </form>
                                 @endcan
 
-                                <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-card-list"></i></a>
+                                <a href="{{ route('customers.emi_plans', $customer->id) }}"
+                                    class="btn btn-primary btn-sm"><i class="fas fa-file-invoice-dollar"></i>
+                                </a>
                             </td>
                             <td>
                                 <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
                             </td>
                             <td>
                                 <a class="show-customer-modal" data-bs-toggle="modal" data-bs-target="#customerModal"
-                                   data-name="{{ $customer->customer_name }}" data-id="{{ $customer->customer_id }}"
-                                   data-phone="tel:{{ $customer->customer_phone }}"
-                                   data-location="{{ $customer->location->name ?? 'N/A' }}"
-                                   data-image="{{ asset($customer->customer_image) }}">
+                                    data-name="{{ $customer->customer_name }}" data-id="{{ $customer->customer_id }}"
+                                    data-phone="tel:{{ $customer->customer_phone }}"
+                                    data-location="{{ $customer->location->name ?? 'N/A' }}"
+                                    data-image="{{ asset($customer->customer_image) }}">
                                     <img src="{{ asset($customer->customer_image ?? 'images/default.png') }}"
-                                         class="img-fluid rounded-circle" style="height: 50px; width: 50px; object-fit: cover;">
+                                        class="img-fluid rounded-circle"
+                                        style="height: 50px; width: 50px; object-fit: cover;">
                                 </a>
                             </td>
                             <td>
@@ -69,7 +76,7 @@
                                     {{ $customer->location->name ?? 'N/A' }}
                                 </a>
                             </td>
-                         
+
                         </tr>
                     @endforeach
                 </tbody>
@@ -78,7 +85,8 @@
             <!-- Pagination Links -->
             <div class="d-flex justify-content-between mt-3">
                 <div>
-                    Showing {{ $customers->firstItem() }} to {{ $customers->lastItem() }} of {{ $customers->total() }} results.
+                    Showing {{ $customers->firstItem() }} to {{ $customers->lastItem() }} of {{ $customers->total() }}
+                    results.
                 </div>
                 {{ $customers->links() }}
             </div>
@@ -103,9 +111,10 @@
                         <p><strong>Location:</strong> <span id="modalCustomerLocation"></span></p>
                     </div>
 
-                    <div class="col-md-6 text-center text-md-end d-flex align-items-center justify-content-center justify-content-md-end">
+                    <div
+                        class="col-md-6 text-center text-md-end d-flex align-items-center justify-content-center justify-content-md-end">
                         <img id="modalCustomerImage" src="{{ asset('images/default.png') }}" alt="Customer Image"
-                             class="img-fluid rounded shadow" style="max-height: 350px; max-width: 100%; object-fit: cover;">
+                            class="img-fluid rounded shadow" style="max-height: 350px; max-width: 100%; object-fit: cover;">
                     </div>
                 </div>
             </div>
@@ -128,7 +137,9 @@
                     $.ajax({
                         url: '{{ route('customers.index') }}',
                         method: 'GET',
-                        data: { search: query },
+                        data: {
+                            search: query
+                        },
                         success: function(response) {
                             $('#customerBody').html(response.html);
                             $('#resultCount').text(response.count + ' results');
