@@ -4,19 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>ইএমআই ইনভয়েস</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'solaimanlipi', sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #333;
         }
 
         .invoice-wrapper {
             max-width: 800px;
             margin: auto;
-            padding: 20px;
             border: 1px solid #ddd;
+            padding: 20px;
         }
 
         .invoice-header {
@@ -30,29 +28,6 @@
             font-size: 24px;
         }
 
-        .customer-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .customer-details {
-            flex: 2;
-        }
-
-        .customer-details p {
-            margin: 5px 0;
-            font-size: 15px;
-        }
-
-        .customer-image {
-            flex: 1;
-            display: flex;
-            justify-content: flex-end;
-        }
-
         .customer-image img {
             width: 120px;
             height: 120px;
@@ -64,87 +39,71 @@
         .section-title {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-top: 30px;
             border-bottom: 1px solid #aaa;
             padding-bottom: 5px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th,
-        td {
-            border: 1px solid #aaa;
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background: #f5f5f5;
-        }
-
         .signature-row td {
-            border: none;
             padding-top: 40px;
             text-align: center;
-        }
-
-        footer {
-            margin-top: 30px;
+            border: none !important;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="invoice-wrapper">
+    <div class="invoice-wrapper bg-white">
         <div class="invoice-header">
             <h1>রোমান ইলেকট্রনিক্স এবং ফার্নিচার</h1>
+            <b>01875959218</b>
             <p>ইএমআই ইনভয়েস</p>
         </div>
 
-        <div class="customer-section">
-            <div class="customer-details">
+        <div class="row align-items-start mb-4">
+            <div class="col-md-8">
                 <p><strong>নাম:</strong> {{ $customer->customer_name }}</p>
                 <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
                 <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
                 <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
                 <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
             </div>
-            <div class="customer-image">
-                <img src="{{ $customer->customer_image }}" width="100px" alt="Customer Image"> 
+            <div class="col-md-4 text-end">
+                <div class="customer-image">
+                    <img src="{{ $customer->customer_image }}" alt="Customer Image">
+                </div>
             </div>
         </div>
 
         <div>
             <div class="section-title">কিস্তির বিস্তারিত</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ক্রমিক</th>
-                        <th>তারিখ</th>
-                        <th>পরিমাণ</th>
-                        <th>অবস্থা</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($installments as $index => $installment)
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm text-center">
+                    <thead class="table-light">
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($installment->due_date)->format('d-m-Y') }}</td>
-                            <td>{{ number_format($installment->amount, 2) }}</td>
-                            <td>{{ $installment->status === 'paid' ? 'পরিশোধিত' : 'বাকি' }}</td>
+                            <th>ক্রমিক</th>
+                            <th>তারিখ</th>
+                            <th>পরিমাণ</th>
+                            <th>অবস্থা</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($installments as $index => $installment)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ \Carbon\Carbon::parse($installment->due_date)->format('d-m-Y') }}</td>
+                                <td>{{ number_format($installment->amount, 2) }}</td>
+                                <td>{{ $installment->status === 'paid' ? 'পরিশোধিত' : 'বাকি' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <footer>
-            <table style="width:100%; margin-top: 40px;">
+        <footer class="mt-5">
+            <table class="w-100">
                 <tr class="signature-row">
                     <td colspan="2">ক্রেতার স্বাক্ষর</td>
                     <td colspan="2">বিক্রেতার স্বাক্ষর</td>
