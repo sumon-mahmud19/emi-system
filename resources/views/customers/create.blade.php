@@ -45,10 +45,14 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="customer_image">Customer Image</label>
-                        <input type="file" name="customer_image" class="form-control">
+                        <input type="file" name="customer_image" class="form-control" id="customer_image_input" accept="image/*">
                         @error('customer_image')
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                         @enderror
+                        <!-- Image preview -->
+                        <div class="mt-3">
+                            <img id="image_preview" src="#" alt="Preview" class="img-thumbnail d-none" style="width: 100px; height: 100px;">
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -83,3 +87,21 @@
         </form>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.getElementById('customer_image_input').addEventListener('change', function (e) {
+        const reader = new FileReader();
+        const imagePreview = document.getElementById('image_preview');
+
+        reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            imagePreview.classList.remove('d-none');
+        };
+
+        if (e.target.files.length > 0) {
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+</script>
+@endpush
