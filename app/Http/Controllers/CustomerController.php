@@ -38,8 +38,8 @@ class CustomerController extends Controller
         }
 
         // Paginate the results
-        $customers = $query->paginate(100); // Show 4 results per page
-
+        $customers = $query->paginate(100)->orderBy('created_at', 'desc');
+        
         // If the request is an AJAX request, return the HTML only
         if ($request->ajax()) {
             $html = view('customers.partials.customer_table_rows', compact('customers'))->render();
