@@ -25,36 +25,38 @@ class CustomerController extends Controller
 
     public function index(Request $request)
     {
-        $query = Customer::with('location')->orderBy('created_at', 'desc');
+        $query = Customer::with('location')
+                     ->orderBy('created_at', 'desc'); // Add orderBy to sort by created_at in descending order
 
-        // Check if search query is filled
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('customer_name', 'like', "%{$search}%")
-                    ->orWhere('customer_id', 'like', "%{$search}%")
-                    ->orWhere('customer_phone', 'like', "%{$search}%");
-            });
-        }
+    // Check if search query is filled
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('customer_name', 'like', "%{$search}%")
+              ->orWhere('customer_id', 'like', "%{$search}%")
+              ->orWhere('customer_phone', 'like', "%{$search}%");
+        });
+    }
 
-        // Paginate the results
-        $customers = $query; // Show 4 results per page
+    // Paginate the results
+    $customers = $query->paginate(100); // Show 100 results per page
 
-        // If the request is an AJAX request, return the HTML only
-        if ($request->ajax()) {
-            $html = view('customers.partials.customer_table_rows', compact('customers'))->render();
-            $pagination = $customers->links(); // Get the pagination links
-            $count = $customers->total(); // Total number of matching customers
+    // If the request is an AJAX request, return the HTML only
+    if ($request->ajax()) {
+        $html = view('customers.partials.customer_table_rows', compact('customers'))->render();
+        $pagination = $customers->links(); // Get the pagination links
+        $count = $customers->total(); // Total number of matching customers
 
-            return response()->json([
-                'html' => $html,
-                'count' => $count,
-                'pagination' => $pagination
-            ]);
-        }
+        return response()->json([
+            'html' => $html,
+            'count' => $count,
+            'pagination' => $pagination
+        ]);
+    }
 
-        // Return the view with the paginated customers
-        return view('customers.index', compact('customers'));
+    // Return the view with the paginated customers
+    return view('customers.index', compact('customers'));
+    
     }
 
 
