@@ -39,8 +39,7 @@
             text-align: right;
         }
 
-        .logo, img {
-            width: 100px;
+        .logo img {
             height: auto;
             border-radius: 40%;
             object-fit: contain;
@@ -133,7 +132,7 @@
                 ঢাকা, বাংলাদেশ
             </div>
             <div class="logo">
-                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image" >
+                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image" style="border-radius: 50%"; width="100px">
                 
             </div>
         </div>
