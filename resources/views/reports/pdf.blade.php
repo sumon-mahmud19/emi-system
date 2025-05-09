@@ -41,24 +41,26 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 20px;
-            gap: 20px;
         }
 
         .customer-image {
+            order: 2; /* Move image to right */
             flex: 0 0 130px;
             text-align: center;
         }
 
-        .customer-image, img {
+        .customer-image img {
             width: 120px;
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-           overflow: hidden;
+            overflow: hidden;
         }
 
         .customer-details {
+            order: 1; /* Keep details on left */
             flex: 1;
+            min-width: 250px;
         }
 
         .customer-details p {
@@ -111,15 +113,15 @@
         </div>
 
         <div class="customer-section">
-            <div class="customer-image">
-                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image">
-            </div>
             <div class="customer-details">
                 <p><strong>নাম:</strong> {{ $customer->customer_name }}</p>
                 <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
                 <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
                 <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
                 <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
+            </div>
+            <div class="customer-image">
+                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image">
             </div>
         </div>
 
