@@ -1,349 +1,162 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 
 <head>
     <meta charset="UTF-8">
+    <title>ইএমআই ইনভয়েস</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Billing Invoice - Webjourney</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300&display=swap"
-        rel="stylesheet">
-
-
     <style>
-        * {
-            font-family: 'Roboto', sans-serif;
-            line-height: 26px;
-            font-size: 15px
-        }
-
-        .custom--table {
-            width: 100%;
-            color: inherit;
-            vertical-align: top;
-            font-weight: 400;
-            border-collapse: collapse;
-            border-bottom: 2px solid #ddd;
-            margin-top: 0;
-        }
-
-        .table-title {
-            font-size: 18px;
-            font-weight: 600;
-            line-height: 32px;
-            margin-bottom: 10px
-        }
-
-        .custom--table thead {
-            font-weight: 700;
-            background: inherit;
-            color: inherit;
-            font-size: 16px;
-            font-weight: 500
-        }
-
-        .custom--table tbody {
-            border-top: 0;
-            overflow: hidden;
-            border-radius: 10px;
-        }
-
-        .custom--table thead tr {
-            border-top: 2px solid #ddd;
-            border-bottom: 2px solid #ddd;
-            text-align: left
-        }
-
-        .custom--table thead tr th {
-            border-top: 2px solid #ddd;
-            border-bottom: 2px solid #ddd;
-            text-align: left;
-            font-size: 16px;
-            padding: 10px 0
-        }
-
-        .custom--table tbody tr {
-            vertical-align: top;
-        }
-
-        .custom--table tbody tr td {
+        body {
+            font-family: 'solaimanlipi', sans-serif;
             font-size: 14px;
-            line-height: 18px vertical-align:top 10
-        }
-
-        .custom--table tbody tr td:last-child {
-            padding-bottom: 10px;
-        }
-
-        .custom--table tbody tr td .data-span {
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 18px;
-        }
-
-        .custom--table tbody .table_footer_row {
-            border-top: 2px solid #ddd;
-            margin-bottom: 10px !important;
-            padding-bottom: 10px !important
-        }
-
-        /* invoice area */
-        .invoice-area {
-            padding: 10px 0
+            line-height: 1.6;
+            color: #333;
+            background: #f9f9f9;
         }
 
         .invoice-wrapper {
-            max-width: 650px;
-            margin: 0 auto;
-            box-shadow: 0 0 10px #f3f3f3;
-            padding: 0px;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         }
 
         .invoice-header {
-            margin-bottom: 40px;
+            text-align: center;
+            border-bottom: 2px solid #000;
+            margin-bottom: 20px;
         }
 
-        .invoice-flex-contents {
+        .invoice-header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .customer-section {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 24px;
             flex-wrap: wrap;
-        }
-
-        .invoice-title {
-            font-size: 25px;
-            font-weight: 700
-        }
-
-        .invoice-details {
-            margin-top: 20px
-        }
-
-        .invoice-details-flex {
-            display: flex;
+            justify-content: space-between;
             align-items: flex-start;
-            justify-content: space-between;
-            gap: 24px;
-            flex-wrap: wrap;
+            margin-bottom: 20px;
+            gap: 20px;
         }
 
-        .invoice-details-title {
+        .customer-image {
+            flex: 0 0 130px;
+            text-align: center;
+        }
+
+        .customer-image img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .customer-details {
+            flex: 1;
+        }
+
+        .customer-details p {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+
+        .section-title {
             font-size: 18px;
-            font-weight: 700;
-            line-height: 32px;
-            color: #333;
-            margin: 0;
-            padding: 0
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #aaa;
+            padding-bottom: 5px;
         }
 
-        .invoice-single-details {
-            padding: 10px
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
         }
 
-        .details-list {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            margin-top: 10px;
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: center;
         }
 
-        .details-list .list {
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 18px;
-            color: #666;
-            margin: 0;
-            padding: 0;
-            transition: all .3s;
+        th {
+            background: #f5f5f5;
         }
 
-        .details-list .list strong {
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 18px;
-            color: #666;
-            margin: 0;
-            padding: 0;
-            transition: all .3s
+        .signature-row td {
+            border: none;
+            padding-top: 40px;
+            text-align: center;
         }
 
-        .details-list .list a {
-            display: inline-block;
-            color: #666;
-            transition: all .3s;
-            text-decoration: none;
-            margin: 0;
-            line-height: 18px
-        }
-
-        .item-description {
-            margin-top: 10px;
-            padding: 10px;
-        }
-
-        .products-item {
-            text-align: left
-        }
-
-        .invoice-total-count .list-single {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            font-size: 16px;
-            line-height: 28px
-        }
-
-        .invoice-subtotal {
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 15px
-        }
-
-        .invoice-total {
-            padding-top: 10px
-        }
-
-        .invoice-flex-footer {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-
-        .single-footer-item {
-            flex: 1
-        }
-
-        .single-footer {
-            display: flex;
-            align-items: center;
-            gap: 10px
-        }
-
-        .single-footer .icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            width: 30px;
-            font-size: 16px;
-            background-color: #000e8f;
-            color: #fff
+        footer {
+            margin-top: 30px;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Invoice area Starts -->
-    <div class="invoice-area">
-        <div class="invoice-wrapper">
-            <div class="invoice-header">
-                <h1 class="invoice-title" style="text-align:center;">Invoice Heder - WebJourney</h1>
-            </div>
-            <div class="invoice-details">
-                <div class="invoice-details-flex">
-                    <div class="invoice-single-details">
-                        <h2 class="invoice-details-title">Bill To:</h2>
-                        <ul class="details-list">
-                            <li class="list">Nazmul Hoque</li>
-                            <li class="list"> <a href="#">nazmul@gmail.com </a> </li>
-                            <li class="list"> <a href="#"> 0167846483</a> </li>
-                        </ul>
-                    </div>
-                    <div class="invoice-single-details">
-                        <h4 class="invoice-details-title">Ship To:</h4>
-                        <ul class="details-list">
-                            <li class="list"> <strong>City: </strong> Dhaka</li>
-                            <li class="list"> <strong>Area: </strong>Dhanmondi</li>
-                            <li class="list"> <strong>Address: </strong>West Panthapath, Dhanmondi</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="item-description">
-                <h5 class="table-title">Include Services</h5>
-                <table class="custom--table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Unit Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>House Cleaning</td>
-                            <td>$10</td>
-                            <td>3</td>
-                            <td>$30</td>
-                        </tr>
-                        <tr>
-                            <td>Car Cleaning</td>
-                            <td>$20</td>
-                            <td>2</td>
-                            <td>$40</td>
-                        </tr>
-                        <tr class="table_footer_row">
-                            <td colspan="3"><strong>Package Fee</strong></td>
-                            <td><strong>$70</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="item-description">
-                <div class="table-responsive">
-                    <h5 class="table-title">Orders Details</h5>
-                    <table class="custom--table">
-                        <thead class="head-bg">
-                            <tr>
-                                <th>Buyer Details</th>
-                                <th>Date & Schedule</th>
-                                <th>Amount Details</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <span class="data-span">Name:</span>Nazmul Hoque<br>
-                                    <span class="data-span">Email:</span>Nazmul@gmail.com <br>
-                                    <span class="data-span">Phone: </span>01678985958 <br>
-                                    <span class="data-span">Address:</span>West Panthapath, Dhanmondi
-                                </td>
-                                <td>
-                                    30-9-2022 <br>
-                                    Fri, 10pm
-                                </td>
-                                <td>
-                                    <span class="data-span"> Package Fee:</span>$70 <br>
-                                    <span class="data-span"> Sub Total:</span>$70 <br>
-                                    <span class="data-span"> Tax: </span>$10 <br>
-                                    <span class="data-span"> Total:</span>$80 <br>
-                                    <span class="data-span">Payment Status: </span>Pending
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <footer>
-                <h3 style="text-align: center">
-                    Copyright @2023
-                </h3>
-            </footer>
-
+    <div class="invoice-wrapper">
+        <div class="invoice-header">
+            <h1>রোমান ইলেকট্রনিক্স এবং ফার্নিচার</h1>
+            <p>ইএমআই ইনভয়েস</p>
         </div>
+
+        <div class="customer-section">
+            <div class="customer-image">
+                <img src="{{ asset($customer->customer_image) }}" alt="Customer Image">
+            </div>
+            <div class="customer-details">
+                <p><strong>নাম:</strong> {{ $customer->customer_name }}</p>
+                <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
+                <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
+                <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
+                <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">কিস্তির বিস্তারিত</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ক্রমিক</th>
+                        <th>তারিখ</th>
+                        <th>পরিমাণ</th>
+                        <th>অবস্থা</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($installments as $index => $installment)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ \Carbon\Carbon::parse($installment->due_date)->format('d-m-Y') }}</td>
+                            <td>{{ number_format($installment->amount, 2) }}</td>
+                            <td>{{ $installment->status === 'paid' ? 'পরিশোধিত' : 'বাকি' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            <table style="width:100%; margin-top: 40px;">
+                <tr class="signature-row">
+                    <td colspan="2">ক্রেতার স্বাক্ষর</td>
+                    <td colspan="2">বিক্রেতার স্বাক্ষর</td>
+                </tr>
+            </table>
+        </footer>
     </div>
 
-    <!-- Invoice area end -->
-
 </body>
-
 </html>
