@@ -39,26 +39,24 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             margin-bottom: 20px;
+            gap: 20px;
         }
 
         .customer-image {
-            order: 2; /* Move image to right */
-            flex: 0 0 130px;
-            text-align: center;
+            flex: 0 0 100px; /* Reduced from 130px */
         }
 
         .customer-image img {
-            width: 120px;
-            height: 120px;
+            width: 80px; /* Reduced from 120px */
+            height: 80px; /* Reduced from 120px */
             border-radius: 50%;
             object-fit: cover;
-            overflow: hidden;
+            border: 2px solid #ddd;
         }
 
         .customer-details {
-            order: 1; /* Keep details on left */
             flex: 1;
             min-width: 250px;
         }
