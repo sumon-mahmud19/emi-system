@@ -54,7 +54,8 @@
                                 @endcan
 
                                 <a href="{{ route('customers.emi_plans', $customer->id) }}"
-                                    class="btn btn-primary btn-sm"><i class="fas fa-file-invoice-dollar"></i>
+                                    class="btn btn-primary btn-sm"><i class="fas fa-list"></i>
+
                                 </a>
                             </td>
                             <td>
