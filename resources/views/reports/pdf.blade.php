@@ -75,7 +75,7 @@
             </div>
             <div class="col-md-4 text-center">
                 <div class="customer-image">
-                    <img src="{{ $customer->customer_image }}" alt="Customer Image">
+                    <img src="{{ $customer->customer_image }}" alt="Customer Image" width="100%">
                 </div>
             </div>
         </div>
