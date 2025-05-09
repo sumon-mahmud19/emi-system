@@ -74,8 +74,8 @@
                 <p><strong>মোট কিস্তির পরিমাণ:</strong> {{ number_format($emiAmount * count($installments), 2) }} টাকা</p>
             </div>
             <div class="col-md-4 text-center">
-                <div class="customer-image">
-                    <img src="{{ $customer->customer_image }}" alt="Customer Image" width="100%">
+                <div class="customer-image w-80">
+                    <img src="{{ $customer->customer_image }}" alt="Customer Image">
                 </div>
             </div>
         </div>
