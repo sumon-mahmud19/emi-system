@@ -19,7 +19,7 @@
     </div>
 
     <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-300">
+        <table id="customerTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-300">
             <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
                 <tr>
                     <th class="px-4 py-3">#</th>
@@ -41,10 +41,10 @@
                             <a href="tel:{{ $customer->customer_phone }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $customer->customer_phone }}</a>
                         </td>
                         <td class="px-4 py-3">
-                            <button class="show-customer-modal" data-bs-toggle="modal" data-bs-target="#customerModal"
+                            <button type="button" class="show-customer-modal" data-bs-toggle="modal" data-bs-target="#customerModal"
                                 data-name="{{ $customer->customer_name }}"
                                 data-id="{{ $customer->customer_id }}"
-                                data-phone="tel:{{ $customer->customer_phone }}"
+                                data-phone="{{ $customer->customer_phone }}"
                                 data-location="{{ $customer->location->name ?? 'N/A' }}"
                                 data-image="{{ asset($customer->customer_image ?? 'images/default.png') }}">
                                 <img src="{{ asset($customer->customer_image ?? 'images/default.png') }}"
@@ -86,7 +86,7 @@
     <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content p-4">
-                <div class="modal-header border-b">
+                <div class="modal-header border-bottom">
                     <h5 class="modal-title text-xl font-semibold">কাস্টমার ইনফরমেশন</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -109,10 +109,14 @@
 @endsection
 
 @push('scripts')
+{{-- Bootstrap JS (ensure this exists in layout, otherwise include here) --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(function() {
         let debounceTimer;
+
+        // Live Search
         $('#liveSearch').on('keyup', function() {
             const query = $(this).val();
             clearTimeout(debounceTimer);
@@ -130,7 +134,8 @@
             }, 500);
         });
 
-        $('#customerTable').on('click', '.show-customer-modal', function() {
+        // Modal Data Binding
+        $(document).on('click', '.show-customer-modal', function() {
             const button = $(this);
             $('#modalCustomerName').text(button.data('name'));
             $('#modalCustomerID').text(button.data('id'));
