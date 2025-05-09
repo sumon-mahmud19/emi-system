@@ -8,16 +8,18 @@
             @can('customer-create')
                 <a href="{{ route('customers.create') }}" class="btn btn-success">New Customer</a>
             @endcan
-
-            <div class="d-flex flex-column flex-md-row gap-3">
-                <input type="text" id="liveSearch" class="form-control w-50 w-md-auto"
-                    placeholder="Search customer (e.g. shakil-fan-pl)">
+        
+            <div class="d-flex flex-column flex-md-row gap-3 w-100">
+                <input type="text" id="liveSearch" class="form-control w-100 w-md-auto" placeholder="Search customer (e.g. shakil-fan-pl)">
+                
                 <div class="mb-2 mb-md-0">
-                    <strong>Total Results: </strong> <span id="resultCount">{{ $customers->total() }}</span>
+                    <strong>Total Results: </strong> 
+                    <span id="resultCount">{{ $customers->total() }}</span>
                 </div>
             </div>
         </div>
 
+        
         <div class="table-responsive">
             <table class="table table-striped table-hover align-middle" id="customerTable">
                 <thead class="table-light">
