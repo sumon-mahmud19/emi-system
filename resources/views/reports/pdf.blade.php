@@ -37,23 +37,10 @@
 
         .customer-section {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
             gap: 20px;
-        }
-
-        .customer-image {
-            flex: 0 0 100px; /* Reduced from 130px */
-        }
-
-        .customer-image img {
-            width: 80px; /* Reduced from 120px */
-            height: 80px; /* Reduced from 120px */
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ddd;
         }
 
         .customer-details {
@@ -64,6 +51,19 @@
         .customer-details p {
             margin: 5px 0;
             font-size: 15px;
+        }
+
+        .customer-image {
+            flex: 0 0 100px;
+            text-align: center;
+        }
+
+        .customer-image img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
         }
 
         .section-title {
