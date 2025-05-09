@@ -23,8 +23,8 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Action</th>
                         <th>Customer ID</th>
+                        <th>Action</th>
                         <th>Phone</th>
                         <th>Image</th>
                         <th>Location</th>
@@ -35,6 +35,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $customer->customer_name }}</td>
+                            <td>{{ $customer->customer_id }}</td>
                             <td>
                                 @can('customer-edit')
                                     <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -50,7 +51,6 @@
 
                                 <a href="{{ route('customers.emi_plans', $customer->id) }}" class="btn btn-primary btn-sm">EMI Details</a>
                             </td>
-                            <td>{{ $customer->customer_id }}</td>
                             <td>
                                 <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
                             </td>
