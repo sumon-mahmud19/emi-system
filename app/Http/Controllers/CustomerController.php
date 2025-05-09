@@ -25,7 +25,7 @@ class CustomerController extends Controller
 
     public function index(Request $request)
     {
-        $query = Customer::with('location');
+        $query = Customer::with('location')->orderBy('created_at', 'desc');
 
         // Check if search query is filled
         if ($request->filled('search')) {
@@ -38,8 +38,8 @@ class CustomerController extends Controller
         }
 
         // Paginate the results
-        $customers = $query->paginate(100)->orderBy('created_at', 'desc');
-        
+        $customers = $query; // Show 4 results per page
+
         // If the request is an AJAX request, return the HTML only
         if ($request->ajax()) {
             $html = view('customers.partials.customer_table_rows', compact('customers'))->render();
