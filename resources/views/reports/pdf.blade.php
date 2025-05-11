@@ -20,7 +20,7 @@
             margin-top: 20px;
         }
         .customer-table td, .installment-table th, .installment-table td {
-            border: 1px solid #000;
+            
             padding: 8px;
         }
         .installment-table th {
@@ -36,7 +36,7 @@
         .image {
             text-align: center;
         }
-        .rounded {
+        .rounded img{
             border-radius: 50%;
         }
     </style>
