@@ -69,7 +69,7 @@
         </td>
         <td>
             <div class="image-wrapper">
-                <img src="{{ $customer->customer_image }}" alt="Customer">
+                <img src="{{ $customer->customer_image }}" alt="Customer" width="100%">
             </div>
         </td>
     </tr>
