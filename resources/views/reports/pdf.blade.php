@@ -54,7 +54,7 @@
 
 <table class="customer-table">
     <tr>
-        <td width="70%">
+        <td width="70%" style="margin-bottom: 10px;">
             <p><strong>ক্রেতার নাম:</strong> {{ $customer->customer_name }}</p>
             <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
             <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
