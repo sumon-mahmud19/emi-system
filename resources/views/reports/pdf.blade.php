@@ -11,13 +11,9 @@
         h3 {
             margin: 0;
         }
-
         .header {
             margin-top: 20px;
-        }
-        .header, .footer {
             text-align: center;
-            
         }
         .customer-table, .installment-table {
             width: 100%;
@@ -25,13 +21,10 @@
             margin-top: 30px;
         }
         .customer-table td, .installment-table th, .installment-table td {
-            
             padding: 8px;
         }
-
         .installment-table th, .installment-table td {
             border: 1px solid #000;
-            padding: 8px;
         }
         .installment-table th {
             background-color: #f2f2f2;
@@ -43,11 +36,19 @@
         .signature td {
             padding-top: 40px;
         }
-        #image {
-            text-align: center;
-            border-radius: 50% !important;
+        .image-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            border: 1px solid #ddd;
         }
-        
+        .image-wrapper img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
@@ -66,8 +67,10 @@
             <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
             <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
         </td>
-        <td id="image">
-            <img src="{{ $customer->customer_image }}" width="100" class="rounded" alt="Customer">
+        <td>
+            <div class="image-wrapper">
+                <img src="{{ $customer->customer_image }}" alt="Customer">
+            </div>
         </td>
     </tr>
 </table>
