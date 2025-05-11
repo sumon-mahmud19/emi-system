@@ -41,8 +41,8 @@
             padding-top: 40px;
         }
         
-        p, strong {
-            padding-top: 1rem;
+        strong {
+            padding-bottom: 15px;
         }
         
     </style>
