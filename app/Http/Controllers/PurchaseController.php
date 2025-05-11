@@ -160,7 +160,7 @@ class PurchaseController extends Controller
         $html = view('reports.pdf', $data)->render();
         $mpdf->WriteHTML($html);
     
-        return $mpdf->Output('EmiInvoice.pdf', 'I');
+        return $mpdf->Output('EmiInvoice.pdf', 'D');
 
 
     }
