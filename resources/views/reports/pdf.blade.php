@@ -41,7 +41,7 @@
         .image {
             text-align: center;
         }
-        .rounded img{
+        img{
             border-radius: 50%;
         }
     </style>
