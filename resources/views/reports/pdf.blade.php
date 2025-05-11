@@ -40,6 +40,10 @@
         .signature td {
             padding-top: 40px;
         }
+
+        p {
+            padding-top: 4px;
+        }
         
         
     </style>
@@ -61,7 +65,7 @@
             <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
         </td>
         <td id="image">
-            <img src="{{ $customer->customer_image }}" width="100" style="border-radius: 50%; text-align: center;" alt="Customer">
+            <img src="{{ $customer->customer_image }}" width="100%" style="border-radius: 50%; text-align: center;" alt="Customer">
         </td>
     </tr>
 </table>
