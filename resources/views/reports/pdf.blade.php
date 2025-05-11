@@ -38,12 +38,11 @@
         .signature td {
             padding-top: 40px;
         }
-        .image {
+        #image {
             text-align: center;
-        }
-        img{
             border-radius: 50%;
         }
+        
     </style>
 </head>
 <body>
@@ -62,7 +61,7 @@
             <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
             <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
         </td>
-        <td class="image">
+        <td id="image">
             <img src="{{ $customer->customer_image }}" width="100" class="rounded" alt="Customer">
         </td>
     </tr>
