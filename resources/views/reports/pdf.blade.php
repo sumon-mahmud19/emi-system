@@ -41,6 +41,9 @@
             padding-top: 40px;
         }
         
+        p {
+            padding-top: 1rem;
+        }
         
     </style>
 </head>
@@ -54,7 +57,7 @@
 
 <table class="customer-table">
     <tr>
-        <td width="70%" style="margin-bottom: 10px;">
+        <td width="70%">
             <p><strong>ক্রেতার নাম:</strong> {{ $customer->customer_name }}</p>
             <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
             <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
