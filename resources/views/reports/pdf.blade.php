@@ -41,7 +41,7 @@
             padding-top: 40px;
         }
         
-        p {
+        p, strong {
             padding-top: 1rem;
         }
         
