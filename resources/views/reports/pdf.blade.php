@@ -61,6 +61,7 @@
             <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
             <p><strong>মডেল নাম:</strong> {{ $purchase->model->model_name ?? 'N/A' }}</p>
 
+
         </td>
         <td id="image">
             <img src="{{ $customer->customer_image }}" width="120px" style="border-radius: 500px;" alt="Customer">

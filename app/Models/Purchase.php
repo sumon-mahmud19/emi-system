@@ -41,6 +41,6 @@ class Purchase extends Model
     // Purchase.php
     public function model()
     {
-        return $this->belongsTo(ProductModel::class, 'product_model_id');
+        return $this->belongsTo(ProductModel::class, 'model_id');
     }
 }
