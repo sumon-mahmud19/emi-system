@@ -23,6 +23,10 @@
             
             padding: 8px;
         }
+
+        .installment-table {
+            border: 1px solid #000;
+        }
         .installment-table th {
             background-color: #f2f2f2;
         }
