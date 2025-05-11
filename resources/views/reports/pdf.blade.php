@@ -17,7 +17,7 @@
         .customer-table, .installment-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         .customer-table td, .installment-table th, .installment-table td {
             
