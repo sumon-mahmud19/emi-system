@@ -59,7 +59,8 @@
             <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
             <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
             <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
-            <i>{{ $product->model_name ?? 'N/A' }}</i>
+            <p><strong>মডেল নাম:</strong> {{ $purchase->model->model_name ?? 'N/A' }}</p>
+
         </td>
         <td id="image">
             <img src="{{ $customer->customer_image }}" width="120px" style="border-radius: 500px;" alt="Customer">
