@@ -11,8 +11,13 @@
         h3 {
             margin: 0;
         }
+
+        .header {
+            margin-top: 20px;
+        }
         .header, .footer {
             text-align: center;
+            
         }
         .customer-table, .installment-table {
             width: 100%;
