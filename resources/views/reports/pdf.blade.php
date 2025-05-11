@@ -61,7 +61,7 @@
             <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
         </td>
         <td id="image">
-            <img src="{{ $customer->customer_image }}" width="120px" style="border-radius: 50px; text-align: center;" alt="Customer">
+            <img src="{{ $customer->customer_image }}" width="120px" style="border-radius: 500px;" alt="Customer">
         </td>
     </tr>
 </table>
