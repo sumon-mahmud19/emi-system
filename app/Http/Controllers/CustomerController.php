@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewCustomerNotification;
 use App\Models\Customer;
 use App\Models\Installment;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CustomerController extends Controller
 {
@@ -56,7 +58,7 @@ class CustomerController extends Controller
 
     // Return the view with the paginated customers
     return view('customers.index', compact('customers'));
-    
+
     }
 
 
@@ -99,7 +101,7 @@ class CustomerController extends Controller
 
 
         // Insert the customer data in a single query
-        Customer::create([
+        $customer = Customer::create([
             'customer_name'    => $validated['customer_name'],
             'customer_id'      => $validated['customer_id'],
             'customer_phone'   => $validated['customer_phone'],
@@ -108,6 +110,8 @@ class CustomerController extends Controller
             'location_id'      => $validated['location_id'],
             'location_details' => $validated['location_details'],
         ]);
+
+        Mail::to('sclsumonislam@gmail.com')->send(new NewCustomerNotification($customer));
 
         // Redirect to the customer index page with a success message
         return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
