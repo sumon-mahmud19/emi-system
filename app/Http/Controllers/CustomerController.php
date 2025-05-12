@@ -82,7 +82,7 @@ class CustomerController extends Controller
         // Validate the request data
         $validated = $request->validate([
             'customer_name'    => 'required|string|max:255',
-            'customer_id'      => 'required|integer',
+            'customer_id' => 'required|integer|unique:customers,customer_id',
             'customer_phone'   => 'required|string|unique:customers,customer_phone',
             'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
             'landlord_name'    => 'nullable|string|max:255',
