@@ -97,7 +97,7 @@
                     return {
                         results: $.map(data, function(item) {
                             return {
-                                text: item.name,
+                                text: item.customer_name,
                                 id: item.id
                             }
                         })
