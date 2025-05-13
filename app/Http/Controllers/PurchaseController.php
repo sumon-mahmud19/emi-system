@@ -45,6 +45,20 @@ class PurchaseController extends Controller
         return view('purchases.create', compact('customers', 'products', 'locations'));
     }
 
+    
+    public function getModels($productId)
+    {
+        // Get the product
+        $product = Product::findOrFail($productId);
+
+        // Fetch the models associated with the selected product
+        $models = $product->models;
+
+        // Return the models as a JSON response
+        return response()->json($models);
+    }
+
+
     public function autocomplete(Request $request){
         
         $data = [];
@@ -59,17 +73,6 @@ class PurchaseController extends Controller
         return response()->json($data);
     }
 
-    public function getModels($productId)
-    {
-        // Get the product
-        $product = Product::findOrFail($productId);
-
-        // Fetch the models associated with the selected product
-        $models = $product->models;
-
-        // Return the models as a JSON response
-        return response()->json($models);
-    }
 
     /**
      * Store a newly created resource in storage.
