@@ -8,29 +8,17 @@
             @csrf
 
             <!-- Customer Dropdown -->
-
-            <form action="#" method="POST" enctype="multipart/form-data" class="mt-2">
+            <form action="#" method="POST" enctype="multipart/form-data" class="mt-3">
                 @csrf
-       
-                <select class="form-control" id="search" style="width:500px;" name="customer_id"></select>
-       
-                <div class="mb-3 mt-3">
-                    <button type="submit" class="btn btn-success">Submit</button>
-                </div>
-            
-            </form>
 
-            <div class="mb-3">
-                <label for="customer" class="form-label">Customer</label>
-                <select name="customer_id" id="customer" class="form-select select2">
-                    <option value="">Select Customer</option>
-                    @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">
-                            {{ $customer->customer_name }} ({{ $customer->customer_phone }})
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label for="search" class="form-label">Select Customer</label>
+                    <select class="form-select select2" id="search" name="customer_id" style="width:100%;">
+                        <option value="">Search and Select Customer</option>
+                        {{-- Populate with options dynamically via JS or server --}}
+                    </select>
+                </div>
+            </form>
 
             <!-- Product Dropdown -->
             <div class="mb-3">
