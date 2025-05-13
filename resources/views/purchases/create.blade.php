@@ -13,7 +13,7 @@
 
                 <div class="mb-3">
                     <label for="search" class="form-label">Select Customer</label>
-                    <select class="form-select select2" id="search" name="customer_id" style="width:100%;">
+                    <select class="form-control select2" id="search" name="customer_id" style="width:100%;">
                         <option value="">Search and Select Customer</option>
                         {{-- Populate with options dynamically via JS or server --}}
                     </select>
