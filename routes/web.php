@@ -29,6 +29,7 @@ Route::get('/locations/{id}/customers', [CustomerController::class, 'showByLocat
 Route::resource('purchases', PurchaseController::class);
 Route::get('pdf', [PurchaseController::class, 'getpdf'])->name('pdf');
 Route::get('get-models/{product_id}', [PurchaseController::class, 'getModels'])->name('get.models');
+Route::get('autocomplete', [PurchaseController::class, 'autocomplete'])->name('autocomplete');
 
 Route::resource('installments', InstallmentController::class);
 

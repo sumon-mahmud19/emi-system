@@ -45,6 +45,20 @@ class PurchaseController extends Controller
         return view('purchases.create', compact('customers', 'products', 'locations'));
     }
 
+    public function autocomplete(Request $request){
+        
+        $data = [];
+     
+        if($request->filled('q')){
+            $data = Customer::select("customer_name", "id")
+                        ->where('customer_name', 'LIKE', '%'. $request->get('q'). '%')
+                        ->take(10)
+                        ->get();
+        }
+      
+        return response()->json($data);
+    }
+
     public function getModels($productId)
     {
         // Get the product
