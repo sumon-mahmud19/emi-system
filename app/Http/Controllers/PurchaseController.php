@@ -223,7 +223,9 @@ class PurchaseController extends Controller
      */
     public function destroy(Purchase $purchase)
     {
-        $purchase->delete();
+        $data = Purchase::all();
+        $data->delete();
+        // $purchase->delete();
         return redirect()->route('purchases.index')->with('success', 'Purchase deleted successfully.');
     }
 }
