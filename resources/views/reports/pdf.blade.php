@@ -84,7 +84,7 @@
                 <th>মডেল</th>
                 <th>মোট মূল্য</th>
                 <th>ডাউন পেমেন্ট</th>
-                <th>EMI কিস্তি সংখ্যা</th>
+                <th>Emi Plan</th>
             </tr>
         </thead>
         <tbody>
@@ -93,7 +93,7 @@
                 <td>{{ $purchase->model->model_name ?? 'N/A' }}</td>
                 <td>{{ number_format($purchase->total_price, 2) }} টাকা</td>
                 <td>{{ number_format($purchase->downpayment, 2) }} টাকা</td>
-                <td>{{ $installments->count() }} কিস্তি</td>
+                <td>{{ $purchase->emi_plan }}Emi Plan</td>
             </tr>
         </tbody>
     </table>
