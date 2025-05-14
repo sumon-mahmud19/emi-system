@@ -8,18 +8,19 @@
             @can('customer-create')
                 <a href="{{ route('customers.create') }}" class="btn btn-success">New Customer</a>
             @endcan
-        
+
             <div class="d-flex flex-column flex-md-row gap-3 w-100">
-                <input type="text" id="liveSearch" class="form-control w-100 w-md-auto" placeholder="Search customer (e.g. shakil-fan-pl)">
-                
+                <input type="text" id="liveSearch" class="form-control w-100 w-md-auto"
+                    placeholder="Search customer (e.g. shakil-fan-pl)">
+
                 <div class="mb-2 mb-md-0">
-                    <strong>Total Results: </strong> 
+                    <strong>Total Results: </strong>
                     <span id="resultCount">{{ $customers->total() }}</span>
                 </div>
             </div>
         </div>
 
-        
+
         <div class="table-responsive">
             <table class="table table-striped table-hover align-middle" id="customerTable">
                 <thead class="table-light">
@@ -70,10 +71,11 @@
                                     data-phone="tel:{{ $customer->customer_phone }}"
                                     data-location="{{ $customer->location->name ?? 'N/A' }}"
                                     data-image="{{ asset($customer->customer_image) }}">
-                                    <img src="{{ asset($customer->customer_image ?? 'image/profile.png') }}"
-                                    class="img-fluid rounded-circle"
-                                    style="height: 50px; width: 50px; object-fit: cover;">
-                               
+                                    <img src="{{ $customer->customer_image ? asset($customer->customer_image) : asset('image/profile.png') }}"
+                                        class="img-fluid rounded-circle"
+                                        style="height: 50px; width: 50px; object-fit: cover;">
+
+
                                 </a>
                             </td>
                             <td>
