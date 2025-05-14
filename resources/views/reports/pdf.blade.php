@@ -17,7 +17,6 @@
         .header,
         .footer {
             text-align: center;
-
         }
 
         .customer-table,
@@ -30,7 +29,6 @@
         .customer-table td,
         .installment-table th,
         .installment-table td {
-
             padding: 8px;
         }
 
@@ -64,27 +62,43 @@
         <div>মোবাইল: ০১৮৭৫-৯৫৯২১৮</div>
     </div>
     <hr>
+
     <table class="customer-table">
         <tr>
             <td width="70%">
                 <p><strong>ক্রেতার নাম:</strong> {{ $customer->customer_name }}</p>
                 <p><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</p>
                 <p><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</p>
-                <p><strong>পণ্যের নাম:</strong> {{ $product->product_name }}</p>
-                <p><strong>মডেল নাম:</strong> {{ $purchase->model->model_name ?? 'N/A' }}</p>
-
-
             </td>
-          
-
             <td id="image">
                 <img src="{{ $customer->customer_image ? asset($customer->customer_image) : asset('image/profile.png') }}" width="120px" style="border-radius: 50px;" alt="Customer">
-
             </td>
-
         </tr>
     </table>
 
+    <!-- Product Information Table -->
+    <table class="installment-table" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <th>পণ্যের নাম</th>
+                <th>মডেল</th>
+                <th>মোট মূল্য</th>
+                <th>ডাউন পেমেন্ট</th>
+                <th>EMI কিস্তি সংখ্যা</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $product->product_name }}</td>
+                <td>{{ $purchase->model->model_name ?? 'N/A' }}</td>
+                <td>{{ number_format($purchase->total_price, 2) }} টাকা</td>
+                <td>{{ number_format($purchase->downpayment, 2) }} টাকা</td>
+                <td>{{ $installments->count() }} কিস্তি</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Installment Table -->
     <table class="installment-table">
         <thead>
             <tr>
@@ -99,13 +113,14 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ \Carbon\Carbon::parse($installment->due_date)->format('d-m-Y') }}</td>
-                    <td>{{ number_format($installment->amount, 2) }}</td>
+                    <td>{{ number_format($installment->amount, 2) }} টাকা</td>
                     <td>{{ $installment->status === 'paid' ? 'পরিশোধিত' : 'বাকি' }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
+    <!-- Signatures -->
     <table class="signature" width="100%">
         <tr>
             <td>___________________________<br>ক্রেতার স্বাক্ষর</td>
