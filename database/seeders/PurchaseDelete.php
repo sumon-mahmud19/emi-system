@@ -13,7 +13,6 @@ class PurchaseDelete extends Seeder
      */
     public function run(): void
     {
-        $data = Purchase::all();
-        $data->delete();
+       
     }
 }
