@@ -70,7 +70,7 @@
                                     data-phone="tel:{{ $customer->customer_phone }}"
                                     data-location="{{ $customer->location->name ?? 'N/A' }}"
                                     data-image="{{ asset($customer->customer_image) }}">
-                                    <img src="{{ asset($customer->customer_image ?? 'images/default.png') }}"
+                                    <img src="{{ asset($customer->customer_image ?? asset('images/default.png')) }}"
                                         class="img-fluid rounded-circle"
                                         style="height: 50px; width: 50px; object-fit: cover;">
                                 </a>
