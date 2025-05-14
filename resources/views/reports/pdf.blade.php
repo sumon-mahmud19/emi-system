@@ -65,14 +65,8 @@
 
         </td>
         <td id="image">
-            <img 
-                src="{{ $customer->customer_image ??'asset('image/default.png')' }}" 
-                width="120px" 
-                style="border-radius: 500px;" 
-                alt="Customer"
-            >
+            <img src="{{ $customer->customer_image ?? "No Image"}}" width="120px" style="border-radius: 500px;" alt="Customer">
         </td>
-        
     </tr>
 </table>
 
