@@ -14,6 +14,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+        <h1>{{ $totalPurchases }}</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light text-center">
