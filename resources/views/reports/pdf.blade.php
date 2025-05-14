@@ -57,10 +57,10 @@
 
 <body>
 
-    <div class="header" style="margin-top: 20px;">
+    <div class="header" style="margin-top: 10px;">
         <br>
         <h2>রোমান ইলেকট্রিক এন্ড ফার্নিচার</h2>
-        <div>লক্ষীপুরা রোড, বায়তুল ওমর জামে মসজিদ, (তিন রাস্তার মোড়), জয়দেবপুর, গাজীপুর।</div>
+        <div><b>লক্ষীপুরা রোড, বায়তুল ওমর জামে মসজিদ, (তিন রাস্তার মোড়), জয়দেবপুর, গাজীপুর।</b></div>
         <div>মোবাইল: ০১৮৭৫-৯৫৯২১৮</div>
     </div>
     <hr>
@@ -75,14 +75,11 @@
 
 
             </td>
-            @php
-                $imagePath = $customer->customer_image
-                    ? public_path(asset($customer->customer_image))
-                    : public_path(asset('image/profile.png'));
-            @endphp
+          
 
             <td id="image">
-                <img src="{{ $imagePath }}" width="120px" style="border-radius: 500px;" alt="Customer">
+                <img src="{{ $customer->customer_image ? asset($customer->customer_image) : asset('image/profile.png') }}" width="120px" style="border-radius: 50px;" alt="Customer">
+
             </td>
 
         </tr>
