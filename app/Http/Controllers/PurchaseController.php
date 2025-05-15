@@ -46,7 +46,7 @@ class PurchaseController extends Controller
         return view('purchases.create', compact('customers', 'products', 'locations'));
     }
 
-    
+
     public function getModels($productId)
     {
         // Get the product
@@ -60,17 +60,18 @@ class PurchaseController extends Controller
     }
 
 
-    public function autocomplete(Request $request){
-        
+    public function autocomplete(Request $request)
+    {
+
         $data = [];
-     
-        if($request->filled('q')){
+
+        if ($request->filled('q')) {
             $data = Customer::select("customer_name", "id")
-                        ->where('customer_name', 'LIKE', '%'. $request->get('q'). '%')
-                        ->take(10)
-                        ->get();
+                ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
+                ->take(10)
+                ->get();
         }
-      
+
         return response()->json($data);
     }
 
@@ -155,13 +156,13 @@ class PurchaseController extends Controller
         ];
 
 
-        
+
         $defaultConfig = (new ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
         $defaultFontConfig = (new FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
         $path = public_path('fonts');
-    
+
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
@@ -174,13 +175,12 @@ class PurchaseController extends Controller
             ],
             'default_font' => 'solaimanlipi'
         ]);
-    
+
         $html = view('reports.pdf', $data)->render();
         $mpdf->WriteHTML($html);
-    
+
         return $mpdf->Output('EmiInvoice.pdf', 'D');
-
-
+        return redirect()->route('customers.index');
     }
 
 
