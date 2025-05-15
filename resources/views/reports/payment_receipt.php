@@ -1,114 +1,60 @@
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
     <meta charset="UTF-8">
-    <title>EMI Invoice</title>
+    <title>EMI Report</title>
     <style>
         body {
-            font-family: 'solaimanlipi', sans-serif;
+            font-family: 'kalpurush', sans-serif;
+            margin: 20px;
             font-size: 14px;
-            line-height: 1.6;
         }
-
-        .header,
-        .footer {
-            text-align: center;
-        }
-
-        .header h2 {
-            margin-bottom: 5px;
-        }
-
-        .header div {
-            margin-bottom: 2px;
-        }
-
-        hr {
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-
-        .customer-table,
-        .installment-table {
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
-
-        .customer-table td {
-            padding: 6px 10px;
-            vertical-align: top;
-        }
-
-        .installment-table th,
-        .installment-table td {
+        th, td {
             border: 1px solid #000;
-            padding: 8px;
+            padding: 6px;
             text-align: center;
         }
-
-        .installment-table th {
-            background-color: #f2f2f2;
-        }
-
-        .signature {
-            margin-top: 60px;
+        h2, h4 {
             text-align: center;
-            width: 100%;
+            margin: 0;
         }
-
-        .signature td {
-            padding-top: 60px;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
-
-        .text-left {
-            text-align: left;
-        }
-
-        img.profile {
-            border-radius: 50%;
-            border: 1px solid #ccc;
+        .header-info {
+            text-align: center;
+            margin-bottom: 10px;
         }
     </style>
 </head>
-
 <body>
 
-    <div class="header">
-        <h2>রোমান ইলেকট্রিক এন্ড ফার্নিচার</h2>
-        <div><b>লক্ষীপুরা রোড, বায়তুল ওমর জামে মসজিদ, (তিন রাস্তার মোড়), জয়দেবপুর, গাজীপুর।</b></div>
-        <div>মোবাইল: ০১৮৭৫-৯৫৯২১৮</div>
+    <h2>রোমান ইলেকট্রিক এন্ড ফার্নিচার</h2>
+    <div class="header-info">
+        দক্ষিণপাড়া রোড, বাঁশতলা ওভার ব্রিজ সংলগ্ন, (তিন রাস্তার মোড়), মদনপুর, গাজীপুর।<br>
+        মোবাইল: ০১৮৭৫-৯৫৯১৮৮
     </div>
 
-    <hr>
-
-    <!-- Customer Info -->
-    <table class="customer-table">
+    <table>
         <tr>
-            <td width="70%">
-                <p><span class="bold">ক্রেতার নাম:</span> {{ $customer->customer_name }}</p>
-                <p><span class="bold">মোবাইল:</span> {{ $customer->customer_phone }}</p>
-                <p><span class="bold">ঠিকানা:</span> {{ $customer->location->name ?? 'N/A' }}</p>
-            </td>
-            <td width="30%" align="right">
-                <img class="profile" src="{{ $customer->customer_image ? asset($customer->customer_image) : asset('image/profile.png') }}" width="100" height="100" alt="Customer Image">
-            </td>
+            <td><strong>ক্রেতার নাম:</strong> {{ $customer->customer_name }}</td>
+            <td><strong>মোবাইল:</strong> {{ $customer->customer_phone }}</td>
+            <td><strong>ঠিকানা:</strong> {{ $customer->location->name ?? 'N/A' }}</td>
         </tr>
     </table>
 
-    <!-- Product Info -->
-    <table class="installment-table" style="margin-top: 25px;">
+    <br>
+
+    <table>
         <thead>
             <tr>
                 <th>পণ্যের নাম</th>
                 <th>মডেল</th>
                 <th>মোট মূল্য</th>
                 <th>ডাউন পেমেন্ট</th>
-                <th>কিস্তি মাস</th>
+                <th>EMI প্ল্যান</th>
             </tr>
         </thead>
         <tbody>
@@ -122,8 +68,11 @@
         </tbody>
     </table>
 
-    <!-- Installments Table -->
-    <table class="installment-table" style="margin-top: 20px;">
+    <br>
+
+    <h4>EMI কিস্তি বিবরণ</h4>
+
+    <table>
         <thead>
             <tr>
                 <th>ক্রমিক</th>
@@ -133,18 +82,18 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($installments as $index => $installment)
+            @foreach($purchase->installments as $index => $installment)
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ \Carbon\Carbon::parse($installment->due_date)->format('d-m-Y') }}</td>
                     <td>{{ number_format($installment->amount, 2) }} টাকা</td>
                     <td>
                         @if($installment->status === 'paid')
-                            পরিশোধিত
+                            <span style="color:green">পরিশোধ</span>
                         @elseif($installment->status === 'partial')
-                            আংশিক
+                            <span style="color:orange">আংশিক</span>
                         @else
-                            বাকি
+                            <span style="color:red">বাকি</span>
                         @endif
                     </td>
                 </tr>
@@ -152,14 +101,5 @@
         </tbody>
     </table>
 
-    <!-- Signatures -->
-    <table class="signature">
-        <tr>
-            <td>___________________________<br>ক্রেতার স্বাক্ষর</td>
-            <td>___________________________<br>বিক্রেতার স্বাক্ষর</td>
-        </tr>
-    </table>
-
 </body>
-
 </html>
