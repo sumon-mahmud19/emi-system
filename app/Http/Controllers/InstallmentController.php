@@ -9,6 +9,9 @@ use App\Models\Product;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Mpdf\Mpdf;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
 
 class InstallmentController extends Controller
 {
@@ -17,20 +20,19 @@ class InstallmentController extends Controller
     {
         $customer = Customer::findOrFail($request->customer_id);
 
-        // Initialize an array to track payments
         $paymentHistory = [];
+        $paidPurchases = [];
 
-        // Process each purchase and its installments
         foreach ($request->payments as $purchaseId => $amount) {
-            // Ensure amount is valid
             $amount = floatval($amount);
-            if ($amount <= 0) continue; // Skip if the amount is invalid
+            if ($amount <= 0) continue;
 
             $purchase = Purchase::findOrFail($purchaseId);
             $installments = $purchase->installments()->where('status', '!=', 'paid')->orderBy('id')->get();
 
             $totalDue = 0;
             $totalPaid = 0;
+
             foreach ($installments as $installment) {
                 $due = $installment->amount - $installment->paid_amount;
                 $totalDue += $due;
@@ -40,17 +42,14 @@ class InstallmentController extends Controller
                 $payNow = min($amount, $due);
                 $installment->paid_amount += $payNow;
 
-                // Update status based on payment amount
                 if ($installment->paid_amount >= $installment->amount) {
                     $installment->status = 'paid';
                 } else {
                     $installment->status = 'partial';
                 }
 
-                // Save the installment update
                 $installment->save();
 
-                // Log the payment history
                 Payment::create([
                     'installment_id' => $installment->id,
                     'amount' => $payNow,
@@ -61,7 +60,6 @@ class InstallmentController extends Controller
                 $amount -= $payNow;
             }
 
-            // Mark the purchase as fully paid if all installments are paid
             $totalInstallments = $purchase->installments()->count();
             $paidInstallments = $purchase->installments()->where('status', 'paid')->count();
 
@@ -70,7 +68,9 @@ class InstallmentController extends Controller
                 $purchase->save();
             }
 
-            // Track payment history for the purchase
+            // Track successful purchase for PDF
+            $paidPurchases[] = $purchase;
+
             $paymentHistory[] = [
                 'purchase_id' => $purchaseId,
                 'total_due' => $totalDue,
@@ -79,9 +79,35 @@ class InstallmentController extends Controller
             ];
         }
 
-        return redirect()->route('customers.emi_plans', $customer->id)
-        ->with('success', 'Payments successfully processed.')
-        ->with('paymentHistory', $paymentHistory);
+        // ✅ Prepare Data for PDF
+        $data = [
+            'customer' => $customer,
+            'paidPurchases' => $paidPurchases,
+        ];
+
+        // ✅ mPDF Configuration
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
+        $defaultFontConfig = (new FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+        $path = public_path('fonts');
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'fontDir' => array_merge($fontDirs, [$path]),
+            'fontdata' => $fontData + [
+                'solaimanlipi' => [
+                    'R' => 'SolaimanLipi.ttf',
+                    'useOTL' => 0xFF,
+                ],
+            ],
+            'default_font' => 'solaimanlipi'
+        ]);
+
+        $html = view('reports.payment_receipt', $data)->render(); // Create this Blade file
+        $mpdf->WriteHTML($html);
+
+        return $mpdf->Output('PaymentReceipt.pdf', 'I'); // Show in browser
     }
-    
 }
