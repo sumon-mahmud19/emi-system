@@ -139,10 +139,7 @@ class PurchaseController extends Controller
             $lastInstallment->amount = $lastInstallment->amount - $adjustment;
             $lastInstallment->save();
         }
-        // return $data;
-
-
-        // Prepare data to be passed to the view for PDF generation
+        
 
         $invoices = Invoice::all();
         // Return prepared data
@@ -179,8 +176,8 @@ class PurchaseController extends Controller
         $html = view('reports.pdf', $data)->render();
         $mpdf->WriteHTML($html);
 
-        return $mpdf->Output('EmiInvoice.pdf', 'D');
-        return redirect()->route('customers.index');
+        return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
+        
     }
 
 
