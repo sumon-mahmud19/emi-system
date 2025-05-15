@@ -2,9 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h2>EMI Plans for {{ $customer->customer_name }}</h2>
+    <h2 class="mb-4">EMI Overview for {{ $customer->customer_name }}</h2>
 
-    {{-- Flash message --}}
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -14,12 +13,16 @@
         @csrf
         <input type="hidden" name="customer_id" value="{{ $customer->id }}">
 
-        <table class="table table-bordered">
-            <thead>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
                 <tr>
                     <th>Purchase ID</th>
-                    <th>Downpayment (Paid)</th>
-                    <th>Total Due</th>
+                    <th>Product Name</th>
+                    <th>Model</th>
+                    <th>Total Price</th>
+                    <th>Downpayment</th>
+                    <th>Total Paid</th>
+                    <th>Due Amount</th>
                     <th>Pay Now</th>
                     <th>Action</th>
                 </tr>
@@ -27,13 +30,23 @@
             <tbody>
                 @foreach($customer->purchases as $purchase)
                     @php
+                        $product = $purchase->product;
+                        $model = $purchase->model;
+                        $totalPrice = $purchase->total_price;
+                        $downPayment = $purchase->down_payment;
                         $totalPaid = $purchase->installments->sum('paid_amount');
                         $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                     @endphp
                     <tr>
                         <td>{{ $purchase->id }}</td>
-                        <td>{{ number_format($totalPaid, 2) }}</td>
-                        <td>{{ number_format($totalDue, 2) }}</td>
+                        <td>{{ $product->product_name }}</td>
+                        <td>{{ $model->model_name ?? 'N/A' }}</td>
+                        <td>{{ number_format($totalPrice, 2) }} টাকা</td>
+                        <td>{{ number_format($downPayment, 2) }} টাকা</td>
+                        <td>{{ number_format($totalPaid, 2) }} টাকা</td>
+                        <td>
+                            <span class="text-danger">{{ number_format($totalDue, 2) }} টাকা</span>
+                        </td>
                         <td>
                             <input 
                                 type="number" 
@@ -49,7 +62,7 @@
                         <td>
                             <button 
                                 type="submit" 
-                                class="btn btn-success"
+                                class="btn btn-success btn-sm"
                                 {{ $totalDue <= 0 ? 'disabled' : '' }}
                             >
                                 Pay
@@ -64,10 +77,11 @@
     <!-- Payment History Section -->
     <h3 class="mt-5">Payment History</h3>
     <table class="table table-striped">
-        <thead>
+        <thead class="table-secondary">
             <tr>
                 <th>Installment ID</th>
                 <th>Purchase ID</th>
+                <th>Product</th>
                 <th>Amount Paid</th>
                 <th>Paid At</th>
                 <th>Status</th>
@@ -79,8 +93,13 @@
                     <tr>
                         <td>{{ $installment->id }}</td>
                         <td>{{ $purchase->id }}</td>
-                        <td>{{ number_format($installment->paid_amount, 2) }}</td>
-                        <td>{{ \Carbon\Carbon::parse($installment->paid_at)->format('Y-m-d H:i') }}</td>
+                        <td>{{ $purchase->product->product_name }}</td>
+                        <td>{{ number_format($installment->paid_amount, 2) }} টাকা</td>
+                        <td>
+                            {{ $installment->paid_at 
+                                ? \Carbon\Carbon::parse($installment->paid_at)->format('Y-m-d H:i') 
+                                : '—' }}
+                        </td>
                         <td>
                             <span class="badge 
                                 {{ $installment->status === 'paid' ? 'bg-success' : 
@@ -92,7 +111,7 @@
                 @endforeach
             @empty
                 <tr>
-                    <td colspan="5">No payments found.</td>
+                    <td colspan="6" class="text-center">No payments found.</td>
                 </tr>
             @endforelse
         </tbody>
