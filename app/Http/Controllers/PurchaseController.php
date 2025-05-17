@@ -30,9 +30,10 @@ class PurchaseController extends Controller
      */
     public function index()
     {
+        $customers = Customer::all();
         $purchases = Purchase::all();
         $totalPurchases = Purchase::count();
-        return $purchases;
+        return $customers->location->name;
 
         return view('purchases.index', compact('purchases', 'totalPurchases'));
     }
