@@ -19,9 +19,70 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <style>
+
+        /* Tailwind-style override colors */
+        :root {
+            --tw-purple-700: #7e22ce;
+            --tw-purple-600: #9333ea;
+            /* slightly lighter purple for hover */
+            --tw-slate-100: #f1f5f9;
+            --tw-slate-800: #1e293b;
+            --tw-gray-700: #374151;
+        }
+
         body {
             font-family: 'SolaimanLipi', sans-serif;
+            background-color: var(--tw-slate-100);
+            color: var(--tw-gray-700);
         }
+
+        /* Navbar overrides */
+        .navbar {
+            background-color: var(--tw-purple-700) !important;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: white;
+        }
+
+        .navbar-dark .navbar-nav .nav-link.active,
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #e9d5ff !important;
+            /* light purple */
+        }
+
+        /* Dropdown menu styling */
+        .dropdown-menu {
+            background-color: white;
+            border: 1px solid var(--tw-slate-800);
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item.active {
+            background-color: var(--tw-purple-700);
+            color: white !important;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--tw-slate-100);
+            color: var(--tw-gray-700);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--tw-purple-700);
+            border-color: var(--tw-purple-700);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: var(--tw-purple-600);
+            border-color: var(--tw-purple-600);
+        }
+
     </style>
 </head>
 
