@@ -38,7 +38,7 @@ class PurchaseController extends Controller
 
         $totalPurchases = Purchase::count();
 
-        return view('your_view', compact('customers', 'totalPurchases'));
+        return view('purchases.index', compact('customers', 'totalPurchases'));
     }
 
     /**
