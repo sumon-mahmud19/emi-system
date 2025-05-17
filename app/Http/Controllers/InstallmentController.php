@@ -15,6 +15,14 @@ use Mpdf\Config\FontVariables;
 
 class InstallmentController extends Controller
 {
+     public function __construct()
+    {
+        $this->middleware(['permission:installment-show|installment-show|installment-edit|installment-delete'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:installment-show'], ['only' => ['show', 'store']]);
+        $this->middleware(['permission:installment-edit'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:installment-delete'], ['only' => ['destroy']]);
+    }
+
 
     public function payMultiple(Request $request)
     {
