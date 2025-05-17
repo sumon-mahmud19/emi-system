@@ -53,14 +53,14 @@
                                     {{ $totalDue <= 0 ? 'disabled' : '' }}>
                             </td>
                             <td>
-
-                                @if (auth()->user()->hasRole('admin'))
-                                    <button type="submit" class="btn btn-success btn-sm"
-                                        {{ $totalDue <= 0 ? 'disabled' : '' }}>
-                                        Pay
-                                    </button>
-                                @endif
-
+                                @can('installment-pay')
+                                    @if (auth()->user()->hasRole('admin'))
+                                        <button type="submit" class="btn btn-success btn-sm"
+                                            {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                            Pay 
+                                        </button>
+                                    @endif
+                                @endcan
 
                             </td>
                         </tr>
