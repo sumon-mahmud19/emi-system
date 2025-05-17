@@ -101,7 +101,7 @@
                                 <td>{{ $purchase->product->product_name }}</td>
                                 <td>{{ number_format($installment->paid_amount, 2) }} ৳</td>
                                 <td>
-                                    {{ $installment->paid_at ? \Carbon\Carbon::parse($installment->updated_at)->format('Y-m-d H:i') : '—' }}
+                                     {{ \Carbon\Carbon::parse($installment->updated_at)->format('Y-m-d H:i') }}
                                 </td>
                                 <td>
                                     <span class="badge 
