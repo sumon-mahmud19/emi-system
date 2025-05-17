@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container py-4">
-    <h2 class="mb-4 text-primary">EMI Overview for <strong>{{ $customer->customer_name }}</strong></h2>
+    <h2 class="mb-4">Customer Name:<strong>{{ $customer->customer_name }}</strong></h2>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -14,7 +14,7 @@
         <input type="hidden" name="customer_id" value="{{ $customer->id }}">
 
         <div class="card shadow-sm mb-5">
-            <div class="card-header bg-danger text-white">
+            <div class="card-header bg-primary text-white">
                 <strong>Purchase & EMI Summary</strong>
             </div>
             <div class="table-responsive">
