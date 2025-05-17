@@ -57,7 +57,7 @@
                                     @if (auth()->user()->hasRole('admin'))
                                         <button type="submit" class="btn btn-success btn-sm"
                                             {{ $totalDue <= 0 ? 'disabled' : '' }}>
-                                            Pay
+                                            Pay 
                                         </button>
                                     @endif
                                 @endcan
