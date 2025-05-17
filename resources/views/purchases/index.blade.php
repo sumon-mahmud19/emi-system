@@ -14,7 +14,8 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <h1>{{ $totalPurchases }}</h1>
+        <h5 class="mb-3">মোট ক্রয়: <strong>{{ $totalPurchases }}</strong></h5>
+
         <div class="table-responsive">
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light text-center">
@@ -33,16 +34,12 @@
                         <tr data-bs-toggle="collapse" data-bs-target="#emiDetails{{ $purchase->id }}"
                             class="clickable text-center" style="cursor:pointer;">
                             <td>{{ optional($purchase->customer)->customer_name }}</td>
-                            <td>{{ optional($purchase->product)->customer_name }}</td>
-
-                            <td>{{ $purchase->product->product_name ?? 'N/A' }}</td>
-
-                           <td>{{ optional($purchase->customer->location)->name ?? 'N/A' }}</td>
+                            <td>{{ optional($purchase->product)->product_name }}</td>
+                            <td>{{ optional($purchase->customer->location)->name ?? 'N/A' }}</td>
                             <td>{{ number_format($purchase->total_price, 2) }} ৳</td>
                             <td>{{ number_format($purchase->down_payment, 2) }} ৳</td>
                             <td>{{ $purchase->emi_plan }} মাস</td>
                             <td>
-
                                 @can('purchase-edit')
                                     <a href="{{ route('purchases.edit', $purchase->id) }}"
                                         class="btn btn-sm btn-warning">এডিট</a>
@@ -55,27 +52,42 @@
                                         <button class="btn btn-sm btn-danger">ডিলিট</button>
                                     </form>
                                 @endcan
+                            </td>
+                        </tr>
 
-                            </td>
-                        </tr>
-                        <tr class="collapse" id="emiDetails{{ $purchase->id }}">
+                        <tr class="collapse bg-light" id="emiDetails{{ $purchase->id }}">
                             <td colspan="7">
-                                <strong>EMI বিস্তারিত:</strong>
-                                <ul class="list-group mt-2">
-                                    @foreach ($purchase->installments as $installment)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            {{ \Carbon\Carbon::parse($installment->due_date)->format('F Y') }}:
-                                            <span>
-                                                {{ number_format($installment->amount, 2) }} ৳ -
-                                                <span class="{{ $installment->is_paid ? 'text-success' : 'text-danger' }}">
-                                                    {{ $installment->is_paid ? 'পরিশোধিত' : 'বাকি' }}
-                                                </span>
-                                            </span>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                                <div class="card border-0 shadow-sm mt-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">
+                                            <i class="bi bi-calendar-check-fill"></i> EMI বিস্তারিত
+                                        </h5>
+                                        @if ($purchase->installments->isEmpty())
+                                            <p class="text-muted">এই ক্রয়ের কোনো EMI নেই।</p>
+                                        @else
+                                            <div class="row row-cols-1 row-cols-md-3 g-3">
+                                                @foreach ($purchase->installments as $installment)
+                                                    <div class="col">
+                                                        <div class="card h-100 border {{ $installment->is_paid ? 'border-success' : 'border-danger' }}">
+                                                            <div class="card-body">
+                                                                <h6 class="card-subtitle mb-2 text-muted">
+                                                                    {{ \Carbon\Carbon::parse($installment->due_date)->format('F Y') }}
+                                                                </h6>
+                                                                <p class="mb-1 fw-bold">{{ number_format($installment->amount, 2) }} ৳</p>
+                                                                <span class="badge {{ $installment->is_paid ? 'bg-success' : 'bg-danger' }}">
+                                                                    {{ $installment->is_paid ? 'পরিশোধিত' : 'বাকি' }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
                             </td>
                         </tr>
+
                     @empty
                         <tr>
                             <td colspan="7" class="text-center">কোনো ক্রয় পাওয়া যায়নি।</td>
