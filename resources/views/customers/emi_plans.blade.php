@@ -53,7 +53,7 @@
                                     {{ $totalDue <= 0 ? 'disabled' : '' }}>
                             </td>
                             <td>
-                                @can('installment-show')
+                                @can('installment-pay')
                                     <button type="submit" class="btn btn-success btn-sm"
                                         {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                         Pay
