@@ -30,15 +30,9 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        $customers = Customer::with([
-            'location',
-            'purchases.product',
-            'purchases.installments'
-        ])->get();
-
+        $purchases = Purchase::all();
         $totalPurchases = Purchase::count();
-
-        return view('purchases.index', compact('customers', 'totalPurchases'));
+        return view('purchases.index', compact('purchases', 'totalPurchases'));
     }
 
     /**
@@ -145,7 +139,7 @@ class PurchaseController extends Controller
             $lastInstallment->amount = $lastInstallment->amount - $adjustment;
             $lastInstallment->save();
         }
-
+        
 
         $invoices = Invoice::all();
         // Return prepared data
@@ -183,6 +177,7 @@ class PurchaseController extends Controller
         $mpdf->WriteHTML($html);
 
         return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
+        
     }
 
 
