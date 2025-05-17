@@ -141,7 +141,42 @@ class PurchaseController extends Controller
         }
         
 
-       return redirect()->route('customers.emi_plans')->with('success', 'Purchase Successfully!');
+        $invoices = Invoice::all();
+        // Return prepared data
+        $data = [
+            'invoices' => $invoices,
+            'purchase' => $purchase,
+            'emiAmount' => $emiAmount,
+            'installments' => $installments,
+            'customer' => $purchase->customer,
+            'product' => $purchase->product,
+        ];
+
+
+
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
+        $defaultFontConfig = (new FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+        $path = public_path('fonts');
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'fontDir' => array_merge($fontDirs, [$path]),
+            'fontdata' => $fontData + [
+                'solaimanlipi' => [
+                    'R' => 'SolaimanLipi.ttf',
+                    'useOTL' => 0xFF,
+                ],
+            ],
+            'default_font' => 'solaimanlipi'
+        ]);
+
+        $html = view('reports.pdf', $data)->render();
+        $mpdf->WriteHTML($html);
+
+        return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
         
     }
 

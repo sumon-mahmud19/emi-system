@@ -79,35 +79,8 @@ class InstallmentController extends Controller
             ];
         }
 
-        // ✅ Prepare Data for PDF
-        $data = [
-            'customer' => $customer,
-            'paidPurchases' => $paidPurchases,
-        ];
-
-        // ✅ mPDF Configuration
-        $defaultConfig = (new ConfigVariables())->getDefaults();
-        $fontDirs = $defaultConfig['fontDir'];
-        $defaultFontConfig = (new FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata'];
-        $path = public_path('fonts');
-
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'fontDir' => array_merge($fontDirs, [$path]),
-            'fontdata' => $fontData + [
-                'solaimanlipi' => [
-                    'R' => 'SolaimanLipi.ttf',
-                    'useOTL' => 0xFF,
-                ],
-            ],
-            'default_font' => 'solaimanlipi'
-        ]);
-
-        $html = view('reports.payment_receipt', $data)->render(); // Create this Blade file
-        $mpdf->WriteHTML($html);
-
-        return $mpdf->Output('PaymentReceipt.pdf', 'I'); // Show in browser
+    
+    return redirect()->route('purchases.index')->with('success', 'Installment Completed Successfully!');
+        
     }
 }
