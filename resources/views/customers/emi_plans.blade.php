@@ -47,20 +47,21 @@
                             <td>
                                 <span class="text-danger">{{ number_format($totalDue, 2) }} টাকা</span>
                             </td>
-                            <td>
-                                <input type="number" name="payments[{{ $purchase->id }}]" class="form-control"
-                                    value="0" min="0" max="{{ $totalDue }}" step="0.01"
-                                    {{ $totalDue <= 0 ? 'disabled' : '' }}>
-                            </td>
-                            <td>
-                               
-                                    @if (auth()->user()->hasRole('admin'))
-                                        <button type="submit" class="btn btn-success btn-sm"
-                                            {{ $totalDue <= 0 ? 'disabled' : '' }}>
-                                            Pay 
-                                        </button>
-                                    @endif
-                               
+                            @if (auth()->user()->hasRole('admin'))
+                                <td>
+                                    <input type="number" name="payments[{{ $purchase->id }}]" class="form-control"
+                                        value="0" min="0" max="{{ $totalDue }}" step="0.01"
+                                        {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                </td>
+                                <td>
+
+
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                        Pay
+                                    </button>
+                            @endif
+
 
                             </td>
                         </tr>
