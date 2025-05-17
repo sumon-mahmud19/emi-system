@@ -37,7 +37,7 @@
 
                             <td>{{ $purchase->product->product_name ?? 'N/A' }}</td>
 
-                            <td>{{ $purchase->location_id->name ?? 'N/A' }}</td>
+                            <td>{{ $purchase->location->name ?? 'N/A' }}</td>
                             <td>{{ number_format($purchase->total_price, 2) }} ৳</td>
                             <td>{{ number_format($purchase->down_payment, 2) }} ৳</td>
                             <td>{{ $purchase->emi_plan }} মাস</td>
