@@ -18,7 +18,7 @@ class CustomerController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['permission:installment-pay|installment-create|installment-edit|installment-delete'], ['only' => ['index', 'show']]);
+        // $this->middleware(['permission:installment-pay|installment-create|installment-edit|installment-delete'], ['only' => ['index', 'show']]);
         $this->middleware(['permission:customer-list|customer-create|customer-edit|customer-delete'], ['only' => ['index', 'show']]);
         $this->middleware(['permission:customer-create'], ['only' => ['create', 'store']]);
         $this->middleware(['permission:customer-edit'], ['only' => ['edit', 'update']]);
