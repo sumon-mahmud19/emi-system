@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container py-4">
-    <h2 class="mb-4">Customer Name:<strong>{{ $customer->customer_name }}</strong></h2>
+    <h2 class="mb-4">Customer Name: <strong>{{ $customer->customer_name }}</strong></h2>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
