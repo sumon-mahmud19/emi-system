@@ -79,16 +79,15 @@ class DatabaseSeeder extends Seeder
         // }
 
 
-        // $permissions = [
-        //     'dashboard-view',
-        //     'product-model-create',
-        //     'product-model-edit',
-        //     'product-model-delete',
-        // ];
+        $permissions = [
+            
+            'installment-pay-show',
+    
+        ];
 
-        // foreach ($permissions as $permission) {
-        //     Permission::firstOrCreate(['name' => $permission]);
-        // }
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
 
         // DB::table('products')->insert([
