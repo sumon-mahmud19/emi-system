@@ -14,7 +14,7 @@
         <input type="hidden" name="customer_id" value="{{ $customer->id }}">
 
         <div class="card shadow-sm mb-5">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header bg-danger text-white">
                 <strong>Purchase & EMI Summary</strong>
             </div>
             <div class="table-responsive">
@@ -77,7 +77,7 @@
 
     <!-- Payment History -->
     <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
+        <div class="card-header bg-primary text-white">
             <strong>Payment History</strong>
         </div>
         <div class="table-responsive">
