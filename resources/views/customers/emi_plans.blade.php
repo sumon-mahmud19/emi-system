@@ -49,7 +49,7 @@
                                     $grandTotalDue += $totalDue;
                                 @endphp
                                 <tr>
-                                    <td>{{ $purchase->created_at }}</td>
+                                    {{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}
                                     <td>{{ $product->product_name }}</td>
                                     <td>{{ $model->model_name ?? 'N/A' }}</td>
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
