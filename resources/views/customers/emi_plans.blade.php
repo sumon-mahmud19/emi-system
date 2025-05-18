@@ -21,15 +21,15 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light text-center">
                             <tr>
-                                <th>Date</th>
-                                <th>Product</th>
+                                <th>তারিখ</th>
+                                <th>পণ্য</th>
                                 {{-- <th>Model</th> --}}
                                 <th>মূল্য</th>
-                                <th>Downpayment</th>
+                                {{-- <th>Downpayment</th> --}}
                                 <th>মোট</th>
                                 <th>বাকি</th>
                                 <th>কিস্তি</th>
-                                <th>Action</th>
+                                <th>অ্যাকশন</th>
                             </tr>
                         </thead>
                         <tbody class="text-center align-middle">
@@ -53,7 +53,7 @@
                                     <td>{{ $product->product_name }}</td>
                                     {{-- <td>{{ $model->model_name ?? 'N/A' }}</td> --}}
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
-                                    <td>{{ number_format($downPayment, 2) }} ৳</td>
+                                    {{-- <td>{{ number_format($downPayment, 2) }} ৳</td> --}}
                                     <td>{{ number_format($totalPaid, 2) }} ৳</td>
                                     <td>
                                         <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
