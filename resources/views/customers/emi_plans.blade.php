@@ -21,7 +21,7 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light text-center">
                             <tr>
-                                <th>Purchase ID</th>
+                                <th>Date</th>
                                 <th>Product</th>
                                 <th>Model</th>
                                 <th>Total Price</th>
@@ -49,7 +49,7 @@
                                     $grandTotalDue += $totalDue;
                                 @endphp
                                 <tr>
-                                    <td>{{ $purchase->id }}</td>
+                                    <td>{{ $purchase->created_at }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>{{ $model->model_name ?? 'N/A' }}</td>
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
