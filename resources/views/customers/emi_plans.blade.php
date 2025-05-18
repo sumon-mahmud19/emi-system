@@ -69,14 +69,13 @@
                                             Pay
                                         </button>
                                     @endif
-                                </td><br>
-
+                                </td>
                             </tr>
                         @endforeach
 
                         <!-- Total Row -->
                         <tr class="table table-striped table-hover fw-bold">
-                            <td colspan="3" class="text-end">Total:</td>
+                            <td colspan="3" class="text-end">মোট = </td>
                             <td>{{ number_format($grandTotalPaid, 2) }} ৳</td>
                             <td>
                                 <span class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
@@ -94,7 +93,7 @@
     <!-- Payment History Section -->
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <strong>Payment History</strong>
+            <strong>কিস্তির হিসাব</strong>
         </div>
 
         <div class="table-responsive">
