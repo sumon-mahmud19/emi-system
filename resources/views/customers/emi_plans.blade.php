@@ -100,11 +100,10 @@
             <table class="table table-striped table-hover align-middle text-center">
                 <thead class="table-light">
                     <tr>
-                        <th>#</th>
-                        <th>Purchase ID</th>
-                        <th>Product</th>
-                        <th>Amount Paid</th>
-                        <th>Paid On</th>
+                        <th>তারিখ</th>
+                        {{-- <th>Purchase ID</th> --}}
+                        <th>পণ্য</th>
+                        <th>মোট টাকা</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -114,11 +113,10 @@
                         @foreach ($purchase->installments as $installment)
                             @if ($installment->paid_amount > 0)
                                 <tr>
-                                    <td>{{ $count++ }}</td>
-                                    <td>{{ $purchase->id }}</td>
+                                    {{-- <td>{{ $count++ }}</td> --}}
+                                    <td>{{ \Carbon\Carbon::parse($installment->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ $purchase->product->product_name }}</td>
                                     <td>{{ number_format($installment->paid_amount, 2) }} ৳</td>
-                                    <td>{{ \Carbon\Carbon::parse($installment->created_at)->format('Y-m-d H:i') }}</td>
                                     <td>
                                         <span class="badge 
                                             {{ $installment->status === 'paid' ? 'bg-success' : 
