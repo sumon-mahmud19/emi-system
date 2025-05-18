@@ -49,7 +49,7 @@
                                     $grandTotalDue += $totalDue;
                                 @endphp
                                 <tr>
-                                    {{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}
+                                    <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>{{ $model->model_name ?? 'N/A' }}</td>
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
@@ -95,52 +95,53 @@
             </div>
         </form>
 
-       <!-- Payment History -->
-<div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <strong>Payment History</strong>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover mb-0">
-            <thead class="table-light text-center">
-                <tr>
-                    <th>#</th>
-                    <th>Purchase ID</th>
-                    <th>Product</th>
-                    <th>Amount Paid</th>
-                    <th>Paid On</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody class="text-center align-middle">
-                @php $count = 1; @endphp
-                @forelse($customer->purchases as $purchase)
-                    @foreach ($purchase->installments as $installment)
-                        @if ($installment->paid_amount > 0)
-                            <tr>
-                                <td>{{ $count++ }}</td>
-                                <td>{{ $purchase->id }}</td>
-                                <td>{{ $purchase->product->product_name }}</td>
-                                <td>{{ number_format($installment->paid_amount, 2) }} ৳</td>
-                                <td>{{ \Carbon\Carbon::parse($installment->created_at)->format('Y-m-d H:i') }}</td>
-                                <td>
-                                    <span class="badge 
+        <!-- Payment History -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <strong>Payment History</strong>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Purchase ID</th>
+                            <th>Product</th>
+                            <th>Amount Paid</th>
+                            <th>Paid On</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center align-middle">
+                        @php $count = 1; @endphp
+                        @forelse($customer->purchases as $purchase)
+                            @foreach ($purchase->installments as $installment)
+                                @if ($installment->paid_amount > 0)
+                                    <tr>
+                                        <td>{{ $count++ }}</td>
+                                        <td>{{ $purchase->id }}</td>
+                                        <td>{{ $purchase->product->product_name }}</td>
+                                        <td>{{ number_format($installment->paid_amount, 2) }} ৳</td>
+                                        <td>{{ \Carbon\Carbon::parse($installment->created_at)->format('Y-m-d H:i') }}</td>
+                                        <td>
+                                            <span
+                                                class="badge 
                                         {{ $installment->status === 'paid' ? 'bg-success' : ($installment->status === 'partial' ? 'bg-warning' : 'bg-danger') }}">
-                                        {{ ucfirst($installment->status) }}
-                                    </span>
-                                </td>
+                                                {{ ucfirst($installment->status) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No payments found.</td>
                             </tr>
-                        @endif
-                    @endforeach
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">No payments found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 @endsection
