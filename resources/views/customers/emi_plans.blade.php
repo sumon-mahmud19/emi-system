@@ -122,7 +122,7 @@
                                 <td>{{ $purchase->id }}</td>
                                 <td>{{ $purchase->product->product_name }}</td>
                                 <td>{{ number_format($installment->paid_amount, 2) }} ৳</td>
-                                <td>{{ \Carbon\Carbon::parse($installment->updated_at)->format('Y-m-d H:i') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($installment->created_at)->format('Y-m-d H:i') }}</td>
                                 <td>
                                     <span class="badge 
                                         {{ $installment->status === 'paid' ? 'bg-success' : ($installment->status === 'partial' ? 'bg-warning' : 'bg-danger') }}">
