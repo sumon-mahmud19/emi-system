@@ -69,12 +69,12 @@
                                             Pay
                                         </button>
                                     @endif
-                                </td>
+                                </td><br>
+
                             </tr>
                         @endforeach
 
                         <!-- Total Row -->
-                        <hr>
                         <tr class="table table-striped table-hover fw-bold">
                             <td colspan="3" class="text-end">Total:</td>
                             <td>{{ number_format($grandTotalPaid, 2) }} ৳</td>
