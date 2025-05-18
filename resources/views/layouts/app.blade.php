@@ -116,8 +116,7 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top"
-        style="background-color: #8813b6; border-radius: 0 0 12px 12px;">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top primary">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url('/') }}">Roman EMI System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
