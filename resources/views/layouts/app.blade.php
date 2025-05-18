@@ -19,70 +19,98 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <style>
-
-        /* Tailwind-style override colors */
         :root {
-            --tw-purple-700: #7e22ce;
-            --tw-purple-600: #9333ea;
-            /* slightly lighter purple for hover */
-            --tw-slate-100: #f1f5f9;
-            --tw-slate-800: #1e293b;
-            --tw-gray-700: #374151;
+            /* Primary (Tailwind Blue) */
+            --bs-primary: #3b82f6;
+            /* blue-500 */
+            --bs-primary-hover: #2563eb;
+            /* blue-600 */
+
+            /* Success (Tailwind Green) */
+            --bs-success: #10b981;
+            /* emerald-500 */
+            --bs-success-hover: #059669;
+            /* emerald-600 */
+
+            /* Info (Tailwind Sky) */
+            --bs-info: #0ea5e9;
+            /* sky-500 */
+            --bs-info-hover: #0284c7;
+            /* sky-600 */
+
+            /* Warning (Tailwind Yellow) */
+            --bs-warning: #f59e0b;
+            /* amber-500 */
+            --bs-warning-hover: #d97706;
+            /* amber-600 */
+
+            /* Danger (Tailwind Red) */
+            --bs-danger: #ef4444;
+            /* red-500 */
+            --bs-danger-hover: #dc2626;
+            /* red-600 */
         }
 
-        body {
-            font-family: 'SolaimanLipi', sans-serif;
-            background-color: var(--tw-slate-100);
-            color: var(--tw-gray-700);
-        }
-
-        /* Navbar overrides */
-        .navbar {
-            background-color: var(--tw-purple-700) !important;
-        }
-
-        .navbar-dark .navbar-nav .nav-link {
-            color: white;
-        }
-
-        .navbar-dark .navbar-nav .nav-link.active,
-        .navbar-dark .navbar-nav .nav-link:hover {
-            color: #e9d5ff !important;
-            /* light purple */
-        }
-
-        /* Dropdown menu styling */
-        .dropdown-menu {
-            background-color: white;
-            border: 1px solid var(--tw-slate-800);
-        }
-
-        .dropdown-item:hover,
-        .dropdown-item.active {
-            background-color: var(--tw-purple-700);
-            color: white !important;
-        }
-
-        /* Footer */
-        .footer {
-            background-color: var(--tw-slate-100);
-            color: var(--tw-gray-700);
-        }
-
-        /* Buttons */
+        /* Bootstrap class overrides using Tailwind colors */
         .btn-primary {
-            background-color: var(--tw-purple-700);
-            border-color: var(--tw-purple-700);
-            transition: background-color 0.3s, border-color 0.3s;
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
         }
 
         .btn-primary:hover,
         .btn-primary:focus,
         .btn-primary:active {
-            background-color: var(--tw-purple-600);
-            border-color: var(--tw-purple-600);
+            background-color: var(--bs-primary-hover);
+            border-color: var(--bs-primary-hover);
         }
 
+        .btn-success {
+            background-color: var(--bs-success);
+            border-color: var(--bs-success);
+        }
+
+        .btn-success:hover,
+        .btn-success:focus,
+        .btn-success:active {
+            background-color: var(--bs-success-hover);
+            border-color: var(--bs-success-hover);
+        }
+
+        .btn-info {
+            background-color: var(--bs-info);
+            border-color: var(--bs-info);
+        }
+
+        .btn-info:hover,
+        .btn-info:focus,
+        .btn-info:active {
+            background-color: var(--bs-info-hover);
+            border-color: var(--bs-info-hover);
+        }
+
+        .btn-warning {
+            background-color: var(--bs-warning);
+            border-color: var(--bs-warning);
+        }
+
+        .btn-warning:hover,
+        .btn-warning:focus,
+        .btn-warning:active {
+            background-color: var(--bs-warning-hover);
+            border-color: var(--bs-warning-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--bs-danger);
+            border-color: var(--bs-danger);
+        }
+
+        .btn-danger:hover,
+        .btn-danger:focus,
+        .btn-danger:active {
+            background-color: var(--bs-danger-hover);
+            border-color: var(--bs-danger-hover);
+        }
     </style>
 </head>
 
