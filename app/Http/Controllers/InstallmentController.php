@@ -79,8 +79,7 @@ class InstallmentController extends Controller
             ];
         }
 
-    
-    return redirect()->route('purchases.index')->with('success', 'Installment Completed Successfully!');
-        
+        return redirect()->to(url("/customers/{$customer->id}/emi-plans"))
+            ->with('success', 'Installment Completed Successfully!');
     }
 }
