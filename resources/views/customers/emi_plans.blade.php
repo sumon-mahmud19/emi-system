@@ -23,12 +23,12 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Product</th>
-                                <th>Model</th>
-                                <th>Total Price</th>
+                                {{-- <th>Model</th> --}}
+                                <th>মূল্য</th>
                                 <th>Downpayment</th>
-                                <th>Total Paid</th>
-                                <th>Due Amount</th>
-                                <th>Pay Now</th>
+                                <th>মোট</th>
+                                <th>বাকি</th>
+                                <th>কিস্তি</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -51,7 +51,7 @@
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ $product->product_name }}</td>
-                                    <td>{{ $model->model_name ?? 'N/A' }}</td>
+                                    {{-- <td>{{ $model->model_name ?? 'N/A' }}</td> --}}
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
                                     <td>{{ number_format($downPayment, 2) }} ৳</td>
                                     <td>{{ number_format($totalPaid, 2) }} ৳</td>
