@@ -49,7 +49,7 @@ Route::resource('roles', RoleController::class);
 Route::post('/installments/pay-multiple', [InstallmentController::class, 'payMultiple'])->name('installments.pay-multiple');
 
 Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])
-    ->name('monthly.reports')
+    ->name('report')
     ->middleware('role:admin');
     
     Auth::routes();
