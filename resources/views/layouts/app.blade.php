@@ -238,7 +238,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">রিপোর্ট</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item {{ request()->is('reports/monthly') ? 'active' : '' }}"
-                                            href="{{ route('monthly.reports') }}">মাসিক রিপোর্ট</a></li>
+                                            href="{{ route('report') }}">মাসিক রিপোর্ট</a></li>
                                 </ul>
                             </li>
                         @endrole
