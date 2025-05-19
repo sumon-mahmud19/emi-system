@@ -1,4 +1,4 @@
-{{-- @extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
     <div class="container mt-3">
@@ -6,7 +6,7 @@
 
         <!-- Month Picker Form -->
         
-            <form method="GET" action="{{ route('monthly.reports') }}" class="row g-3 justify-content-center mb-5">
+            <form method="GET" action="{{ route('report') }}" class="row g-3 justify-content-center mb-5">
                 <div class="col-md-3">
                     <input type="month" name="month" class="form-control" value="{{ request('month', now()->format('Y-m')) }}">
                 </div>
@@ -133,4 +133,4 @@
             }
         });
     </script>
-@endsection --}}
+@endsection
