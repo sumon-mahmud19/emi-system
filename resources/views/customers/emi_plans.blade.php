@@ -76,14 +76,13 @@
                             @endforeach
 
                             <!-- Total Row -->
-                            <!-- Total Row -->
                             <tr class="table table-striped table-hover fw-bold">
-                                <td colspan="2" class="text-end">মোট = </td>
-                                <td>{{ number_format($grandTotalPrice, 2) }} ৳</td>
-                                <td>{{ number_format($grandTotalPaid, 2) }} ৳</td>
+                                <td colspan="2" class="text-end"></td>
+                                <td> মোট ={{ number_format($grandTotalPrice, 2) }} ৳</td>
+                                <td> জমা ={{ number_format($grandTotalPaid, 2) }} ৳</td>
                                 <td>
                                     <span class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
-                                        {{ number_format($grandTotalDue, 2) }} ৳
+                                        বাকি ={{ number_format($grandTotalDue, 2) }} ৳
                                     </span>
                                 </td>
                                 <td colspan="2"></td>
