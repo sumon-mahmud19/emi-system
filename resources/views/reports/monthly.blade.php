@@ -1,4 +1,4 @@
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('content')
     <div class="container mt-3">
@@ -133,4 +133,4 @@
             }
         });
     </script>
-@endsection
+@endsection --}}
