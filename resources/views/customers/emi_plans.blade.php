@@ -25,8 +25,8 @@
                             <tr>
                                 <th>তারিখ</th>
                                 <th>পণ্য</th>
-                                <th>মূল্য</th>
-                                <th>মোট</th>
+                                <th>দাম</th>
+                                <th>জমা</th>
                                 <th>বাকি</th>
                                 <th>কিস্তি</th>
                                 <th>অ্যাকশন</th>
@@ -78,11 +78,11 @@
                             <!-- Total Row -->
                             <tr class="table table-striped table-hover fw-bold">
                                 <td colspan="2" class="text-end"></td>
-                                <td> মোট ={{ number_format($grandTotalPrice, 2) }} ৳</td>
-                                <td> জমা ={{ number_format($grandTotalPaid, 2) }} ৳</td>
+                                <td> মোট দাম ={{ number_format($grandTotalPrice, 2) }} ৳</td>
+                                <td> মোট জমা ={{ number_format($grandTotalPaid, 2) }} ৳</td>
                                 <td>
                                     <span class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
-                                        বাকি ={{ number_format($grandTotalDue, 2) }} ৳
+                                        মোট বাকি ={{ number_format($grandTotalDue, 2) }} ৳
                                     </span>
                                 </td>
                                 <td colspan="2"></td>
