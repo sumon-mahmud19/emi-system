@@ -78,19 +78,19 @@
                             <!-- Total Row -->
                             <tr class="fw-bold">
                                 <td colspan="7" class="p-3">
-                                    <div class="row text-md-start">
-                                        <div class="col-12 col-md-4 mb-2 mb-md-0">
-                                            <div class="bg-light rounded p-2 shadow-sm">
+                                    <div class="row text-start">
+                                        <div class="col-12 col-md-4 mb-2">
+                                            <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
                                                 মোট দাম: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-4 mb-2 mb-md-0">
-                                            <div class="bg-light rounded p-2 shadow-sm">
+                                        <div class="col-12 col-md-4 mb-2">
+                                            <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
                                                 মোট জমা: <strong>{{ number_format($grandTotalPaid, 2) }} ৳</strong>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
-                                            <div class="bg-light rounded p-2 shadow-sm">
+                                            <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
                                                 <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
                                                     মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
                                                 </strong>
@@ -99,6 +99,7 @@
                                     </div>
                                 </td>
                             </tr>
+
                         </tbody>
                     </table>
                 </div>
