@@ -78,7 +78,7 @@
                             <!-- Total Row -->
                             <tr class="fw-bold">
                                 <td colspan="7" class="p-3">
-                                    <div class="row text-center text-md-start">
+                                    <div class="row text-md-start">
                                         <div class="col-12 col-md-4 mb-2 mb-md-0">
                                             <div class="bg-light rounded p-2 shadow-sm">
                                                 মোট দাম: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
