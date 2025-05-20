@@ -58,12 +58,13 @@
                                             {{ number_format($totalDue, 2) }} ৳
                                         </span>
                                     </td>
-                                    <td>
+                                    <td style="min-width: 100px;">
                                         <input type="number" name="payments[{{ $purchase->id }}]"
-                                            class="form-control form-control-sm" value="0" min="0"
+                                            class="form-control form-control-sm w-100" value="0" min="0"
                                             max="{{ $totalDue }}" step="0.01"
                                             {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                     </td>
+
                                     <td class="text-center">
                                         @if (auth()->user()->hasRole('admin'))
                                             <div class="d-grid gap-1">
