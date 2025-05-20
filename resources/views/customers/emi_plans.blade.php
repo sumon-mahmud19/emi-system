@@ -25,7 +25,7 @@
                             <tr>
                                 <th>তারিখ</th>
                                 <th>পণ্য</th>
-                                <th>দাম</th>
+                                <th>মূল্য</th>
                                 <th>জমা</th>
                                 <th>বাকি</th>
                                 <th style="min-width: 120px;">কিস্তি</th>
@@ -81,7 +81,7 @@
                                     <div class="row text-start">
                                         <div class="col-12 col-md-4 mb-2">
                                             <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
-                                                মোট দাম: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
+                                                মোট মূল্য : <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4 mb-2">
