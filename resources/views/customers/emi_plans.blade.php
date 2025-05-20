@@ -64,14 +64,17 @@
                                             max="{{ $totalDue }}" step="0.01"
                                             {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         @if (auth()->user()->hasRole('admin'))
-                                            <button type="submit" class="btn btn-success btn-sm w-100"
-                                                {{ $totalDue <= 0 ? 'disabled' : '' }}>
-                                                Pay
-                                            </button>
+                                            <div class="d-grid gap-1">
+                                                <button type="submit" class="btn btn-success btn-sm"
+                                                    {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                                    Pay
+                                                </button>
+                                            </div>
                                         @endif
                                     </td>
+
                                 </tr>
                             @endforeach
 
