@@ -35,20 +35,18 @@
                         <tbody>
                             @php
                                 $grandTotalPrice = 0;
-                                $grandTotalPaid  = 0;
-                                $grandTotalDue   = 0;
+                                $grandTotalPaid = 0;
+                                $grandTotalDue = 0;
                             @endphp
-
                             @foreach ($customer->purchases as $purchase)
                                 @php
-                                    $product    = $purchase->product;
+                                    $product = $purchase->product;
                                     $totalPrice = $purchase->sales_price;
-                                    $totalPaid  = $purchase->installments->sum('paid_amount');
-                                    $totalDue   = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
-
+                                    $totalPaid = $purchase->installments->sum('paid_amount');
+                                    $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                     $grandTotalPrice += $totalPrice;
-                                    $grandTotalPaid  += $totalPaid;
-                                    $grandTotalDue   += $totalDue;
+                                    $grandTotalPaid += $totalPaid;
+                                    $grandTotalDue += $totalDue;
                                 @endphp
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
@@ -61,20 +59,15 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <input type="number"
-                                               name="payments[{{ $purchase->id }}]"
-                                               class="form-control form-control-sm w-100"
-                                               value="0"
-                                               min="0"
-                                               max="{{ $totalDue }}"
-                                               step="0.01"
-                                               {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                        <input type="number" name="payments[{{ $purchase->id }}]"
+                                            class="form-control form-control-sm w-100" value="0" min="0"
+                                            max="{{ $totalDue }}" step="0.01"
+                                            {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                     </td>
                                     <td>
                                         @if (auth()->user()->hasRole('admin'))
-                                            <button type="submit"
-                                                    class="btn btn-success btn-sm w-100"
-                                                    {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                            <button type="submit" class="btn btn-success btn-sm w-100"
+                                                {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                                 Pay
                                             </button>
                                         @endif
@@ -121,57 +114,45 @@
                 <table class="table table-striped table-hover align-middle text-center">
                     <thead class="table-light">
                         <tr>
-                            <th>তারিখ ও সময়</th>
+                            <th>Purchase ID</th>
                             <th>পণ্য</th>
-                            <th>টোটাল পরিশোধিত</th>
+                            <th>মোট পরিশোধিত</th>
+                            <th>সর্বশেষ পেমেন্ট তারিখ</th>
                             <th>স্ট্যাটাস</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            // Gather all payments for this customer's installments
-                            $installmentIds = $customer->purchases
-                                ->flatMap(fn($p) => $p->installments->pluck('id'))
-                                ->toArray();
-
-                            $allPayments = \App\Models\Payment::with('installment.purchase.product')
-                                ->whereIn('installment_id', $installmentIds)
-                                ->orderBy('paid_at', 'desc')
-                                ->get();
-
-                            // Group by exact paid_at timestamp
-                            $groups = $allPayments->groupBy(fn($p) => $p->paid_at->date('Y-m-d'));
-                        @endphp
-
-                        @forelse($groups as $paidAtString => $paymentsOnThatGroup)
+                        @forelse($customer->purchases as $purchase)
                             @php
-                                // Parse date
-                                $paidAt = \Carbon\Carbon::parse($paidAtString);
-
-                                // Use first payment to find purchase & product
-                                $first   = $paymentsOnThatGroup->first();
-                                $purchase = $first->installment->purchase;
-                                $product  = $purchase->product->product_name;
-
-                                // Sum this group's payments
-                                $totalAmount = $paymentsOnThatGroup->sum('amount');
-
-                                // Overall status: paid if all installments paid
+                                // Sum all payments for this purchase
+                                $installmentIds = $purchase->installments->pluck('id');
+                                $totalPaid = \App\Models\Payment::whereIn('installment_id', $installmentIds)->sum(
+                                    'amount',
+                                );
+                                // Get last payment date
+                                $lastPayment = \App\Models\Payment::whereIn('installment_id', $installmentIds)
+                                    ->orderBy('paid_at', 'desc')
+                                    ->first();
+                                $lastDate = $lastPayment
+                                    ? \Carbon\Carbon::parse($lastPayment->paid_at)->format('d-m-Y')
+                                    : 'N/A';
+                                // Determine overall status
                                 $allPaid = $purchase->installments->every(fn($inst) => $inst->status === 'paid');
-                                $status  = $allPaid ? 'Paid' : 'Partial';
-                                $badge   = $allPaid ? 'bg-success' : 'bg-warning text-dark';
+                                $statusText = $allPaid ? 'Paid' : 'Pending';
+                                $statusClass = $allPaid ? 'bg-success' : 'bg-warning text-dark';
                             @endphp
                             <tr>
-                                <td>{{ $paidAt->format('d-m-Y H:i') }}</td>
-                                <td>{{ $product }}</td>
-                                <td>{{ number_format($totalAmount, 2) }} ৳</td>
+                                <td>{{ $purchase->id }}</td>
+                                <td>{{ $purchase->product->product_name }}</td>
+                                <td>{{ number_format($totalPaid, 2) }} ৳</td>
+                                <td>{{ $lastDate }}</td>
                                 <td>
-                                    <span class="badge {{ $badge }}">{{ $status }}</span>
+                                    <span class="badge {{ $statusClass }}">{{ $statusText }}</span>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-muted">কোনো পেমেন্ট পাওয়া যায়নি।</td>
+                                <td colspan="5" class="text-muted">No payments found.</td>
                             </tr>
                         @endforelse
                     </tbody>
