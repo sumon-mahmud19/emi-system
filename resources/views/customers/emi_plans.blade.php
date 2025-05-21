@@ -35,18 +35,18 @@
                         <tbody>
                             @php
                                 $grandTotalPrice = 0;
-                                $grandTotalPaid  = 0;
-                                $grandTotalDue   = 0;
+                                $grandTotalPaid = 0;
+                                $grandTotalDue = 0;
                             @endphp
                             @foreach ($customer->purchases as $purchase)
                                 @php
-                                    $product     = $purchase->product;
-                                    $totalPrice  = $purchase->sales_price;
-                                    $totalPaid   = $purchase->installments->sum('paid_amount');
-                                    $totalDue    = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
+                                    $product = $purchase->product;
+                                    $totalPrice = $purchase->sales_price;
+                                    $totalPaid = $purchase->installments->sum('paid_amount');
+                                    $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                     $grandTotalPrice += $totalPrice;
-                                    $grandTotalPaid  += $totalPaid;
-                                    $grandTotalDue   += $totalDue;
+                                    $grandTotalPaid += $totalPaid;
+                                    $grandTotalDue += $totalDue;
                                 @endphp
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
@@ -59,17 +59,15 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <input type="number"
-                                               name="payments[{{ $purchase->id }}]"
-                                               class="form-control form-control-sm w-100"
-                                               value="0" min="0" max="{{ $totalDue }}" step="0.01"
-                                               {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                        <input type="number" name="payments[{{ $purchase->id }}]"
+                                            class="form-control form-control-sm w-100" value="0" min="0"
+                                            max="{{ $totalDue }}" step="0.01"
+                                            {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                     </td>
                                     <td>
                                         @if (auth()->user()->hasRole('admin'))
-                                            <button type="submit"
-                                                    class="btn btn-success btn-sm w-100"
-                                                    {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                            <button type="submit" class="btn btn-success btn-sm w-100"
+                                                {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                                 Pay
                                             </button>
                                         @endif
@@ -123,18 +121,31 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{-- Loop each purchase --}}
                         @forelse($customer->purchases as $purchase)
+                            {{-- Loop each installment --}}
                             @foreach ($purchase->installments as $installment)
+                                {{-- Loop each payment on that installment --}}
                                 @foreach ($installment->payments as $payment)
                                     <tr>
+                                        {{-- Show actual payment date --}}
                                         <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d-m-Y') }}</td>
+
+                                        {{-- Show product name --}}
                                         <td>{{ $purchase->product->product_name }}</td>
+
+                                        {{-- Show actual amount paid in this transaction --}}
                                         <td>{{ number_format($payment->amount, 2) }} ৳</td>
+
+                                        {{-- Show the status of the installment after this payment --}}
                                         <td>
-                                            <span class="badge
-                                                {{ $installment->status === 'paid' ? 'bg-success'
-                                                  : ($installment->status === 'partial' ? 'bg-warning text-dark'
-                                                  : 'bg-danger') }}">
+                                            <span
+                                                class="badge
+                                        {{ $installment->status === 'paid'
+                                            ? 'bg-success'
+                                            : ($installment->status === 'partial'
+                                                ? 'bg-warning text-dark'
+                                                : 'bg-danger') }}">
                                                 {{ ucfirst($installment->status) }}
                                             </span>
                                         </td>
@@ -143,12 +154,13 @@
                             @endforeach
                         @empty
                             <tr>
-                                <td colspan="4" class="text-muted">No payments found.</td>
+                                <td colspan="4" class="text-muted">কোনো পেমেন্ট পাওয়া যায়নি।</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
 @endsection
