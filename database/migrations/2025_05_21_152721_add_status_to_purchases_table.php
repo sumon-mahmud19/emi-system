@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('purchases', function (Blueprint $table) {
-            $table->string('status')->default('unpaid')->after('down_payment');
+             $table->string('status')->default('pending');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('purchases', function (Blueprint $table) {
-            $table->dropColumn('status');
+             $table->dropColumn('status');
         });
     }
 };
