@@ -35,18 +35,20 @@
                         <tbody>
                             @php
                                 $grandTotalPrice = 0;
-                                $grandTotalPaid = 0;
-                                $grandTotalDue = 0;
+                                $grandTotalPaid  = 0;
+                                $grandTotalDue   = 0;
                             @endphp
+
                             @foreach ($customer->purchases as $purchase)
                                 @php
-                                    $product = $purchase->product;
+                                    $product    = $purchase->product;
                                     $totalPrice = $purchase->sales_price;
-                                    $totalPaid = $purchase->installments->sum('paid_amount');
-                                    $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
+                                    $totalPaid  = $purchase->installments->sum('paid_amount');
+                                    $totalDue   = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
+
                                     $grandTotalPrice += $totalPrice;
-                                    $grandTotalPaid += $totalPaid;
-                                    $grandTotalDue += $totalDue;
+                                    $grandTotalPaid  += $totalPaid;
+                                    $grandTotalDue   += $totalDue;
                                 @endphp
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
@@ -59,15 +61,20 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <input type="number" name="payments[{{ $purchase->id }}]"
-                                            class="form-control form-control-sm w-100" value="0" min="0"
-                                            max="{{ $totalDue }}" step="0.01"
-                                            {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                        <input type="number"
+                                               name="payments[{{ $purchase->id }}]"
+                                               class="form-control form-control-sm w-100"
+                                               value="0"
+                                               min="0"
+                                               max="{{ $totalDue }}"
+                                               step="0.01"
+                                               {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                     </td>
                                     <td>
                                         @if (auth()->user()->hasRole('admin'))
-                                            <button type="submit" class="btn btn-success btn-sm w-100"
-                                                {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                            <button type="submit"
+                                                    class="btn btn-success btn-sm w-100"
+                                                    {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                                 Pay
                                             </button>
                                         @endif
@@ -106,64 +113,71 @@
         </form>
 
         {{-- Payment History Section --}}
-<div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <strong>কিস্তির হিসাব</strong>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle text-center">
-            <thead class="table-light">
-                <tr>
-                    <th>তারিখ ও সময়</th>
-                    <th>পণ্য</th>
-                    <th>টোটাল পরিশোধিত</th>
-                    <th>স্ট্যাটাস</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    // Collect all payments for this customer
-                    $allPayments = \App\Models\Payment::whereIn(
-                        'installment_id',
-                        $customer->purchases
-                            ->flatMap(fn($p) => $p->installments->pluck('id'))
-                            ->toArray()
-                    )->orderBy('paid_at','desc')->get();
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <strong>কিস্তির হিসাব</strong>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>তারিখ ও সময়</th>
+                            <th>পণ্য</th>
+                            <th>টোটাল পরিশোধিত</th>
+                            <th>স্ট্যাটাস</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            // Gather all payments for this customer's installments
+                            $installmentIds = $customer->purchases
+                                ->flatMap(fn($p) => $p->installments->pluck('id'))
+                                ->toArray();
 
-                    // Group by the exact paid_at timestamp
-                    $groups = $allPayments->groupBy(fn($pay) => $pay->paid_at->format('Y-m-d H:i:s'));
-                @endphp
+                            $allPayments = \App\Models\Payment::with('installment.purchase.product')
+                                ->whereIn('installment_id', $installmentIds)
+                                ->orderBy('paid_at', 'desc')
+                                ->get();
 
-                @forelse($groups as $paidAt => $paymentsOnThatTime)
-                    @php
-                        // We take the first payment to get the purchase & product
-                        $first = $paymentsOnThatTime->first();
-                        $purchase = $first->installment->purchase;
-                        $productName = $purchase->product->product_name;
-                        // Sum the amounts in this group
-                        $totalAmount = $paymentsOnThatTime->sum('amount');
-                        // Determine overall installment status
-                        $status = $purchase->installments->every(fn($inst) => $inst->status==='paid')
-                                  ? 'Paid' 
-                                  : 'Partial';
-                        $badge = $status==='Paid' ? 'bg-success' : 'bg-warning text-dark';
-                    @endphp
-                    <tr>
-                        <td>{{ \Carbon\Carbon::parse($paidAt)->format('d-m-Y H:i') }}</td>
-                        <td>{{ $productName }}</td>
-                        <td>{{ number_format($totalAmount,2) }} ৳</td>
-                        <td><span class="badge {{ $badge }}">{{ $status }}</span></td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-muted">কোনো পেমেন্ট পাওয়া যায়নি।</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
+                            // Group by exact paid_at timestamp
+                            $groups = $allPayments->groupBy(fn($p) => $p->paid_at->format('Y-m-d H:i:s'));
+                        @endphp
 
+                        @forelse($groups as $paidAtString => $paymentsOnThatGroup)
+                            @php
+                                // Parse date
+                                $paidAt = \Carbon\Carbon::parse($paidAtString);
+
+                                // Use first payment to find purchase & product
+                                $first   = $paymentsOnThatGroup->first();
+                                $purchase = $first->installment->purchase;
+                                $product  = $purchase->product->product_name;
+
+                                // Sum this group's payments
+                                $totalAmount = $paymentsOnThatGroup->sum('amount');
+
+                                // Overall status: paid if all installments paid
+                                $allPaid = $purchase->installments->every(fn($inst) => $inst->status === 'paid');
+                                $status  = $allPaid ? 'Paid' : 'Partial';
+                                $badge   = $allPaid ? 'bg-success' : 'bg-warning text-dark';
+                            @endphp
+                            <tr>
+                                <td>{{ $paidAt->format('d-m-Y H:i') }}</td>
+                                <td>{{ $product }}</td>
+                                <td>{{ number_format($totalAmount, 2) }} ৳</td>
+                                <td>
+                                    <span class="badge {{ $badge }}">{{ $status }}</span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-muted">কোনো পেমেন্ট পাওয়া যায়নি।</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 @endsection
