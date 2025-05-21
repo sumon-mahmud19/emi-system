@@ -12,7 +12,6 @@ class Purchase extends Model
         'model_id',
         'total_price',
         'sales_price',
-        'down_payment',
         'emi_plan',
     ];
 
