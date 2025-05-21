@@ -34,23 +34,20 @@
                 </select>
             </div>
 
-            <!-- Total Price -->
-            <div class="mb-3">
-                <label class="form-label">Total Price</label>
-                <input type="number" name="total_price" class="form-control" step="0.01" required>
-            </div>
 
             <!-- Sales Price -->
             <div class="mb-3">
                 <label class="form-label">Sales Price</label>
-                <input type="number" name="sales_price" class="form-control" step="0.01" required>
+                <input type="number" name="sales_price" class="form-control" required>
             </div>
 
-            <!-- Down Payment -->
+            <!-- Total Price -->
             <div class="mb-3">
-                <label class="form-label">Down Payment</label>
-                <input type="number" name="down_payment" class="form-control" step="0.01" required>
+                <label class="form-label">Cash Price</label>
+                <input type="number" name="total_price" class="form-control" required>
             </div>
+
+
 
             <!-- EMI Plan -->
             <div class="mb-3">
@@ -58,8 +55,13 @@
                 <input type="number" name="emi_plan" class="form-control" required>
             </div>
 
-            <!-- Buttons -->
-            <button type="submit" class="btn btn-primary">Save</button>
+            <!-- Save Button -->
+            <button type="submit" id="saveBtn" class="btn btn-primary d-flex align-items-center gap-2">
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"
+                    id="saveSpinner"></span>
+                <span id="saveText">Save</span>
+            </button>
+
             <a href="{{ route('purchases.index') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
@@ -77,6 +79,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+    <script>
+        $('form').on('submit', function() {
+            $('#saveBtn').attr('disabled', true);
+            $('#saveSpinner').removeClass('d-none');
+            $('#saveText').text('Saving...');
+        });
+    </script>
+
 
     <script type="text/javascript">
         // Select2 Customer Search
@@ -110,7 +122,8 @@
                     success: function(data) {
                         $('#model').empty().append('<option value="">Select Model</option>');
                         $.each(data, function(index, model) {
-                            $('#model').append('<option value="' + model.id + '">' + model.model_name + '</option>');
+                            $('#model').append('<option value="' + model.id + '">' + model
+                                .model_name + '</option>');
                         });
                     }
                 });
