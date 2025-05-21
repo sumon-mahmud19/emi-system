@@ -105,58 +105,52 @@
             </div>
         </form>
 
-        {{-- Payment History Section --}}
+  {{-- Payment History Section --}}
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">
         <strong>কিস্তির হিসাব</strong>
     </div>
     <div class="table-responsive">
+        @php
+            use Carbon\Carbon;
+            use App\Models\Payment;
+
+            // 1. Collect all installment IDs for this customer
+            $installmentIds = $customer->purchases
+                ->flatMap(fn($p) => $p->installments->pluck('id'))
+                ->toArray();
+
+            // 2. Fetch and group payments by date (Y-m-d)
+            $payments = Payment::whereIn('installment_id', $installmentIds)
+                ->orderBy('paid_at', 'desc')
+                ->get()
+                ->groupBy(fn($pay) => Carbon::parse($pay->paid_at)->format('Y-m-d'));
+        @endphp
+
         <table class="table table-striped table-hover align-middle text-center">
             <thead class="table-light">
                 <tr>
-                    <th>Purchase ID</th>
-                    <th>পণ্য</th>
-                    <th>পরিশোধিত (৳)</th>
-                    <th>পেমেন্ট তারিখ</th>
-                    <th>স্ট্যাটাস</th>
+                    <th>তারিখ</th>
+                    <th>মোট পরিশোধিত</th>
+                    <th>লেনদেনের সংখ্যা</th>
                 </tr>
             </thead>
             <tbody>
-                @php
-                    // Collect all payments for this customer
-                    $installmentIds = $customer->purchases
-                        ->flatMap(fn($p) => $p->installments->pluck('id'))
-                        ->toArray();
-
-                    $payments = \App\Models\Payment::with('installment.purchase.product')
-                        ->whereIn('installment_id', $installmentIds)
-                        ->orderBy('paid_at', 'desc')
-                        ->get();
-                @endphp
-
-                @forelse($payments as $payment)
+                @forelse($payments as $date => $paymentsOnDate)
                     @php
-                        $inst     = $payment->installment;
-                        $purchase = $inst->purchase;
-                        $product  = $purchase->product->product_name;
-                        // Determine installment status after this payment
-                        $status   = ucfirst($inst->status); 
-                        $badge    = $inst->status === 'paid'
-                                    ? 'bg-success'
-                                    : ($inst->status === 'partial'
-                                       ? 'bg-warning text-dark'
-                                       : 'bg-danger');
+                        // Sum the amounts for this date
+                        $sumAmount    = $paymentsOnDate->sum('amount');
+                        // Count how many transactions occurred
+                        $countTxn     = $paymentsOnDate->count();
                     @endphp
                     <tr>
-                        <td>{{ $purchase->id }}</td>
-                        <td>{{ $product }}</td>
-                        <td>{{ number_format($payment->amount, 2) }} ৳</td>
-                        <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d-m-Y') }}</td>
-                        <td><span class="badge {{ $badge }}">{{ $status }}</span></td>
+                        <td>{{ Carbon::parse($date)->format('d-m-Y') }}</td>
+                        <td>{{ number_format($sumAmount, 2) }} ৳</td>
+                        <td>{{ $countTxn }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-muted">কোনো পেমেন্ট পাওয়া যায়নি।</td>
+                        <td colspan="3" class="text-muted">কোনো লেনদেন পাওয়া যায়নি।</td>
                     </tr>
                 @endforelse
             </tbody>
