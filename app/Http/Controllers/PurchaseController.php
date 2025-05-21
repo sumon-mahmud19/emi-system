@@ -85,64 +85,55 @@ class PurchaseController extends Controller
             'customer_id'    => 'required|exists:customers,id',
             'product_id'     => 'required|exists:products,id',
             'model_id'       => 'required',
-            'total_price'    => 'required|numeric',
             'sales_price'    => 'required|numeric',
-            'down_payment'   => 'required|numeric',
-            'emi_plan'       => 'required|integer',
+            'total_price'    => 'required|numeric',
+            'emi_plan'       => 'required|integer|min:1',
         ]);
 
-        // Store the purchase
+        // Save purchase info
         $purchase = Purchase::create([
             'customer_id' => $request->customer_id,
             'product_id' => $request->product_id,
             'model_id' => $request->model_id,
-            'total_price' => $request->total_price,
             'sales_price' => $request->sales_price,
-            'down_payment' => $request->down_payment,
+            'total_price' => $request->total_price,
             'emi_plan' => $request->emi_plan,
         ]);
 
+        // Total due = sales_price - cash (no down payment logic anymore)
+        $totalDue = $purchase->sales_price - $purchase->total_price;
 
-        // Calculate EMI amount: (Total price - Down payment) / EMI plan duration
-        $netAmount = $purchase->total_price - $purchase->down_payment;
-        $rawEmiAmount = $netAmount / $purchase->emi_plan;
+        // EMI amount calculation
+        $rawEmiAmount = $totalDue / $purchase->emi_plan;
+        $baseEmi = floor($rawEmiAmount);
+        $decimalPart = $rawEmiAmount - $baseEmi;
+        $emiAmount = ($decimalPart >= 0.5) ? $baseEmi + 1 : $baseEmi;
 
-        // Round EMI according to rule:
-        // - If decimal part >= 0.5 → round up
-        // - Else → floor it
-        $baseEmiAmount = floor($rawEmiAmount);
-        $decimalPart = $rawEmiAmount - $baseEmiAmount;
-
-        $emiAmount = ($decimalPart >= 0.5) ? $baseEmiAmount + 1 : $baseEmiAmount;
-
-        // Now create installments
+        // Generate installments
         $installments = [];
-
         for ($i = 0; $i < $purchase->emi_plan; $i++) {
             $installments[] = Installment::create([
-                'customer_id' => $purchase->customer_id,
-                'product_id' => $purchase->product_id,
-                'purchase_id' => $purchase->id,
-                'amount' => $emiAmount,
-                'status' => 'pending',
-                'due_date' => Carbon::now()->addMonths($i + 1)->startOfMonth(), // Installments start from next month
+                'customer_id'  => $purchase->customer_id,
+                'product_id'   => $purchase->product_id,
+                'purchase_id'  => $purchase->id,
+                'amount'       => $emiAmount,
+                'status'       => 'pending',
+                'due_date'     => Carbon::now()->addMonths($i + 1)->startOfMonth(),
             ]);
         }
 
-        // Optionally adjust the last installment to fix any rounding difference
+        // Adjust the last installment if there's any rounding difference
         $totalInstallmentSum = $emiAmount * $purchase->emi_plan;
-        $adjustment = $totalInstallmentSum - $netAmount;
+        $adjustment = $totalInstallmentSum - $totalDue;
 
-        if ($adjustment != 0) {
-            // Reduce extra amount from the last installment
+        if ($adjustment !== 0) {
             $lastInstallment = end($installments);
-            $lastInstallment->amount = $lastInstallment->amount - $adjustment;
+            $lastInstallment->amount -= $adjustment;
             $lastInstallment->save();
         }
-        
 
+        // Invoice + PDF
         $invoices = Invoice::all();
-        // Return prepared data
         $data = [
             'invoices' => $invoices,
             'purchase' => $purchase,
@@ -151,8 +142,6 @@ class PurchaseController extends Controller
             'customer' => $purchase->customer,
             'product' => $purchase->product,
         ];
-
-
 
         $defaultConfig = (new ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
@@ -177,8 +166,8 @@ class PurchaseController extends Controller
         $mpdf->WriteHTML($html);
 
         return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
-        
     }
+
 
 
 
