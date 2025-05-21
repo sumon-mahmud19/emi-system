@@ -16,9 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('model_id'); // Foreign key for model
-            $table->decimal('total_price', 10, 2);  // Using decimal for monetary values
             $table->decimal('sales_price', 10, 2);  // Sales price column
-            $table->decimal('down_payment', 10, 2);  // Down payment column
+            $table->decimal('total_price', 10, 2);  // Using decimal for monetary values
             $table->integer('emi_plan');  // EMI plan months
             $table->timestamps();
         });
