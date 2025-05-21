@@ -41,7 +41,7 @@
                             @foreach ($customer->purchases as $purchase)
                                 @php
                                     $product = $purchase->product;
-                                    $totalPrice = $purchase->total_price;
+                                    $totalPrice = $purchase->sales_price;
                                     $totalPaid = $purchase->installments->sum('paid_amount');
                                     $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                     $grandTotalPrice += $totalPrice;
