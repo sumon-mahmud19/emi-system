@@ -140,7 +140,7 @@
                                 ->get();
 
                             // Group by exact paid_at timestamp
-                            $groups = $allPayments->groupBy(fn($p) => $p->paid_at->format('Y-m-d H:i:s'));
+                            $groups = $allPayments->groupBy(fn($p) => $p->paid_at->date('Y-m-d'));
                         @endphp
 
                         @forelse($groups as $paidAtString => $paymentsOnThatGroup)
