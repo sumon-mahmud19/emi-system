@@ -106,61 +106,64 @@
         </form>
 
         {{-- Payment History Section --}}
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <strong>কিস্তির হিসাব</strong>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th>তারিখ</th>
-                            <th>পণ্য</th>
-                            <th>পরিমান</th>
-                            <th>স্ট্যাটাস</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{-- Loop each purchase --}}
-                        @forelse($customer->purchases as $purchase)
-                            {{-- Loop each installment --}}
-                            @foreach ($purchase->installments as $installment)
-                                {{-- Loop each payment on that installment --}}
-                                @foreach ($installment->payments as $payment)
-                                    <tr>
-                                        {{-- Show actual payment date --}}
-                                        <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d-m-Y') }}</td>
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <strong>কিস্তির হিসাব</strong>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>তারিখ ও সময়</th>
+                    <th>পণ্য</th>
+                    <th>টোটাল পরিশোধিত</th>
+                    <th>স্ট্যাটাস</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    // Collect all payments for this customer
+                    $allPayments = \App\Models\Payment::whereIn(
+                        'installment_id',
+                        $customer->purchases
+                            ->flatMap(fn($p) => $p->installments->pluck('id'))
+                            ->toArray()
+                    )->orderBy('paid_at','desc')->get();
 
-                                        {{-- Show product name --}}
-                                        <td>{{ $purchase->product->product_name }}</td>
+                    // Group by the exact paid_at timestamp
+                    $groups = $allPayments->groupBy(fn($pay) => $pay->paid_at->format('Y-m-d H:i:s'));
+                @endphp
 
-                                        {{-- Show actual amount paid in this transaction --}}
-                                        <td>{{ number_format($payment->amount, 2) }} ৳</td>
+                @forelse($groups as $paidAt => $paymentsOnThatTime)
+                    @php
+                        // We take the first payment to get the purchase & product
+                        $first = $paymentsOnThatTime->first();
+                        $purchase = $first->installment->purchase;
+                        $productName = $purchase->product->product_name;
+                        // Sum the amounts in this group
+                        $totalAmount = $paymentsOnThatTime->sum('amount');
+                        // Determine overall installment status
+                        $status = $purchase->installments->every(fn($inst) => $inst->status==='paid')
+                                  ? 'Paid' 
+                                  : 'Partial';
+                        $badge = $status==='Paid' ? 'bg-success' : 'bg-warning text-dark';
+                    @endphp
+                    <tr>
+                        <td>{{ \Carbon\Carbon::parse($paidAt)->format('d-m-Y H:i') }}</td>
+                        <td>{{ $productName }}</td>
+                        <td>{{ number_format($totalAmount,2) }} ৳</td>
+                        <td><span class="badge {{ $badge }}">{{ $status }}</span></td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-muted">কোনো পেমেন্ট পাওয়া যায়নি।</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
 
-                                        {{-- Show the status of the installment after this payment --}}
-                                        <td>
-                                            <span
-                                                class="badge
-                                        {{ $installment->status === 'paid'
-                                            ? 'bg-success'
-                                            : ($installment->status === 'partial'
-                                                ? 'bg-warning text-dark'
-                                                : 'bg-danger') }}">
-                                                {{ ucfirst($installment->status) }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endforeach
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-muted">কোনো পেমেন্ট পাওয়া যায়নি।</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
     </div>
 @endsection
