@@ -217,7 +217,7 @@ class CustomerController extends Controller
         $paymentHistory = session('paymentHistory', []); // Get session data
 
 
-        return view('customers.emi_plans', compact('customer', 'paymentHistory'));
+        return view('customers.emi_plans', compact('customer', 'installments'));
         // return view('customers.emi_plans', compact('customer'));
     }
 
