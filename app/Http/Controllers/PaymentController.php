@@ -15,30 +15,24 @@ class PaymentController extends Controller
 
     public function payMultiple(Request $request)
     {
-        $customer = Customer::findOrFail($request->customer_id); // Find the customer
+        $customer = Customer::findOrFail($request->customer_id);
 
-        // Loop through each payment for the purchases
-        foreach ($request->payments as $purchaseId => $paymentAmount) {
-            if ($paymentAmount > 0) {
-                // Find the corresponding installment
-                $installment = Installment::where('purchase_id', $purchaseId)
-                    ->where('status', '!=', 'paid')
-                    ->first(); // Get the first installment with an outstanding balance
+                    $request->validate([
+                        'installment_id' => $request->installment_id,
+                        'amount' => $request->amount,
+                        'paid_at' => $request->paid_at,
 
-                if ($installment) {
-                    // Insert the payment into the payments table
+                    ]);
+
+                    return $request->all();
+
                     $payment = new Payment();
-                    $payment->installment_id = $installment->id;
-                    $payment->amount = $paymentAmount;
+                    $payment->installment_id = $request->installment_id;
+                    $payment->amount =$request->amount;
                     $payment->paid_at = now(); // Set the payment date to the current time
                     $payment->save(); // Save the payment
 
-                    // Update the installment status to 'paid' if the balance is settled
-                    $installment->status = $installment->amount <= $paymentAmount ? 'paid' : 'partial';
-                    $installment->save();
-                }
-            }
-        }
+                 
 
         // Redirect back to the customer's EMI plan page
         return redirect()->route('customers.emi_plans', ['id' => $customer->id]);
