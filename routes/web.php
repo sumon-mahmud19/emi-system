@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductModelController;
 use App\Http\Controllers\PurchaseController;
@@ -46,7 +47,7 @@ Route::resource('models', ProductModelController::class);
 Route::resource('roles', RoleController::class);
 
 
-Route::post('/installments/pay-multiple', [InstallmentController::class, 'payMultiple'])->name('installments.pay-multiple');
+Route::post('/installments/pay-multiple', [PaymentController::class, 'payMultiple'])->name('installments.pay-multiple');
 
 Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])
     ->name('report')
