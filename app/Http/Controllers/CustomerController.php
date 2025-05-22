@@ -204,8 +204,6 @@ class CustomerController extends Controller
 
     public function customerEmiPlans($id)
     {
-
-
         $customer = Customer::with('purchases.product', 'purchases.installments.payments')->findOrFail($id);
 
         $payments = collect();
@@ -214,16 +212,19 @@ class CustomerController extends Controller
             foreach ($purchase->installments as $installment) {
                 foreach ($installment->payments as $payment) {
                     $payments->push([
-                        'date' => optional($payment->paid_date)->format('d-m-Y'),
-                        'product' => $purchase->product->product_name,
-                        'amount' => $payment->paid_amount,
-                        'method' => $payment->method ?? '-', // optional field
+                        'date' => optional($payment->paid_at)->format('d-m-Y'),
+                        'product' => $purchase->product->product_name ?? 'N/A',
+                        'amount' => $payment->amount ?? 0,
+                        'method' => $payment->method ?? '-', // optional payment method
                     ]);
                 }
             }
         }
 
-        return view('customers.emi_plans', compact('customer', 'payments'));
+        // Group payments by date
+        $paymentsByDate = $payments->groupBy('date');
+
+        return view('customers.emi_plans', compact('customer', 'paymentsByDate'));
     }
 
 

@@ -105,80 +105,30 @@
             </div>
         </form>
 
-        {{-- Payment History Section --}}
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <strong>কিস্তির হিসাব</strong>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th>তারিখ</th>
-                            <th>পণ্য</th>
-                            <th>পরিমান</th>
-                            <th>স্ট্যাটাস</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($customer->purchases as $purchase)
-                            @foreach ($purchase->installments as $installment)
-                                @foreach ($installment->payments as $payment)
-                                    <tr>
-                                        {{-- Payment Date --}}
-                                        <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d-m-Y') }}</td>
+       @foreach($paymentsByDate as $date => $payments)
+    <tr>
+        <td colspan="4" class="fw-bold">Date: {{ $date }}</td>
+    </tr>
+    @foreach($payments as $payment)
+    <tr>
+        <td>{{ $date }}</td>
+        <td>{{ $payment['product'] }}</td>
+        <td>{{ number_format($payment['amount'], 2) }} ৳</td>
+        <td>
+            <span class="badge
+                {{ $payment['status'] === 'paid' ? 'bg-success' : ($payment['status'] === 'partial' ? 'bg-warning text-dark' : 'bg-danger') }}">
+                {{ ucfirst($payment['status']) }}
+            </span>
+        </td>
+    </tr>
+    @endforeach
+@endforeach
 
-                                        {{-- Product Name --}}
-                                        <td>{{ $purchase->product->product_name ?? 'N/A' }}</td>
 
-                                        {{-- Paid Amount --}}
-                                        <td>{{ number_format($payment->amount, 2) }} ৳</td>
-
-                                        {{-- Installment Status --}}
-                                        <td>
-                                            <span
-                                                class="badge 
-                            {{ $installment->status === 'paid'
-                                ? 'bg-success'
-                                : ($installment->status === 'partial'
-                                    ? 'bg-warning text-dark'
-                                    : 'bg-danger') }}">
-                                                {{ ucfirst($installment->status) }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endforeach
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-muted">No payments found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-
-                </table>
-            </div>
-        </div>
     </div>
 
 
-    @if (session('paymentHistory'))
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">নতুন পেমেন্ট</div>
-            <ul class="list-group list-group-flush">
-                @foreach (session('paymentHistory') as $entry)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            #{{ $entry['purchase_id'] }} — {{ $entry['date'] }}
-                        </span>
-                        <span class="badge bg-primary">
-                            {{ number_format($entry['total_paid'], 2) }} ৳
-                        </span>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+   
 
 
 @endsection
