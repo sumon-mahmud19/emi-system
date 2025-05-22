@@ -16,70 +16,37 @@ use Mpdf\Config\FontVariables;
 class InstallmentController extends Controller
 {
 
-    public function payMultiple(Request $request)
-    {
-        $customer = Customer::findOrFail($request->customer_id);
+   public function payMultiple(Request $request)
+{
+    $customer = Customer::findOrFail($request->customer_id);
+    $paymentHistory = [];
 
-        $paymentHistory = [];
-        $paidPurchases = [];
+    foreach ($request->payments as $purchaseId => $amount) {
+        $amount = floatval($amount);
+        if ($amount <= 0) continue;
 
-        foreach ($request->payments as $purchaseId => $amount) {
-            $amount = floatval($amount);
-            if ($amount <= 0) continue;
+        $purchase = Purchase::findOrFail($purchaseId);
 
-            $purchase = Purchase::findOrFail($purchaseId);
-            $installments = $purchase->installments()->where('status', '!=', 'paid')->orderBy('id')->get();
+        // Create a standalone payment record (not linked to installment)
+        Payment::create([
+            'purchase_id' => $purchase->id, // You must add this field to your payments table
+            'amount' => $amount,
+            'paid_at' => now(),
+        ]);
 
-            $totalDue = 0;
-            $totalPaid = 0;
+        $purchase->paid_amount += $amount;
+        $purchase->save();
 
-            foreach ($installments as $installment) {
-                $due = $installment->amount - $installment->paid_amount;
-                $totalDue += $due;
-
-                if ($amount <= 0) break;
-
-                $payNow = min($amount, $due);
-                $installment->paid_amount += $payNow;
-
-                if ($installment->paid_amount >= $installment->amount) {
-                    $installment->status = 'paid';
-                } else {
-                    $installment->status = 'partial';
-                }
-
-                $installment->save();
-
-                Payment::create([
-                    'installment_id' => $installment->id,
-                    'amount' => $payNow,
-                    'paid_at' => now(),
-                ]);
-
-                $totalPaid += $payNow;
-                $amount -= $payNow;
-            }
-
-            $totalInstallments = $purchase->installments()->count();
-            $paidInstallments = $purchase->installments()->where('status', 'paid')->count();
-
-            if ($totalInstallments == $paidInstallments) {
-                $purchase->status = 'paid';
-                $purchase->save();
-            }
-
-            // Track successful purchase for PDF
-            $paidPurchases[] = $purchase;
-
-            $paymentHistory[] = [
-                'purchase_id' => $purchaseId,
-                'total_due' => $totalDue,
-                'total_paid' => $totalPaid,
-                'status' => $purchase->status,
-            ];
-        }
-
-        return redirect()->to(url("/customers/{$customer->id}/emi-plans"))
-            ->with('success', 'Installment Completed Successfully!');
+        $paymentHistory[] = [
+            'purchase_id' => $purchaseId,
+            'total_paid' => $amount,
+            'date' => now()->format('d-m-Y'),
+        ];
     }
+
+    return redirect()->to(url("/customers/{$customer->id}/emi-plans"))
+        ->with('success', 'Payment added successfully!')
+        ->with('paymentHistory', $paymentHistory);
+}
+
 }
