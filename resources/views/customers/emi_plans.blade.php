@@ -163,4 +163,53 @@
         </div>
     </div>
 </div>
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Installment No</th>
+            <th>Due Amount</th>
+            <th>Paid Amount</th>
+            <th>Payment Date</th>
+            <th>Remaining Due</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($installments as $installment)
+            @php
+                $paidSum = $installment->payments->sum('paid_amount');
+                $remaining = $installment->due_amount - $paidSum;
+            @endphp
+
+            @if($installment->payments->isEmpty())
+                <tr>
+                    <td>{{ $installment->id }}</td>
+                    <td>{{ $installment->due_amount }}</td>
+                    <td>0</td>
+                    <td>-</td>
+                    <td>{{ $installment->due_amount }}</td>
+                </tr>
+            @else
+                @foreach($installment->payments as $payment)
+                    <tr>
+                        <td>{{ $installment->id }}</td>
+                        <td>{{ $installment->due_amount }}</td>
+                        <td>{{ $payment->paid_amount }}</td>
+                        <td>{{ $payment->paid_date->format('Y-m-d') }}</td>
+                        <td>
+                            @if($loop->last)
+                                {{ $remaining > 0 ? $remaining : 0 }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            @endif
+        @endforeach
+    </tbody>
+</table>
+
+
 @endsection

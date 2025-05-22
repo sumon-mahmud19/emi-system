@@ -207,6 +207,12 @@ class CustomerController extends Controller
     {
 
 
+        $installments = Installment::with('payments')
+    ->where('purchase_id', $id)
+    ->orderBy('due_date')
+    ->get();
+
+
         $customer = Customer::with('purchases.installments')->findOrFail($id);
         $paymentHistory = session('paymentHistory', []); // Get session data
 
