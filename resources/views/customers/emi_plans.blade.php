@@ -105,59 +105,60 @@
             </div>
         </form>
 
-  {{-- Payment History Section --}}
-<div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <strong>কিস্তির হিসাব</strong>
-    </div>
-    <div class="table-responsive">
-        @php
-            use Carbon\Carbon;
-            use App\Models\Payment;
-
-            // 1. Collect all installment IDs for this customer
-            $installmentIds = $customer->purchases
-                ->flatMap(fn($p) => $p->installments->pluck('id'))
-                ->toArray();
-
-            // 2. Fetch and group payments by date (Y-m-d)
-            $payments = Payment::whereIn('installment_id', $installmentIds)
-                ->orderBy('paid_at', 'desc')
-                ->get()
-                ->groupBy(fn($pay) => Carbon::parse($pay->paid_at)->format('Y-m-d'));
-        @endphp
-
-        <table class="table table-striped table-hover align-middle text-center">
-            <thead class="table-light">
-                <tr>
-                    <th>তারিখ</th>
-                    <th>মোট পরিশোধিত</th>
-                    <th>লেনদেনের সংখ্যা</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($payments as $date => $paymentsOnDate)
-                    @php
-                        // Sum the amounts for this date
-                        $sumAmount    = $paymentsOnDate->sum('amount');
-                        // Count how many transactions occurred
-                        $countTxn     = $paymentsOnDate->count();
-                    @endphp
-                    <tr>
-                        <td>{{ Carbon::parse($date)->format('d-m-Y') }}</td>
-                        <td>{{ number_format($sumAmount, 2) }} ৳</td>
-                        <td>{{ $countTxn }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="text-muted">কোনো লেনদেন পাওয়া যায়নি।</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
-
+        {{-- Payment History Section --}}
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <strong>কিস্তির হিসাব</strong>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Purchase ID</th>
+                            <th>পণ্য</th>
+                            <th>মোট পরিশোধিত</th>
+                            <th>সর্বশেষ পেমেন্ট তারিখ</th>
+                            <th>স্ট্যাটাস</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($customer->purchases as $purchase)
+                            @php
+                                // Sum all payments for this purchase
+                                $installmentIds = $purchase->installments->pluck('id');
+                                $totalPaid = \App\Models\Payment::whereIn('installment_id', $installmentIds)->sum(
+                                    'amount',
+                                );
+                                // Get last payment date
+                                $lastPayment = \App\Models\Payment::whereIn('installment_id', $installmentIds)
+                                    ->orderBy('paid_at', 'desc')
+                                    ->first();
+                                $lastDate = $lastPayment
+                                    ? \Carbon\Carbon::parse($lastPayment->paid_at)->format('d-m-Y')
+                                    : 'N/A';
+                                // Determine overall status
+                                $allPaid = $purchase->installments->every(fn($inst) => $inst->status === 'paid');
+                                $statusText = $allPaid ? 'Paid' : 'Pending';
+                                $statusClass = $allPaid ? 'bg-success' : 'bg-warning text-dark';
+                            @endphp
+                            <tr>
+                                <td>{{ $purchase->id }}</td>
+                                <td>{{ $purchase->product->product_name }}</td>
+                                <td>{{ number_format($totalPaid, 2) }} ৳</td>
+                                <td>{{ $lastDate }}</td>
+                                <td>
+                                    <span class="badge {{ $statusClass }}">{{ $statusText }}</span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-muted">No payments found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 @endsection
