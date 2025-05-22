@@ -12,7 +12,7 @@ class Payment extends Model
 
     // Ensure that paid_at is cast to Carbon instance
     public function installment() {
-        return $this->belongsTo(Installment::class);
+        return $this->belongsTo(Installment::class, 'installment_id');
     }
     
 }
