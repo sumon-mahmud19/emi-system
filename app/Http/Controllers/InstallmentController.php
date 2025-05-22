@@ -16,37 +16,64 @@ use Mpdf\Config\FontVariables;
 class InstallmentController extends Controller
 {
 
-   public function payMultiple(Request $request)
+public function payMultiple(Request $request)
 {
-    $customer = Customer::findOrFail($request->customer_id);
-    $paymentHistory = [];
+    $request->validate([
+        'customer_id' => 'required|exists:customers,id',
+        'payments' => 'required|array',
+    ]);
 
     foreach ($request->payments as $purchaseId => $amount) {
         $amount = floatval($amount);
-        if ($amount <= 0) continue;
 
-        $purchase = Purchase::findOrFail($purchaseId);
+        if ($amount <= 0) {
+            continue;
+        }
 
-        // Create a standalone payment record (not linked to installment)
-        Payment::create([
-            'purchase_id' => $purchase->id, // You must add this field to your payments table
-            'amount' => $amount,
-            'paid_at' => now(),
-        ]);
+        $purchase = Purchase::with(['installments' => function ($q) {
+            $q->orderBy('due_date');
+        }])->findOrFail($purchaseId);
 
-        $purchase->paid_amount += $amount;
-        $purchase->save();
+        foreach ($purchase->installments as $installment) {
+            $due = $installment->amount - $installment->paid_amount;
 
-        $paymentHistory[] = [
-            'purchase_id' => $purchaseId,
-            'total_paid' => $amount,
-            'date' => now()->format('d-m-Y'),
-        ];
+            if ($due <= 0) continue;
+
+            $payNow = min($amount, $due);
+
+            $installment->paid_amount += $payNow;
+
+            // Update status
+            if ($installment->paid_amount >= $installment->amount) {
+                $installment->status = 'paid';
+            } elseif ($installment->paid_amount > 0) {
+                $installment->status = 'partial';
+            }
+
+            $installment->save();
+
+            // Record payment
+            Payment::create([
+                'installment_id' => $installment->id,
+                'amount' => $payNow,
+                'paid_at' => now(),
+            ]);
+
+            $amount -= $payNow;
+
+            if ($amount <= 0) break;
+        }
+
+        // Check if all installments under this purchase are paid
+        $unpaidCount = $purchase->installments()->where('status', '!=', 'paid')->count();
+        if ($unpaidCount === 0) {
+            $purchase->status = 'paid';
+            $purchase->save();
+        }
     }
 
-    return redirect()->to(url("/customers/{$customer->id}/emi-plans"))
-        ->with('success', 'Payment added successfully!')
-        ->with('paymentHistory', $paymentHistory);
+    return back()->with('success', 'Payments submitted successfully!');
 }
+
 
 }
