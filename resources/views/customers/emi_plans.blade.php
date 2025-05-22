@@ -11,7 +11,7 @@
         @endif
 
         {{-- Payment Form --}}
-        <form action="{{ route('pay') }}" method="POST">
+        <form action="{{ route('installments.pay-multiple') }}" method="POST">
             @csrf
             <input type="hidden" name="customer_id" value="{{ $customer->id }}">
 
@@ -35,18 +35,18 @@
                         <tbody>
                             @php
                                 $grandTotalPrice = 0;
-                                $grandTotalPaid  = 0;
-                                $grandTotalDue   = 0;
+                                $grandTotalPaid = 0;
+                                $grandTotalDue = 0;
                             @endphp
                             @foreach ($customer->purchases as $purchase)
                                 @php
-                                    $product     = $purchase->product;
-                                    $totalPrice  = $purchase->sales_price;
-                                    $totalPaid   = $purchase->installments->sum('paid_amount');
-                                    $totalDue    = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
+                                    $product = $purchase->product;
+                                    $totalPrice = $purchase->sales_price;
+                                    $totalPaid = $purchase->installments->sum('paid_amount');
+                                    $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                     $grandTotalPrice += $totalPrice;
-                                    $grandTotalPaid  += $totalPaid;
-                                    $grandTotalDue   += $totalDue;
+                                    $grandTotalPaid += $totalPaid;
+                                    $grandTotalDue += $totalDue;
                                 @endphp
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
@@ -59,17 +59,15 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <input type="number"
-                                               name="payments[{{ $purchase->id }}]"
-                                               class="form-control form-control-sm w-100"
-                                               value="0" min="0" max="{{ $totalDue }}" step="0.01"
-                                               {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                        <input type="number" name="payments[{{ $purchase->id }}]"
+                                            class="form-control form-control-sm w-100" value="0" min="0"
+                                            max="{{ $totalDue }}" step="0.01"
+                                            {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                     </td>
                                     <td>
                                         @if (auth()->user()->hasRole('admin'))
-                                            <button type="submit"
-                                                    class="btn btn-success btn-sm w-100"
-                                                    {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                            <button type="submit" class="btn btn-success btn-sm w-100"
+                                                {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                                 Pay
                                             </button>
                                         @endif
@@ -123,53 +121,49 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($customer->purchases as $purchase)
-                            @foreach ($purchase->installments as $installment)
-                                @foreach ($installment->payments as $payment)
-                                    <tr>
-                                        <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d-m-Y') }}</td>
-                                        <td>{{ $purchase->product->product_name }}</td>
-                                        <td>{{ number_format($payment->amount, 2) }} ৳</td>
-                                        <td>
-                                            <span class="badge
-                                                {{ $installment->status === 'paid' ? 'bg-success'
-                                                  : ($installment->status === 'partial' ? 'bg-warning text-dark'
-                                                  : 'bg-danger') }}">
-                                                {{ ucfirst($installment->status) }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endforeach
+                        @php
+                            $payments = collect();
+                            foreach ($customer->purchases as $purchase) {
+                                foreach ($purchase->installments as $installment) {
+                                    foreach ($installment->payments as $payment) {
+                                        $payments->push([
+                                            'date' => \Carbon\Carbon::parse($payment->paid_at)->format('d-m-Y'),
+                                            'product' => $purchase->product->product_name,
+                                            'amount' => $payment->amount,
+                                            'status' => $installment->status,
+                                        ]);
+                                    }
+                                }
+                            }
+                        @endphp
+
+                        @forelse($payments->sortByDesc('date') as $payment)
+                            <tr>
+                                <td>{{ $payment['date'] }}</td>
+                                <td>{{ $payment['product'] }}</td>
+                                <td>{{ number_format($payment['amount'], 2) }} ৳</td>
+                                <td>
+                                    <span
+                                        class="badge
+                                {{ $payment['status'] === 'paid'
+                                    ? 'bg-success'
+                                    : ($payment['status'] === 'partial'
+                                        ? 'bg-warning text-dark'
+                                        : 'bg-danger') }}">
+                                        {{ ucfirst($payment['status']) }}
+                                    </span>
+                                </td>
+                            </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-muted">No payments found.</td>
+                                <td colspan="4" class="text-muted">কোনো পেমেন্ট পাওয়া যায়নি।</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
+
+
     </div>
-
-
-    @if(session('paymentHistory'))
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">নতুন পেমেন্ট</div>
-        <ul class="list-group list-group-flush">
-            @foreach(session('paymentHistory') as $entry)
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                        #{{ $entry['purchase_id'] }} — {{ $entry['date'] }}
-                    </span>
-                    <span class="badge bg-primary">
-                        {{ number_format($entry['total_paid'], 2) }} ৳
-                    </span>
-                </li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-
 @endsection
