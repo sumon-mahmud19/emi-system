@@ -11,7 +11,7 @@
         @endif
 
         {{-- Payment Form --}}
-        <form action="{{ route('installments.pay-multiple') }}" method="POST">
+        <form action="{{ route('pay') }}" method="POST">
             @csrf
             <input type="hidden" name="customer_id" value="{{ $customer->id }}">
 
