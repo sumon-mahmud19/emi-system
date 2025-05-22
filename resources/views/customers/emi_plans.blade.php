@@ -165,7 +165,7 @@
 </div>
 
 
-<table>
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>Installment No</th>
@@ -196,7 +196,7 @@
                         <td>{{ $installment->id }}</td>
                         <td>{{ $installment->due_amount }}</td>
                         <td>{{ $payment->paid_amount }}</td>
-                        <td>{{ $payment->paid_date->format('Y-m-d') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($payment->paid_date)->format('Y-m-d') }}</td>
                         <td>
                             @if($loop->last)
                                 {{ $remaining > 0 ? $remaining : 0 }}
