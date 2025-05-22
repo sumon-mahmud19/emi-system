@@ -47,7 +47,7 @@ Route::resource('models', ProductModelController::class);
 Route::resource('roles', RoleController::class);
 
 
-Route::post('/installments/pay-multiple', [PaymentController::class, 'payMultiple'])->name('installments.pay-multiple');
+Route::post('/pay', [PaymentController::class, 'pay'])->name('pay');
 
 Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])
     ->name('report')

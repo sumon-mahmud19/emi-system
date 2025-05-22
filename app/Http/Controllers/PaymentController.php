@@ -13,26 +13,25 @@ class PaymentController extends Controller
      * Display a listing of the resource.
      */
 
-    public function payMultiple(Request $request)
+    public function pay(Request $request)
     {
-        $customer = Customer::findOrFail($request->customer_id);
 
-                    $request->validate([
-                        'installment_id' => $request->installment_id,
-                        'amount' => $request->amount,
-                        'paid_at' => $request->paid_at,
+        $request->validate([
+            'installment_id' => $request->installment_id,
+            'amount' => $request->amount,
+            'paid_at' => $request->paid_at,
 
-                    ]);
+        ]);
 
-                    return $request->all();
+        return $request->all();
 
-                    $payment = new Payment();
-                    $payment->installment_id = $request->installment_id;
-                    $payment->amount =$request->amount;
-                    $payment->paid_at = now(); // Set the payment date to the current time
-                    $payment->save(); // Save the payment
+        // $payment = new Payment();
+        // $payment->installment_id = $request->installment_id;
+        // $payment->amount = $request->amount;
+        // $payment->paid_at = now(); // Set the payment date to the current time
+        // $payment->save(); // Save the payment
 
-                 
+
 
         // Redirect back to the customer's EMI plan page
         return redirect()->route('customers.emi_plans', ['id' => $customer->id]);
