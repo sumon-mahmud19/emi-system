@@ -151,4 +151,25 @@
             </div>
         </div>
     </div>
+
+
+    @if(session('paymentHistory'))
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">নতুন পেমেন্ট</div>
+        <ul class="list-group list-group-flush">
+            @foreach(session('paymentHistory') as $entry)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        #{{ $entry['purchase_id'] }} — {{ $entry['date'] }}
+                    </span>
+                    <span class="badge bg-primary">
+                        {{ number_format($entry['total_paid'], 2) }} ৳
+                    </span>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
 @endsection
