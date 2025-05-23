@@ -41,7 +41,8 @@
                         @foreach ($customer->purchases as $purchase)
                             @php
                                 $product = $purchase->product;
-                                $totalPrice = $purchase->sales_price;
+                                $totalPrice = $purchase->net_price;
+                                $total = $purchase->down_price;
                                 $totalPaid = $purchase->installments->sum('paid_amount');
                                 $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                 $grandTotalPrice += $totalPrice;
@@ -52,7 +53,7 @@
                                 <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
                                 <td>{{ $product->product_name }}</td>
                                 <td>{{ number_format($totalPrice, 2) }} ৳</td>
-                                <td>{{ number_format($totalPaid, 2) }} ৳</td>
+                                <td>{{ number_format($totalPaid+$total, 2) }} ৳</td>
                                 <td>
                                     <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
                                         {{ number_format($totalDue, 2) }} ৳
