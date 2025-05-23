@@ -3,14 +3,16 @@
 @section('content')
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>সকল ক্রয়</h2>
+        <h2>ক্রয় তালিকা</h2>
         @can('purchase-create')
-            <a href="{{ route('purchases.create') }}" class="btn btn-success">নতুন ক্রয়</a>
+            <a href="{{ route('purchases.create') }}" class="btn btn-primary">নতুন ক্রয়</a>
         @endcan
     </div>
 
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
     @endif
 
     <div class="mb-3">
@@ -18,26 +20,32 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered align-middle text-center">
+        <table class="table table-bordered table-hover text-center align-middle">
             <thead class="table-light">
                 <tr>
+                    <th>ক্রমিক</th>
                     <th>গ্রাহক</th>
-                    <th>পণ্য</th>
+                    <th>মোবাইল</th>
                     <th>লোকেশন</th>
-                    <th>মোট মূল্য</th>
+                    <th>পণ্য</th>
+                    <th>মডেল</th>
+                    <th>মূল্য</th>
                     <th>ডাউন পেমেন্ট</th>
                     <th>EMI পরিকল্পনা</th>
                     <th>অ্যাকশন</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($purchases as $purchase)
-                    <tr data-bs-toggle="collapse" data-bs-target="#emiDetails{{ $purchase->id }}" class="clickable" style="cursor:pointer;">
+                @forelse($purchases as $index => $purchase)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
                         <td>{{ $purchase->customer->customer_name ?? 'N/A' }}</td>
-                        <td>{{ $purchase->product->product_name ?? 'N/A' }}</td>
+                        <td>{{ $purchase->customer->customer_phone ?? 'N/A' }}</td>
                         <td>{{ $purchase->customer->location->name ?? 'N/A' }}</td>
-                        <td>{{ number_format($purchase->total_price, 2) }} ৳</td>
-                        <td>{{ number_format($purchase->down_payment, 2) }} ৳</td>
+                        <td>{{ $purchase->product->product_name ?? 'N/A' }}</td>
+                        <td>{{ $purchase->model->model_name ?? 'N/A' }}</td>
+                        <td>{{ number_format($purchase->sales_price, 2) }} ৳</td>
+                        <td>{{ number_format($purchase->down_price, 2) }} ৳</td>
                         <td>{{ $purchase->emi_plan }} মাস</td>
                         <td>
                             @can('purchase-edit')
@@ -45,45 +53,16 @@
                             @endcan
                             @can('purchase-delete')
                                 <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST" class="d-inline" onsubmit="return confirm('আপনি কি নিশ্চিতভাবে মুছতে চান?');">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">ডিলিট</button>
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
                                 </form>
                             @endcan
                         </td>
                     </tr>
-                    <tr class="collapse bg-light" id="emiDetails{{ $purchase->id }}">
-                        <td colspan="7">
-                            <div class="card border-0 shadow-sm mt-3">
-                                <div class="card-body">
-                                    <h5 class="card-title text-primary">EMI বিস্তারিত</h5>
-                                    @if ($purchase->installments->isEmpty())
-                                        <p class="text-muted">এই ক্রয়ের কোনো EMI নেই।</p>
-                                    @else
-                                        <div class="row row-cols-1 row-cols-md-3 g-3">
-                                            @foreach ($purchase->installments as $installment)
-                                                <div class="col">
-                                                    <div class="card h-100 border {{ $installment->is_paid ? 'border-success' : 'border-danger' }}">
-                                                        <div class="card-body">
-                                                            <h6 class="card-subtitle mb-2 text-muted">
-                                                                {{ \Carbon\Carbon::parse($installment->due_date)->format('F Y') }}
-                                                            </h6>
-                                                            <p class="mb-1 fw-bold">{{ number_format($installment->amount, 2) }} ৳</p>
-                                                            <span class="badge {{ $installment->is_paid ? 'bg-success' : 'bg-danger' }}">
-                                                                {{ $installment->is_paid ? 'পরিশোধিত' : 'বাকি' }}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center">কোনো ক্রয় পাওয়া যায়নি।</td>
+                        <td colspan="10">কোনো ক্রয় পাওয়া যায়নি।</td>
                     </tr>
                 @endforelse
             </tbody>
