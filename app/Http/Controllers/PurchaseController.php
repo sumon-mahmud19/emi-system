@@ -62,94 +62,97 @@ class PurchaseController extends Controller
 
     public function autocomplete(Request $request)
     {
-        $results = [];
+
+        $data = [];
 
         if ($request->filled('q')) {
-            $search = $request->get('q');
-
-            $customers = Customer::select('id', 'customer_name', 'customer_phone')
-                ->where('customer_name', 'LIKE', "%{$search}%")
-                ->orWhere('customer_phone', 'LIKE', "%{$search}%")
-                ->limit(10)
+            $data = Customer::select("customer_name", "id")
+                ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
+                ->take(10)
                 ->get();
-
-            foreach ($customers as $customer) {
-                $results[] = [
-                    'id' => $customer->id,
-                    'text' => $customer->customer_name . ' (' . $customer->customer_phone . ')',
-                ];
-            }
         }
 
-        return response()->json(['results' => $results]);
+        return response()->json($data);
     }
 
 
     /**
      * Store a newly created resource in storage.
      */
-
     public function store(Request $request)
     {
         $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'product_id'  => 'required|exists:products,id',
-            'model_id'    => 'required|exists:models,id',
-            'net_price'   => 'required|numeric|min:0',
-            'down_price'  => 'required|numeric|min:0',
-            'emi_plan'    => 'required|integer|min:1',
+            'customer_id'    => 'required|exists:customers,id',
+            'product_id'     => 'required|exists:products,id',
+            'model_id'       => 'required',
+            'sales_price'    => 'required|numeric',
+            'down_price'    => 'required|numeric',
+            'net_price'    => 'required|numeric',
+            'emi_plan'       => 'required|integer|min:1',
         ]);
 
-        if ($request->down_price > $request->net_price) {
-            return back()->withErrors(['down_price' => 'Down payment cannot exceed total price.'])->withInput();
-        }
-
-        $totalDue = $request->net_price - $request->down_price;
-
+    
+        // Save purchase info
         $purchase = Purchase::create([
             'customer_id' => $request->customer_id,
-            'product_id'  => $request->product_id,
-            'model_id'    => $request->model_id,
-            'sales_price' => $request->net_price,
-            'down_price'  => $request->down_price,
-            'net_price'   => $request->net_price,
-            'emi_plan'    => $request->emi_plan,
+            'product_id' => $request->product_id,
+            'model_id' => $request->model_id,
+            'sales_price' => $request->sales_price,
+            'down_price' => $request->down_price,
+            'net_price' => $request->net_price,
+            'emi_plan' => $request->emi_plan,
         ]);
 
-        // === Installment Calculation ===
-        $baseAmount = floor($totalDue / $request->emi_plan);
-        $remainder  = $totalDue - ($baseAmount * $request->emi_plan);
+        // Total due = sales_price - cash (no down payment logic anymore)
+        $totalDue = $purchase->sales_price - $purchase->total_price;
 
+        // EMI amount calculation
+        $rawEmiAmount = $totalDue / $purchase->emi_plan;
+        $baseEmi = floor($rawEmiAmount);
+        $decimalPart = $rawEmiAmount - $baseEmi;
+        $emiAmount = ($decimalPart >= 0.5) ? $baseEmi + 1 : $baseEmi;
+
+        // Generate installments
         $installments = [];
-
-        for ($i = 0; $i < $request->emi_plan; $i++) {
-            $amount = $baseAmount + ($i < round($remainder) ? 1 : 0);
-
+        for ($i = 0; $i < $purchase->emi_plan; $i++) {
             $installments[] = Installment::create([
-                'customer_id' => $purchase->customer_id,
-                'product_id'  => $purchase->product_id,
-                'purchase_id' => $purchase->id,
-                'amount'      => $amount,
-                'status'      => 'pending',
-                'due_date'    => Carbon::now()->addMonths($i + 1)->startOfMonth(),
+                'customer_id'  => $purchase->customer_id,
+                'product_id'   => $purchase->product_id,
+                'purchase_id'  => $purchase->id,
+                'amount'       => $emiAmount,
+                'status'       => 'pending',
+                'due_date'     => Carbon::now()->addMonths($i + 1)->startOfMonth(),
             ]);
         }
 
-        // === PDF Invoice Generation ===
+        // Adjust the last installment if there's any rounding difference
+        $totalInstallmentSum = $emiAmount * $purchase->emi_plan;
+        $adjustment = $totalInstallmentSum - $totalDue;
+
+        if ($adjustment !== 0) {
+            $lastInstallment = end($installments);
+            $lastInstallment->amount -= $adjustment;
+            $lastInstallment->save();
+        }
+
+        // Invoice + PDF
+        $invoices = Invoice::all();
         $data = [
-            'purchase'     => $purchase,
+            'invoices' => $invoices,
+            'purchase' => $purchase,
+            'emiAmount' => $emiAmount,
             'installments' => $installments,
-            'customer'     => $purchase->customer,
-            'product'      => $purchase->product,
+            'customer' => $purchase->customer,
+            'product' => $purchase->product,
         ];
 
-        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $defaultConfig = (new ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
-        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+        $defaultFontConfig = (new FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
         $path = public_path('fonts');
 
-        $mpdf = new \Mpdf\Mpdf([
+        $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
             'fontDir' => array_merge($fontDirs, [$path]),
@@ -164,8 +167,53 @@ class PurchaseController extends Controller
 
         $html = view('reports.pdf', $data)->render();
         $mpdf->WriteHTML($html);
-        return response($mpdf->Output('Roman_Emi_Invoice.pdf', 'S'), 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="Roman_Emi_Invoice.pdf"');
+
+        return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
+    }
+
+
+
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Purchase $purchase)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Purchase $purchase)
+    {
+        $customers = Customer::all();
+        $products = Product::all();
+        $locations = Location::all();
+        return view('purchases.edit', compact('purchase', 'customers', 'products', 'locations'));
+    }
+
+    public function update(Request $request, Purchase $purchase)
+    {
+        $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'product_id' => 'required|exists:products,id',
+            'total_price' => 'required|numeric',
+            'down_payment' => 'required|numeric',
+            'emi_plan' => 'required|integer|min:1'
+        ]);
+
+        $purchase->update($request->all());
+
+        return redirect()->route('purchases.index')->with('success', 'Purchase updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Purchase $purchase)
+    {
+        $purchase->delete();
+        return redirect()->route('purchases.index')->with('success', 'Purchase deleted successfully.');
     }
 }
