@@ -29,7 +29,6 @@
                                 <th>জমা</th>
                                 <th>বাকি</th>
                                 <th style="min-width: 120px;">কিস্তি</th>
-                                <th>অ্যাকশন</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,22 +37,23 @@
                                 $grandTotalPaid = 0;
                                 $grandTotalDue = 0;
                             @endphp
+
                             @foreach ($customer->purchases as $purchase)
                                 @php
                                     $product = $purchase->product;
                                     $totalPrice = $purchase->net_price;
-                                    $total = $purchase->down_price;
                                     $totalPaid = $purchase->installments->sum('paid_amount');
                                     $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
+
                                     $grandTotalPrice += $totalPrice;
                                     $grandTotalPaid += $totalPaid;
                                     $grandTotalDue += $totalDue;
                                 @endphp
                                 <tr>
-                                    <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
+                                    <td>{{ $purchase->created_at->format('d-m-Y') }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
-                                    <td>{{ number_format($totalPaid + $total, 2) }} ৳</td>
+                                    <td>{{ number_format($totalPaid, 2) }} ৳</td>
                                     <td>
                                         <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
                                             {{ number_format($totalDue, 2) }} ৳
@@ -65,45 +65,45 @@
                                             max="{{ $totalDue }}" step="0.01"
                                             {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                     </td>
-                                    <td>
-                                        @if (auth()->user()->hasRole('admin'))
-                                            <button type="submit" class="btn btn-success btn-sm w-100"
-                                                {{ $totalDue <= 0 ? 'disabled' : '' }}>
-                                                Pay
-                                            </button>
-                                        @endif
-                                    </td>
                                 </tr>
                             @endforeach
 
                             {{-- Totals Row --}}
                             <tr class="fw-bold">
-                                <td colspan="7" class="p-3">
-                                    <div
-                                        class="bg-light rounded shadow-sm p-3 text-center d-flex flex-md-row justify-content-center align-items-center gap-4">
-                                        <div>
-                                            মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
-                                        </div>
-                                        <div>
-                                            মোট জমা: <strong>{{ number_format($grandTotalPaid + $total, 2) }} ৳</strong>
-                                        </div>
-                                        <div>
-                                            <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
-                                                মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
-                                            </strong>
-                                        </div>
-                                    </div>
+                                <td colspan="5" class="p-3 text-end">
+                                    মোট মূল্য:
+                                </td>
+                                <td>{{ number_format($grandTotalPrice, 2) }} ৳</td>
+                            </tr>
+                            <tr class="fw-bold">
+                                <td colspan="5" class="p-3 text-end">
+                                    মোট জমা:
+                                </td>
+                                <td>{{ number_format($grandTotalPaid, 2) }} ৳</td>
+                            </tr>
+                            <tr class="fw-bold">
+                                <td colspan="5" class="p-3 text-end">
+                                    মোট বাকি:
+                                </td>
+                                <td class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
+                                    {{ number_format($grandTotalDue, 2) }} ৳
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            {{-- Submit Button --}}
+            @if(auth()->user()->hasRole('admin'))
+                <button type="submit" class="btn btn-success w-100" {{ $grandTotalDue <= 0 ? 'disabled' : '' }}>
+                    Pay Selected Installments
+                </button>
+            @endif
         </form>
 
-        {{-- Payment History with EMI Summary design --}}
-        <div class="card shadow-sm">
+        {{-- Payment History with EMI Summary --}}
+        <div class="card shadow-sm mt-4">
             <div class="card-header bg-primary text-white fw-bold fs-5">
                 Payment History
             </div>
@@ -119,7 +119,7 @@
                     <tbody>
                         @forelse($paymentHistory as $payment)
                             <tr>
-                                <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
+                                <td>{{ $payment->paid_at->format('d M Y') }}</td>
                                 <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
                                 <td class="text-success fw-semibold">{{ number_format($payment->amount, 2) }}</td>
                             </tr>
@@ -134,6 +134,5 @@
                 </table>
             </div>
         </div>
-
     </div>
 @endsection
