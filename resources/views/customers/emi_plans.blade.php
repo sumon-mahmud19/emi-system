@@ -105,11 +105,32 @@
             </div>
         </form>
 
-    
+
+        @foreach ($customer->purchases as $purchase)
+            <h4>Product: {{ $purchase->product->product_name }}</h4>
+
+            @foreach ($purchase->installments as $installment)
+                <div class="mb-3">
+                    <strong>Installment ID:</strong> {{ $installment->id }} <br>
+                    <strong>Total Amount:</strong> {{ number_format($installment->amount, 2) }} ৳ <br>
+                    <strong>Status:</strong> {{ ucfirst($installment->status) }}
+
+                    @if ($installment->payments->count())
+                        <ul>
+                            @foreach ($installment->payments as $payment)
+                                <li>
+                                    Paid {{ number_format($payment->amount, 2) }} ৳ on
+                                    {{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-muted">No payments yet.</p>
+                    @endif
+                </div>
+            @endforeach
+        @endforeach
+
+
     </div>
-
-
-   
-
-
 @endsection
