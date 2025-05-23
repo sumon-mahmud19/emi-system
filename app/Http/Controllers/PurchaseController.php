@@ -49,16 +49,27 @@ class PurchaseController extends Controller
 
     public function autocomplete(Request $request)
     {
-        $data = [];
+         $results = [];
 
-        if ($request->filled('q')) {
-            $data = Customer::select("customer_id", "customer_name")
-                ->where('customer_id', 'LIKE', '%' . $request->get('q') . '%')
-                ->take(10)
-                ->get();
+    if ($request->filled('q')) {
+        $query = $request->get('q');
+
+        $customers = Customer::select('id', 'customer_name', 'customer_phone')
+            ->where('customer_name', 'LIKE', "%{$query}%")
+            ->orWhere('customer_phone', 'LIKE', "%{$query}%")
+            ->limit(10)
+            ->get();
+
+        foreach ($customers as $customer) {
+            $results[] = [
+                'id' => $customer->id,
+                'customer_name' => $customer->customer_name,
+                'customer_phone' => $customer->customer_phone,
+            ];
         }
+    }
 
-        return response()->json($data);
+    return response()->json($results);
     }
 
 
