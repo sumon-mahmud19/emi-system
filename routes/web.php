@@ -48,6 +48,12 @@ Route::resource('roles', RoleController::class);
 
 
 Route::post('/installments/pay-multiple', [InstallmentController::class, 'payMultiple'])->name('installments.pay-multiple');
+// Admin-only payment edit and delete routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/payments/{payment}/edit', [InstallmentController::class, 'edit'])->name('payments.edit');
+    Route::put('/payments/{payment}', [InstallmentController::class, 'update'])->name('payments.update');
+    Route::delete('/payments/{payment}', [InstallmentController::class, 'destroy'])->name('payments.destroy');
+});
 
 Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])
     ->name('report')
