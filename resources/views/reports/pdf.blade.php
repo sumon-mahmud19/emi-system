@@ -91,8 +91,8 @@
             <tr>
                 <td>{{ $product->product_name }}</td>
                 <td>{{ $purchase->model->model_name ?? 'N/A' }}</td>
+                <td>{{ number_format($purchase->sales_price, 2) }} টাকা</td>
                 <td>{{ number_format($purchase->total_price, 2) }} টাকা</td>
-                <td>{{ number_format($purchase->down_payment, 2) }} টাকা</td>
                 <td>{{ $purchase->emi_plan }} মাস</td>
             </tr>
         </tbody>
