@@ -59,15 +59,26 @@
                 @enderror
             </div>
 
+              <!-- Net Price -->
+            <div class="mb-3">
+                <label class="form-label">Sales Price</label>
+                <input type="number" name="net_price" class="form-control @error('net_price') is-invalid @enderror"
+                    value="{{ old('net_price') }}" required>
+                @error('net_price')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
             <!-- Sales Price -->
             <div class="mb-3">
-                <label class="form-label">MRP Price</label>
+                <label class="form-label">Net Price</label>
                 <input type="number" name="sales_price" class="form-control @error('sales_price') is-invalid @enderror"
                     value="{{ old('sales_price') }}" required>
                 @error('sales_price')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
+
 
             <!-- Down Price -->
             <div class="mb-3">
@@ -79,15 +90,7 @@
                 @enderror
             </div>
 
-            <!-- Net Price -->
-            <div class="mb-3">
-                <label class="form-label">Net Price</label>
-                <input type="number" name="net_price" class="form-control @error('net_price') is-invalid @enderror"
-                    value="{{ old('net_price') }}" required>
-                @error('net_price')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+          
 
             <!-- EMI Plan -->
             <div class="mb-3">
