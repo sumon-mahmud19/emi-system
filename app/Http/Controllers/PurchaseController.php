@@ -7,6 +7,7 @@ use App\Models\Installment;
 use App\Models\Invoice;
 use App\Models\Location;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -16,6 +17,8 @@ use Mpdf\Config\FontVariables;
 
 class PurchaseController extends Controller
 {
+
+
     public function __construct()
     {
         $this->middleware(['permission:purchase-list|purchase-create|purchase-edit|purchase-delete'], ['only' => ['index', 'show']]);
@@ -24,20 +27,13 @@ class PurchaseController extends Controller
         $this->middleware(['permission:purchase-delete'], ['only' => ['destroy']]);
     }
 
-
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $purchases = Purchase::all();
-        $totalPurchases = Purchase::count();
+        $purchases = Purchase::with(['customer', 'product', 'model'])->get();
+        $totalPurchases = $purchases->count();
         return view('purchases.index', compact('purchases', 'totalPurchases'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $customers = Customer::all();
@@ -46,39 +42,26 @@ class PurchaseController extends Controller
         return view('purchases.create', compact('customers', 'products', 'locations'));
     }
 
-
     public function getModels($productId)
     {
-        // Get the product
         $product = Product::findOrFail($productId);
-
-        // Fetch the models associated with the selected product
         $models = $product->models;
-
-        // Return the models as a JSON response
         return response()->json($models);
     }
 
-
     public function autocomplete(Request $request)
     {
-
         $data = [];
 
         if ($request->filled('q')) {
             $data = Customer::select("customer_name", "id")
-                ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
+                ->where('customer_name', 'LIKE', '%' . $request->q . '%')
                 ->take(10)
                 ->get();
         }
 
         return response()->json($data);
     }
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
 
     public function store(Request $request)
     {
@@ -95,67 +78,71 @@ class PurchaseController extends Controller
             return back()->withErrors(['down_price' => 'Down payment cannot exceed total price.']);
         }
 
-        // Calculate total due after down payment
-        $totalDue = $request->net_price - $request->down_price;
+        DB::beginTransaction();
 
-        // Create purchase record
-        $purchase = Purchase::create([
-            'customer_id' => $request->customer_id,
-            'product_id'  => $request->product_id,
-            'model_id'    => $request->model_id,
-            'sales_price' => $request->net_price,
-            'down_price'  => $request->down_price,
-            'net_price'   => $request->net_price,
-            'emi_plan'    => $request->emi_plan,
-        ]);
+        try {
+            $totalDue = $request->net_price - $request->down_price;
 
-        // === Installment generation based on totalDue ===
+            $purchase = Purchase::create([
+                'customer_id' => $request->customer_id,
+                'product_id'  => $request->product_id,
+                'model_id'    => $request->model_id,
+                'sales_price' => $request->net_price,
+                'down_price'  => $request->down_price,
+                'net_price'   => $request->net_price,
+                'emi_plan'    => $request->emi_plan,
+            ]);
 
-        $rawEmi = $totalDue / $request->emi_plan;
-        $emiAmount = floor($rawEmi); // base amount
-        $decimalDiff = $totalDue - ($emiAmount * $request->emi_plan);
+            $installments = [];
+            $rawEmi = $totalDue / $request->emi_plan;
+            $emiAmount = floor($rawEmi);
+            $decimalDiff = $totalDue - ($emiAmount * $request->emi_plan);
 
-        $installments = [];
+            for ($i = 0; $i < $request->emi_plan; $i++) {
+                $amount = $emiAmount;
+                if ($i < round($decimalDiff)) {
+                    $amount += 1;
+                }
 
-        for ($i = 0; $i < $request->emi_plan; $i++) {
-            $amount = $emiAmount;
-
-            // Distribute the remaining difference (distribute 1 extra unit to first few)
-            if ($i < round($decimalDiff)) {
-                $amount += 1;
+                $installments[] = Installment::create([
+                    'customer_id' => $purchase->customer_id,
+                    'product_id'  => $purchase->product_id,
+                    'purchase_id' => $purchase->id,
+                    'amount'      => $amount,
+                    'status'      => 'pending',
+                    'due_date'    => Carbon::now()->addMonths($i + 1)->startOfMonth(),
+                ]);
             }
 
-            $installments[] = Installment::create([
-                'customer_id' => $purchase->customer_id,
-                'product_id'  => $purchase->product_id,
-                'purchase_id' => $purchase->id,
-                'amount'      => $amount,
-                'status'      => 'pending',
-                'due_date'    => Carbon::now()->addMonths($i + 1)->startOfMonth(),
-            ]);
+            DB::commit();
+
+            // Prepare invoice data
+            return $this->generateInvoice($purchase, $installments);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
+    }
 
-        // === PDF invoice generation ===
-
-        $invoices = Invoice::all();
+    private function generateInvoice($purchase, $installments)
+    {
         $data = [
-            'invoices'     => $invoices,
             'purchase'     => $purchase,
             'installments' => $installments,
             'customer'     => $purchase->customer,
             'product'      => $purchase->product,
         ];
 
-        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $defaultConfig = (new ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
-        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata'];
-        $path = public_path('fonts');
 
-        $mpdf = new \Mpdf\Mpdf([
+        $defaultFontConfig = (new FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+
+        $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
-            'fontDir' => array_merge($fontDirs, [$path]),
+            'fontDir' => array_merge($fontDirs, [public_path('fonts')]),
             'fontdata' => $fontData + [
                 'solaimanlipi' => [
                     'R' => 'SolaimanLipi.ttf',
@@ -170,21 +157,6 @@ class PurchaseController extends Controller
         return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
     }
 
-
-
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Purchase $purchase)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Purchase $purchase)
     {
         $customers = Customer::all();
@@ -197,20 +169,25 @@ class PurchaseController extends Controller
     {
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
-            'product_id' => 'required|exists:products,id',
-            'total_price' => 'required|numeric',
-            'down_payment' => 'required|numeric',
-            'emi_plan' => 'required|integer|min:1'
+            'product_id'  => 'required|exists:products,id',
+            'model_id'    => 'required|exists:models,id',
+            'net_price'   => 'required|numeric|min:0',
+            'down_price'  => 'required|numeric|min:0',
+            'emi_plan'    => 'required|integer|min:1',
         ]);
 
-        $purchase->update($request->all());
+        $purchase->update($request->only([
+            'customer_id',
+            'product_id',
+            'model_id',
+            'net_price',
+            'down_price',
+            'emi_plan'
+        ]));
 
         return redirect()->route('purchases.index')->with('success', 'Purchase updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Purchase $purchase)
     {
         $purchase->delete();
