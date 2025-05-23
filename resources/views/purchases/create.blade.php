@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2 class="mb-4">Add Purchase</h2>
+    <h2 class="mb-4">New Purchase</h2>
 
     {{-- Global Error Display --}}
     @if ($errors->any())
