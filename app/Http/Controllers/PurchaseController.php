@@ -109,7 +109,7 @@ class PurchaseController extends Controller
         ]);
 
         // Total due = sales_price - cash (no down payment logic anymore)
-        $totalDue = $purchase->sales_price - $purchase->total_price;
+        $totalDue = $purchase->net_price - $purchase->down_price;
 
         // EMI amount calculation
         $rawEmiAmount = $totalDue / $purchase->emi_plan;
