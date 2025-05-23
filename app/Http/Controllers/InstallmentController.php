@@ -47,12 +47,6 @@ class InstallmentController extends Controller
 
                 $installment->save();
 
-                // Record into original installment_payments table
-                $installment->payments()->create([
-                    'amount' => $payNow,
-                    'paid_at' => now(),
-                ]);
-
                 $amount -= $payNow;
                 if ($amount <= 0) break;
             }
