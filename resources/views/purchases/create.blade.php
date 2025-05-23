@@ -32,9 +32,10 @@
             @error('product_id') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
-        <div class="mb-3">
+        <!-- Hidden initially -->
+        <div class="mb-3" id="model_section" style="display: none;">
             <label for="model_id" class="form-label">মডেল (Model)</label>
-            <select id="model_id" name="model_id" class="form-select" required>
+            <select id="model_id" name="model_id" class="form-select">
                 <option value="">মডেল নির্বাচন করুন</option>
             </select>
             @error('model_id') <small class="text-danger">{{ $message }}</small> @enderror
@@ -99,16 +100,20 @@
     $('#product_id').on('change', function () {
         const productId = $(this).val();
         $('#model_id').empty().append('<option value="">লোড হচ্ছে...</option>');
+        $('#model_section').hide(); // Always hide before fetching
 
         if (productId) {
             $.ajax({
                 url: `/purchases/models/${productId}`,
                 method: 'GET',
                 success: function (models) {
-                    $('#model_id').empty().append('<option value="">মডেল নির্বাচন করুন</option>');
-                    models.forEach(model => {
-                        $('#model_id').append(`<option value="${model.id}">${model.model_name}</option>`);
-                    });
+                    if (models.length > 0) {
+                        $('#model_id').empty().append('<option value="">মডেল নির্বাচন করুন</option>');
+                        models.forEach(model => {
+                            $('#model_id').append(`<option value="${model.id}">${model.model_name}</option>`);
+                        });
+                        $('#model_section').show(); // Show only if models exist
+                    }
                 }
             });
         }
