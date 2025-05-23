@@ -81,7 +81,7 @@
                             <tr class="fw-bold">
                                 <td colspan="7" class="p-3">
                                     <div
-                                        class="bg-light rounded shadow-sm p-3 text-center d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+                                        class="bg-light rounded shadow-sm p-3 text-center d-flex flex-md-row justify-content-center align-items-center gap-4">
                                         <div>
                                             মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                         </div>
