@@ -77,7 +77,6 @@
                             @endforeach
 
                             {{-- Totals Row --}}
-                            {{-- Totals Row --}}
                             <tr class="fw-bold">
                                 <td colspan="7" class="p-3">
                                     <div
