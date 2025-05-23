@@ -108,8 +108,8 @@
 
         {{-- Payment History with EMI Summary design --}}
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white text-center fw-bold fs-5">
-                কিস্তির পেমেন্ট ইতিহাস
+            <div class="card-header bg-primary text-white fw-bold fs-5">
+                Payment History
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle text-center mb-0">
