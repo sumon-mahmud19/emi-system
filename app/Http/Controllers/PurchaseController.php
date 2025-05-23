@@ -45,21 +45,21 @@ class PurchaseController extends Controller
     public function getModels($productId)
     {
         $product = Product::findOrFail($productId);
-        $models = $product->models;
+        $models = $product->models; // Assumes relationship 'models' exists in Product model
         return response()->json($models);
     }
 
+    // Autocomplete customer search for Select2
     public function autocomplete(Request $request)
     {
-        $search = $request->get('q');  // Select2 sends query param as 'q'
+        $search = $request->get('q');
 
         $customers = Customer::select('id', 'customer_name', 'customer_phone')
-            ->where('customer_name', 'LIKE', "%$search%")
-            ->orWhere('customer_phone', 'LIKE', "%$search%")
+            ->where('customer_name', 'LIKE', "%{$search}%")
+            ->orWhere('customer_phone', 'LIKE', "%{$search}%")
             ->limit(10)
             ->get();
 
-        // Format data for Select2
         $results = [];
 
         foreach ($customers as $customer) {
@@ -85,7 +85,7 @@ class PurchaseController extends Controller
         ]);
 
         if ($request->down_price > $request->net_price) {
-            return back()->withErrors(['down_price' => 'Down payment cannot exceed total price.']);
+            return back()->withErrors(['down_price' => 'Down payment cannot exceed total price.'])->withInput();
         }
 
         DB::beginTransaction();
@@ -103,10 +103,12 @@ class PurchaseController extends Controller
                 'emi_plan'    => $request->emi_plan,
             ]);
 
-            $installments = [];
+            // Calculate EMI installment amounts evenly with rounding
             $rawEmi = $totalDue / $request->emi_plan;
             $emiAmount = floor($rawEmi);
             $decimalDiff = $totalDue - ($emiAmount * $request->emi_plan);
+
+            $installments = [];
 
             for ($i = 0; $i < $request->emi_plan; $i++) {
                 $amount = $emiAmount;
@@ -126,11 +128,10 @@ class PurchaseController extends Controller
 
             DB::commit();
 
-            // Prepare invoice data
             return $this->generateInvoice($purchase, $installments);
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
+            return back()->with('error', 'Something went wrong: ' . $e->getMessage())->withInput();
         }
     }
 
