@@ -16,7 +16,7 @@
             </div>
         @endif
 
-        <form action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="purchaseForm" action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <!-- Customer Dropdown (Select2 AJAX) -->
@@ -101,11 +101,10 @@
 
             <!-- Save Button -->
             <button type="submit" id="saveBtn" class="btn btn-primary d-flex align-items-center gap-2">
-                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"
-                    id="saveSpinner"></span>
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="saveSpinner"></span>
                 <span id="saveText">Save</span>
             </button>
-            <a href="{{ route('purchases.index') }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ route('purchases.index') }}" class="btn btn-secondary ms-2">Cancel</a>
         </form>
     </div>
 @endsection
@@ -120,12 +119,6 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        $('form').on('submit', function() {
-            $('#saveBtn').attr('disabled', true);
-            $('#saveSpinner').removeClass('d-none');
-            $('#saveText').text('Saving...');
-        });
-
         // Select2 Customer Search
         $('#search').select2({
             placeholder: 'Search and Select Customer',
@@ -158,12 +151,70 @@
                         $('#model').empty().append('<option value="">Select Model</option>');
                         $.each(data, function(index, model) {
                             $('#model').append(
-                                `<option value="${model.id}">${model.model_name}</option>`);
+                                `<option value="${model.id}">${model.model_name}</option>`
+                            );
                         });
                     }
                 });
             } else {
                 $('#model').empty().append('<option value="">Select Model</option>');
+            }
+        });
+
+        // AJAX form submit with spinner and PDF download
+        $('#purchaseForm').on('submit', async function(e) {
+            e.preventDefault();
+
+            const saveBtn = $('#saveBtn');
+            const saveSpinner = $('#saveSpinner');
+            const saveText = $('#saveText');
+
+            saveBtn.prop('disabled', true);
+            saveSpinner.removeClass('d-none');
+            saveText.text('Saving...');
+
+            const form = this;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/pdf'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not OK');
+
+                const blob = await response.blob();
+
+                // Download PDF
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+
+                // Extract filename from header if present
+                let filename = 'purchase.pdf';
+                const disposition = response.headers.get('Content-Disposition');
+                if (disposition && disposition.indexOf('filename=') !== -1) {
+                    const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
+                    if (filenameMatch.length > 1) filename = filenameMatch[1];
+                }
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                saveBtn.prop('disabled', false);
+                saveSpinner.addClass('d-none');
+                saveText.text('Save');
             }
         });
     </script>
