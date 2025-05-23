@@ -63,14 +63,21 @@ class PurchaseController extends Controller
 
     public function autocomplete(Request $request)
     {
-        $search = $request->get('term'); // Select2 uses 'term'
+        $search = $request->input('term'); // `term` is used by Select2 by default
 
-        $customers = Customer::where('customer_name', 'like', "%$search%")
-            ->select('id', DB::raw("CONCAT(customer_name, ' - ', customer_phone) as text"))
+        $results = Customer::where('customer_name', 'like', '%' . $search . '%')
+            ->orWhere('customer_phone', 'like', '%' . $search . '%')
+            ->select('id', 'customer_name', 'customer_phone')
             ->limit(10)
-            ->get();
+            ->get()
+            ->map(function ($customer) {
+                return [
+                    'id' => $customer->id,
+                    'text' => $customer->customer_name . ' (' . $customer->customer_phone . ')'
+                ];
+            });
 
-        return response()->json(['results' => $customers]);
+        return response()->json(['results' => $results]);
     }
 
 
