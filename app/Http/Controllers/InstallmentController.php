@@ -2,16 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Installment;
 use App\Models\Payment;
-use App\Models\Product;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Mpdf\Mpdf;
-use Mpdf\Config\ConfigVariables;
-use Mpdf\Config\FontVariables;
 
 class InstallmentController extends Controller
 {
@@ -23,14 +16,14 @@ public function payMultiple(Request $request)
         'payments' => 'required|array',
     ]);
 
+    $customerId = $request->customer_id;
+
     foreach ($request->payments as $purchaseId => $amount) {
         $amount = floatval($amount);
 
-        if ($amount <= 0) {
-            continue;
-        }
+        if ($amount <= 0) continue;
 
-        $purchase = Purchase::with(['installments' => function ($q) {
+        $purchase = Purchase::with(['product', 'installments' => function ($q) {
             $q->orderBy('due_date');
         }])->findOrFail($purchaseId);
 
@@ -54,9 +47,13 @@ public function payMultiple(Request $request)
 
             // Record payment
             Payment::create([
-                'installment_id' => $installment->id,
-                'amount' => $payNow,
-                'paid_at' => now(),
+                'customer_id'     => $customerId,
+                'purchase_id'     => $purchase->id,
+                'product_id'      => $purchase->product->id ?? null,
+                'installment_id'  => $installment->id,
+                'amount'          => $payNow,
+                'status'          => $installment->status,
+                'paid_at'         => now(),
             ]);
 
             $amount -= $payNow;
@@ -64,9 +61,8 @@ public function payMultiple(Request $request)
             if ($amount <= 0) break;
         }
 
-        // Check if all installments under this purchase are paid
-        $unpaidCount = $purchase->installments()->where('status', '!=', 'paid')->count();
-        if ($unpaidCount === 0) {
+        // If all installments are paid, mark purchase as paid
+        if ($purchase->installments()->where('status', '!=', 'paid')->count() === 0) {
             $purchase->status = 'paid';
             $purchase->save();
         }
