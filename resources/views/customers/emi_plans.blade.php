@@ -41,8 +41,8 @@
                             @foreach ($customer->purchases as $purchase)
                                 @php
                                     $product = $purchase->product;
-                                    $totalPrice = $purchase->sales_price;
-                                    $total = $purchase->total_price;
+                                    $totalPrice = $purchase->net_price;
+                                    $total = $purchase->down_price;
                                     $totalPaid = $purchase->installments->sum('paid_amount');
                                     $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                     $grandTotalPrice += $totalPrice;
@@ -85,7 +85,7 @@
                                             মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                         </div>
                                         <div>
-                                            মোট জমা: <strong>{{ number_format($grandTotalPaid, 2) }} ৳</strong>
+                                            মোট জমা: <strong>{{ number_format($grandTotalPaid + $total, 2) }} ৳</strong>
                                         </div>
                                         <div>
                                             <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
