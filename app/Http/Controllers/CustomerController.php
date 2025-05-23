@@ -202,9 +202,7 @@ class CustomerController extends Controller
 
 
 
-// app/Http/Controllers/CustomerController.php
-
-public function customerEmiPlans($id)
+public function showEmiPlans($id)
 {
     $customer = Customer::with('purchases.installments')->findOrFail($id);
 
@@ -217,7 +215,6 @@ public function customerEmiPlans($id)
 
     return view('customers.emi_plans', compact('customer', 'paymentHistory'));
 }
-
 
 
 
