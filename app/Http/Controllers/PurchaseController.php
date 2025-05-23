@@ -38,10 +38,16 @@ class PurchaseController extends Controller
         return view('purchases.create', compact('products', 'locations'));
     }
 
+
     public function getModels($productId)
     {
-        $product = Product::findOrFail($productId);
-        return response()->json($product->models);
+        $product = Product::with('models')->find($productId);
+
+        if (!$product) {
+            return response()->json([], 404);
+        }
+
+        return response()->json($product->models); // Must be a collection of models with model_name
     }
 
     public function autocomplete(Request $request)
