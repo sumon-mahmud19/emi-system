@@ -51,7 +51,7 @@ class PurchaseController extends Controller
 {
     $data = [];
     if ($request->filled('q')) {
-        $data = Customer::select("customer_name", "customer_phone", "id")
+        $data = Customer::select("customer_name", "customer_id", "id")
             ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
             ->take(10)
             ->get();
