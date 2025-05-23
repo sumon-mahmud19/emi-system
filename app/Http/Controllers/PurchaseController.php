@@ -49,39 +49,35 @@ class PurchaseController extends Controller
 
     public function getModels($productId)
     {
-        // Get the product
         $product = Product::findOrFail($productId);
-
-        // Fetch the models associated with the selected product
-        $models = $product->models;
-
-        // Return the models as a JSON response
+        $models = $product->models()->select('id', 'model_name')->get();
         return response()->json($models);
     }
 
 
-   
-public function autocomplete(Request $request)
-{
-    $term = $request->input('term');
 
-    $customers = Customer::query()
-        ->where('customer_name', 'like', '%' . $term . '%')
-        ->orWhere('customer_phone', 'like', '%' . $term . '%')
-        ->select('id', 'customer_name', 'customer_phone')
-        ->limit(10)
-        ->get();
 
-    $results = $customers->map(function ($customer) {
-        return [
-            'id' => $customer->id,
-            'customer_name' => $customer->customer_name,
-            'customer_phone' => $customer->customer_phone,
-        ];
-    });
+    public function autocomplete(Request $request)
+    {
+        $term = $request->input('term');
 
-    return response()->json($results);
-}
+        $customers = Customer::query()
+            ->where('customer_name', 'like', '%' . $term . '%')
+            ->orWhere('customer_phone', 'like', '%' . $term . '%')
+            ->select('id', 'customer_name', 'customer_phone')
+            ->limit(10)
+            ->get();
+
+        $results = $customers->map(function ($customer) {
+            return [
+                'id' => $customer->id,
+                'customer_name' => $customer->customer_name,
+                'customer_phone' => $customer->customer_phone,
+            ];
+        });
+
+        return response()->json($results);
+    }
 
 
 
@@ -100,7 +96,7 @@ public function autocomplete(Request $request)
             'emi_plan'       => 'required|integer|min:1',
         ]);
 
-    
+
         // Save purchase info
         $purchase = Purchase::create([
             'customer_id' => $request->customer_id,
