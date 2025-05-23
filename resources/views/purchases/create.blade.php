@@ -61,7 +61,7 @@
 
               <!-- Net Price -->
             <div class="mb-3">
-                <label class="form-label">Sales Price</label>
+                <label class="form-label">Sales Price:</label>
                 <input type="number" name="net_price" class="form-control @error('net_price') is-invalid @enderror"
                     value="{{ old('net_price') }}" required>
                 @error('net_price')
