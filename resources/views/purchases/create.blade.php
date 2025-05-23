@@ -119,109 +119,104 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            // Initialize Select2 for Customer Search with AJAX
-            $('#search').select2({
-                placeholder: 'Search and Select Customer',
-                ajax: {
-                    url: "{{ route('autocomplete') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                return {
-                                    text: item.customer_name + ' (' + item.customer_phone + ')',
-                                    id: item.id
-                                };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-            // Load Models dynamically when product changes
-            $('#product').on('change', function() {
-                let productID = $(this).val();
-                if (productID) {
-                    $.ajax({
-                        url: '/get-models/' + productID,
-                        type: 'GET',
-                        success: function(data) {
-                            $('#model').empty().append('<option value="">Select Model</option>');
-                            $.each(data, function(index, model) {
-                                $('#model').append(
-                                    `<option value="${model.id}">${model.model_name}</option>`
-                                );
-                            });
-                        },
-                        error: function() {
-                            $('#model').empty().append('<option value="">Select Model</option>');
-                        }
-                    });
-                } else {
-                    $('#model').empty().append('<option value="">Select Model</option>');
-                }
-            });
-
-            // AJAX form submit with spinner and PDF download
-            $('#purchaseForm').on('submit', async function(e) {
-                e.preventDefault();
-
-                const saveBtn = $('#saveBtn');
-                const saveSpinner = $('#saveSpinner');
-                const saveText = $('#saveText');
-
-                saveBtn.prop('disabled', true);
-                saveSpinner.removeClass('d-none');
-                saveText.text('Saving...');
-
-                const form = this;
-                const formData = new FormData(form);
-
-                try {
-                    const response = await fetch(form.action, {
-                        method: form.method,
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/pdf'
-                        }
-                    });
-
-                    if (!response.ok) throw new Error('Network response was not OK');
-
-                    const blob = await response.blob();
-
-                    // Download PDF
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-
-                    // Extract filename from header if present
-                    let filename = 'purchase.pdf';
-                    const disposition = response.headers.get('Content-Disposition');
-                    if (disposition && disposition.indexOf('filename=') !== -1) {
-                        const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
-                        if (filenameMatch.length > 1) filename = filenameMatch[1];
-                    }
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
-
-                } catch (error) {
-                    alert('Error: ' + error.message);
-                } finally {
-                    saveBtn.prop('disabled', false);
-                    saveSpinner.addClass('d-none');
-                    saveText.text('Save');
-                }
-            });
+   <script>
+    $(document).ready(function () {
+        // ✅ Initialize Select2 for Customer Search with AJAX
+        $('#search').select2({
+            placeholder: 'Search and Select Customer',
+            ajax: {
+                url: "{{ route('autocomplete') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                    return {
+                        results: data.results // ✅ Already contains { id, text }
+                    };
+                },
+                cache: true
+            }
         });
-    </script>
+
+        // ✅ Load Models dynamically when product changes
+        $('#product').on('change', function () {
+            let productID = $(this).val();
+            if (productID) {
+                $.ajax({
+                    url: '/get-models/' + productID,
+                    type: 'GET',
+                    success: function (data) {
+                        $('#model').empty().append('<option value="">Select Model</option>');
+                        $.each(data, function (index, model) {
+                            $('#model').append(
+                                `<option value="${model.id}">${model.model_name}</option>`
+                            );
+                        });
+                    },
+                    error: function () {
+                        $('#model').empty().append('<option value="">Select Model</option>');
+                    }
+                });
+            } else {
+                $('#model').empty().append('<option value="">Select Model</option>');
+            }
+        });
+
+        // ✅ AJAX form submit with spinner and PDF download
+        $('#purchaseForm').on('submit', async function (e) {
+            e.preventDefault();
+
+            const saveBtn = $('#saveBtn');
+            const saveSpinner = $('#saveSpinner');
+            const saveText = $('#saveText');
+
+            saveBtn.prop('disabled', true);
+            saveSpinner.removeClass('d-none');
+            saveText.text('Saving...');
+
+            const form = this;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/pdf'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not OK');
+
+                const blob = await response.blob();
+
+                // ✅ Download PDF
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+
+                // ✅ Extract filename from header
+                let filename = 'purchase.pdf';
+                const disposition = response.headers.get('Content-Disposition');
+                if (disposition && disposition.indexOf('filename=') !== -1) {
+                    const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
+                    if (filenameMatch.length > 1) filename = filenameMatch[1];
+                }
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                saveBtn.prop('disabled', false);
+                saveSpinner.addClass('d-none');
+                saveText.text('Save');
+            }
+        });
+    });
+</script>
+
 @endpush
