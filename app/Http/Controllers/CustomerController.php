@@ -202,20 +202,20 @@ class CustomerController extends Controller
 
 
 
+public function showEmiPlans($id)
+{
+    $customer = Customer::with('purchases.installments')->findOrFail($id);
 
-    public function customerEmiPlans($id)
-    {
+    $paymentHistory = InstallmentPayment::with('installment.purchase.product')
+        ->whereHas('installment.purchase', function ($query) use ($id) {
+            $query->where('customer_id', $id);
+        })
+        ->orderBy('paid_at', 'desc')
+        ->get();
 
+    return view('customers.emi_plans', compact('customer', 'paymentHistory'));
+}
 
-        $customer = Customer::with('purchases.installments')->findOrFail($id);
-
-        $paymentHistory = InstallmentPayment::with('installment.purchase.customer')
-            ->orderBy('paid_at', 'desc')
-            ->get();
-
-        return view('customers.emi_plans', compact('customer', 'paymentHistory'));
-        // return view('customers.emi_plans', compact('customer'));
-    }
 
 
     public function showByLocation(Request $request, $id)
