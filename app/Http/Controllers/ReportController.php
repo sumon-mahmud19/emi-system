@@ -54,7 +54,7 @@ class ReportController extends Controller
         });
 
         $totalCost = $purchases->sum(function ($purchase) {
-            return $purchase->product->sales_price ?? 0;
+            return $purchase->product->cost_price ?? 0;
         });
 
         $profit = $totalPaid - $totalCost;
