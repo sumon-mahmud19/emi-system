@@ -47,17 +47,20 @@ class PurchaseController extends Controller
         return response()->json($models);
     }
 
-   public function autocomplete(Request $request)
-{
-    $data = [];
-    if ($request->filled('q')) {
-        $data = Customer::select("customer_name", "customer_id", "id")
-            ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
-            ->take(10)
-            ->get();
+    public function autocomplete(Request $request)
+    {
+        $data = [];
+
+        if ($request->filled('q')) {
+            $data = Customer::select("customer_name")
+                ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
+                ->take(10)
+                ->get()
+                ->pluck('customer_name'); // Extract only names as plain array
+        }
+
+        return response()->json($data);
     }
-    return response()->json($data);
-}
 
 
     public function store(Request $request)
