@@ -77,7 +77,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $purchase->product->product_name ?? 'N/A' }}</td>
-                            <td>৳{{ number_format($purchase->total_price, 2) }}</td>
+                            <td>৳{{ number_format($purchase->sales_price, 2) }}</td>
                             <td>{{ $purchase->created_at->format('d M Y') }}</td>
                             <td>{{ $purchase->installments->count() }}</td>
                         </tr>
