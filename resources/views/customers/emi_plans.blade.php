@@ -42,6 +42,7 @@
                                 @php
                                     $product = $purchase->product;
                                     $totalPrice = $purchase->sales_price;
+                                    $total = $purchase->total_price;
                                     $totalPaid = $purchase->installments->sum('paid_amount');
                                     $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                     $grandTotalPrice += $totalPrice;
@@ -86,7 +87,7 @@
                                         </div>
                                         <div class="col-12 col-md-4 mb-2">
                                             <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
-                                                মোট জমা: <strong>{{ number_format($purchase->total_price + $grandTotalPaid, 2) }} ৳</strong>
+                                                মোট জমা: <strong>{{ number_format($total+$grandTotalPaid, 2) }} ৳</strong>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
