@@ -9,67 +9,71 @@ use Illuminate\Http\Request;
 class InstallmentController extends Controller
 {
 
-public function payMultiple(Request $request)
-{
-    $request->validate([
-        'customer_id' => 'required|exists:customers,id',
-        'payments' => 'required|array',
-    ]);
+    public function payMultiple(Request $request)
+    {
+        $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'payments' => 'required|array',
+        ]);
 
-    $customerId = $request->customer_id;
+        $customerId = $request->customer_id;
 
-    foreach ($request->payments as $purchaseId => $amount) {
-        $amount = floatval($amount);
+        foreach ($request->payments as $purchaseId => $amount) {
+            $amount = floatval($amount);
+            if ($amount <= 0) continue;
 
-        if ($amount <= 0) continue;
+            $purchase = Purchase::with(['installments' => function ($q) {
+                $q->orderBy('due_date');
+            }, 'product'])->findOrFail($purchaseId);
 
-        $purchase = Purchase::with(['product', 'installments' => function ($q) {
-            $q->orderBy('due_date');
-        }])->findOrFail($purchaseId);
+            $originalAmount = $amount; // Keep track for full record
+            $productId = $purchase->product_id;
 
-        foreach ($purchase->installments as $installment) {
-            $due = $installment->amount - $installment->paid_amount;
+            foreach ($purchase->installments as $installment) {
+                $due = $installment->amount - $installment->paid_amount;
 
-            if ($due <= 0) continue;
+                if ($due <= 0) continue;
 
-            $payNow = min($amount, $due);
+                $payNow = min($amount, $due);
+                $installment->paid_amount += $payNow;
 
-            $installment->paid_amount += $payNow;
+                // Update status
+                if ($installment->paid_amount >= $installment->amount) {
+                    $installment->status = 'paid';
+                } elseif ($installment->paid_amount > 0) {
+                    $installment->status = 'partial';
+                }
 
-            // Update status
-            if ($installment->paid_amount >= $installment->amount) {
-                $installment->status = 'paid';
-            } elseif ($installment->paid_amount > 0) {
-                $installment->status = 'partial';
+                $installment->save();
+
+                // Record into original installment_payments table
+                $installment->payments()->create([
+                    'amount' => $payNow,
+                    'paid_at' => now(),
+                ]);
+
+                $amount -= $payNow;
+                if ($amount <= 0) break;
             }
 
-            $installment->save();
-
-            // Record payment
-            Payment::create([
-                'customer_id'     => $customerId,
-                'purchase_id'     => $purchase->id,
-                'product_id'      => $purchase->product->id ?? null,
-                'installment_id'  => $installment->id,
-                'amount'          => $payNow,
-                'status'          => $installment->status,
-                'paid_at'         => now(),
+            // Insert summary in new payments table
+            \App\Models\Payment::create([
+                'customer_id' => $customerId,
+                'purchase_id' => $purchaseId,
+                'product_id' => $productId,
+                'amount' => $originalAmount,
+                'status' => ($amount === 0) ? 'paid' : 'partial',
+                'paid_at' => now(),
             ]);
 
-            $amount -= $payNow;
-
-            if ($amount <= 0) break;
+            // Mark purchase paid if all its installments are paid
+            $unpaid = $purchase->installments()->where('status', '!=', 'paid')->count();
+            if ($unpaid === 0) {
+                $purchase->status = 'paid';
+                $purchase->save();
+            }
         }
 
-        // If all installments are paid, mark purchase as paid
-        if ($purchase->installments()->where('status', '!=', 'paid')->count() === 0) {
-            $purchase->status = 'paid';
-            $purchase->save();
-        }
+        return back()->with('success', 'Payments submitted successfully!');
     }
-
-    return back()->with('success', 'Payments submitted successfully!');
-}
-
-
 }
