@@ -53,7 +53,7 @@
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
-                                    <td>{{ number_format($totalPaid, 2) }} ৳</td>
+                                    <td>{{ number_format($totalPaid+$total, 2) }} ৳</td>
                                     <td>
                                         <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
                                             {{ number_format($totalDue, 2) }} ৳
@@ -87,7 +87,7 @@
                                         </div>
                                         <div class="col-12 col-md-4 mb-2">
                                             <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
-                                                মোট জমা: <strong>{{ number_format($total+$grandTotalPaid) }} ৳</strong>
+                                                মোট জমা: <strong>{{ number_format($grandTotalPaid, 2) }} ৳</strong>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
