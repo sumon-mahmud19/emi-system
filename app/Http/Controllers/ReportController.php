@@ -41,7 +41,7 @@ class ReportController extends Controller
             ->whereBetween('created_at', [$start, $end])
             ->paginate(10);
 
-        $totalPurchase = $purchases->sum('total_price');
+        $totalPurchase = $purchases->sum('net_price');
 
         $totalPaid = $purchases->sum(function ($purchase) {
             $down = $purchase->down_price ?? 0;
