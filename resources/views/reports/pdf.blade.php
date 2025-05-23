@@ -81,8 +81,8 @@
             <tr>
                 <th>পণ্যের নাম</th>
                 <th>মডেল</th>
-                <th>মোট মূল্য</th>
-                <th>ডাউন পেমেন্ট</th>
+                <th>মোট দাম</th>
+                <th>জমা</th>
                 <th>কিস্তি মাস</th>
 
             </tr>
@@ -91,8 +91,8 @@
             <tr>
                 <td>{{ $product->product_name }}</td>
                 <td>{{ $purchase->model->model_name ?? 'N/A' }}</td>
-                <td>{{ number_format($purchase->sales_price, 2) }} টাকা</td>
-                <td>{{ number_format($purchase->total_price, 2) }} টাকা</td>
+                <td>{{ number_format($purchase->net_price, 2) }} টাকা</td>
+                <td>{{ number_format($purchase->down_price, 2) }} টাকা</td>
                 <td>{{ $purchase->emi_plan }} মাস</td>
             </tr>
         </tbody>
