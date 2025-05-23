@@ -54,10 +54,10 @@ class ReportController extends Controller
         });
 
         $totalCost = $purchases->sum(function ($purchase) {
-            return $purchase->product->cost_price ?? 0;
+            return $purchase->product->sales_price ?? 0;
         });
 
-        $profit = $totalPaid - $totalCost;
+        $profit = $totalPurchase - $totalCost;
 
         return view('reports.monthly', compact('totalPurchase', 'totalPaid', 'totalDue', 'profit', 'purchases', 'filter', 'date'));
     }
