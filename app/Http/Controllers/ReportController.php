@@ -53,11 +53,16 @@ class ReportController extends Controller
             return $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
         });
 
-        $totalCost = $purchases->sum(function ($purchase) {
-            return $purchase->product->sales_price ?? 0;
+
+        $totalSales = $purchases->sum(function ($purchase) {
+            return $purchase->sales_price ?? 0;
         });
 
-        $profit = $totalPurchase - $totalCost;
+        $netSales = $purchases->sum(function ($purchase) {
+            return $purchase->net_price ?? 0;
+        });
+
+        $profit = $netSales - $totalSales;
 
         return view('reports.monthly', compact('totalPurchase', 'totalPaid', 'totalDue', 'profit', 'purchases', 'filter', 'date'));
     }
