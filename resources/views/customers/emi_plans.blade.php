@@ -37,23 +37,25 @@
                             $grandTotalPrice = 0;
                             $grandTotalPaid = 0;
                             $grandTotalDue = 0;
+                            $grandTotalDown = 0;
                         @endphp
                         @foreach ($customer->purchases as $purchase)
                             @php
                                 $product = $purchase->product;
                                 $totalPrice = $purchase->net_price;
-                                $total = $purchase->down_price;
+                                $down = $purchase->down_price;
                                 $totalPaid = $purchase->installments->sum('paid_amount');
                                 $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                 $grandTotalPrice += $totalPrice;
                                 $grandTotalPaid += $totalPaid;
-                                $grandTotalDue += $totalDue;
+                                $grandTotalDown += $down;
+                                $totalDeposit = $totalPaid + $down;
                             @endphp
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
                                 <td>{{ $product->product_name }}</td>
                                 <td>{{ number_format($totalPrice, 2) }} ৳</td>
-                                <td>{{ number_format($totalPaid+$total, 2) }} ৳</td>
+                                <td>{{ number_format($totalDeposit, 2) }} ৳</td>
                                 <td>
                                     <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
                                         {{ number_format($totalDue, 2) }} ৳
@@ -61,14 +63,14 @@
                                 </td>
                                 <td>
                                     <input type="number" name="payments[{{ $purchase->id }}]"
-                                        class="form-control form-control-sm w-100" value="0" min="0"
-                                        max="{{ $totalDue }}" step="0.01"
-                                        {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                           class="form-control form-control-sm w-100" value="0" min="0"
+                                           max="{{ $totalDue }}" step="0.01"
+                                           {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                 </td>
                                 <td>
                                     @if (auth()->user()->hasRole('admin'))
                                         <button type="submit" class="btn btn-success btn-sm w-100"
-                                            {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                                {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                             Pay
                                         </button>
                                     @endif
@@ -79,31 +81,28 @@
                         {{-- Totals Row --}}
                         <tr class="fw-bold">
                             <td colspan="7" class="p-3">
-                                <div
-                                    class="bg-light rounded shadow-sm p-3 text-center d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+                                <div class="bg-light rounded shadow-sm p-3 text-center d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
                                     <div>
                                         মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                     </div>
                                     <div>
-                                        মোট জমা: <strong>{{ number_format($grandTotalPaid+$total, 2) }} ৳</strong>
+                                        মোট জমা: <strong>{{ number_format($grandTotalPaid + $grandTotalDown, 2) }} ৳</strong>
                                     </div>
                                     <div>
-                                        <strong
-                                            class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
+                                        <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
                                             মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
                                         </strong>
                                     </div>
                                 </div>
                             </td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>
         </div>
     </form>
 
-    {{-- Payment History with EMI Summary design --}}
+    {{-- Payment History --}}
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white fw-bold fs-5">
             Payment History
@@ -135,6 +134,5 @@
             </table>
         </div>
     </div>
-
 </div>
 @endsection
