@@ -8,7 +8,14 @@ class Payment extends Model
 {
 
 
-    protected $fillable = ['installment_id', 'amount', 'paid_at'];
+   protected $fillable = [
+        'customer_id',
+        'purchase_id',
+        'product_id',
+        'amount',
+        'status',
+        'paid_at',
+    ];
 
     // Ensure that paid_at is cast to Carbon instance
     public function installment() {
