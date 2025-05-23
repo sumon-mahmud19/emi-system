@@ -52,11 +52,10 @@ class PurchaseController extends Controller
         $data = [];
 
         if ($request->filled('q')) {
-            $data = Customer::select("customer_name")
-                ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
+            $data = Customer::select("customer_id", "customer_name")
+                ->where('customer_id', 'LIKE', '%' . $request->get('q') . '%')
                 ->take(10)
-                ->get()
-                ->pluck('customer_name'); // Extract only names as plain array
+                ->get();
         }
 
         return response()->json($data);
