@@ -51,16 +51,26 @@ class PurchaseController extends Controller
 
     public function autocomplete(Request $request)
     {
-        $data = [];
+        $search = $request->get('q');  // Select2 sends query param as 'q'
 
-        if ($request->filled('q')) {
-            $data = Customer::select("customer_name", "id")
-                ->where('customer_name', 'LIKE', '%' . $request->q . '%')
-                ->take(10)
-                ->get();
+        $customers = Customer::select('id', 'customer_name', 'customer_phone')
+            ->where('customer_name', 'LIKE', "%$search%")
+            ->orWhere('customer_phone', 'LIKE', "%$search%")
+            ->limit(10)
+            ->get();
+
+        // Format data for Select2
+        $results = [];
+
+        foreach ($customers as $customer) {
+            $results[] = [
+                'id' => $customer->id,
+                'customer_name' => $customer->customer_name,
+                'customer_phone' => $customer->customer_phone,
+            ];
         }
 
-        return response()->json($data);
+        return response()->json($results);
     }
 
     public function store(Request $request)
