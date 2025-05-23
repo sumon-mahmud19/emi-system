@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('purchase_id');
             $table->decimal('amount', 10, 2);
-            $table->decimal('paid_amount', 10, 2)->default(0);
             $table->enum('status', ['paid', 'unpaid', 'partial', 'pending'])->default('pending');
             $table->date('due_date');
             $table->timestamps();
