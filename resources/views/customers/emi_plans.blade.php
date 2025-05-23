@@ -85,7 +85,7 @@
                                         মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                     </div>
                                     <div>
-                                        মোট জমা: <strong>{{ number_format($grandTotalPaid, 2) }} ৳</strong>
+                                        মোট জমা: <strong>{{ number_format($grandTotalPaid+$total, 2) }} ৳</strong>
                                     </div>
                                     <div>
                                         <strong
