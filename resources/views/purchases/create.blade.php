@@ -1,225 +1,117 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="container mt-4">
-        <h2 class="mb-4">Add Purchase</h2>
+@section('title', 'Create Purchase')
 
-        {{-- Global Error Display --}}
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <strong>Whoops! Something went wrong.</strong>
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form id="purchaseForm" action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-
-            <!-- Customer Dropdown (Select2 AJAX) -->
-            <div class="mb-3">
-                <label for="search" class="form-label">Select Customer</label>
-                <select class="form-select select2 @error('customer_id') is-invalid @enderror" id="search"
-                    name="customer_id" style="width:100%;" required>
-                    <option value="">Search and Select Customer</option>
-                </select>
-                @error('customer_id')
-                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Product Dropdown -->
-            <div class="mb-3">
-                <label for="product" class="form-label">Product</label>
-                <select name="product_id" id="product" class="form-select @error('product_id') is-invalid @enderror"
-                    required>
-                    <option value="">Select Product</option>
-                    @foreach ($products as $product)
-                        <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
-                            {{ $product->product_name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('product_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Model Dropdown -->
-            <div class="mb-3">
-                <label for="model" class="form-label">Model</label>
-                <select name="model_id" id="model" class="form-select @error('model_id') is-invalid @enderror" required>
-                    <option value="">Select Model</option>
-                </select>
-                @error('model_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-              <!-- Net Price -->
-            <div class="mb-3">
-                <label class="form-label">Net Price</label>
-                <input type="number" name="net_price" class="form-control @error('net_price') is-invalid @enderror"
-                    value="{{ old('net_price') }}" required>
-                @error('net_price')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            
-            <!-- Sales Price -->
-            <div class="mb-3">
-                <label class="form-label">MRP Price</label>
-                <input type="number" name="sales_price" class="form-control @error('sales_price') is-invalid @enderror"
-                    value="{{ old('sales_price') }}" required>
-                @error('sales_price')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-
-            <!-- Down Price -->
-            <div class="mb-3">
-                <label class="form-label">Down Payment</label>
-                <input type="number" name="down_price" class="form-control @error('down_price') is-invalid @enderror"
-                    value="{{ old('down_price') }}" required>
-                @error('down_price')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-          
-
-            <!-- EMI Plan -->
-            <div class="mb-3">
-                <label class="form-label">EMI Plan (months)</label>
-                <input type="number" name="emi_plan" class="form-control @error('emi_plan') is-invalid @enderror"
-                    value="{{ old('emi_plan') }}" required>
-                @error('emi_plan')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Save Button -->
-            <button type="submit" id="saveBtn" class="btn btn-primary d-flex align-items-center gap-2">
-                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="saveSpinner"></span>
-                <span id="saveText">Save</span>
-            </button>
-            <a href="{{ route('purchases.index') }}" class="btn btn-secondary ms-2">Cancel</a>
-        </form>
-    </div>
+@section('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
 
-@push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-@endpush
+@section('content')
+<div class="container">
+    <h2 class="mb-4">নতুন ক্রয় যুক্ত করুন</h2>
 
-@push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <form action="{{ route('purchases.store') }}" method="POST">
+        @csrf
 
-    <script>
-        // Select2 Customer Search
-        $('#search').select2({
-            placeholder: 'Search and Select Customer',
-            ajax: {
-                url: "{{ route('autocomplete') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.customer_name + ' (' + item.customer_phone + ')',
-                                id: item.id
-                            };
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
+        <div class="mb-3">
+            <label for="customer_id" class="form-label">গ্রাহক (Customer)</label>
+            <select id="customer_id" name="customer_id" class="form-control select2" required>
+                <option value="">গ্রাহক নির্বাচন করুন</option>
+            </select>
+            @error('customer_id') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
 
-        // Dependent Model Dropdown
-        $('#product').on('change', function() {
-            let productID = $(this).val();
-            if (productID) {
-                $.ajax({
-                    url: '/get-models/' + productID,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#model').empty().append('<option value="">Select Model</option>');
-                        $.each(data, function(index, model) {
-                            $('#model').append(
-                                `<option value="${model.id}">${model.model_name}</option>`
-                            );
-                        });
-                    }
-                });
-            } else {
-                $('#model').empty().append('<option value="">Select Model</option>');
-            }
-        });
+        <div class="mb-3">
+            <label for="product_id" class="form-label">পণ্য (Product)</label>
+            <select id="product_id" name="product_id" class="form-select" required>
+                <option value="">পণ্য নির্বাচন করুন</option>
+                @foreach($products as $product)
+                    <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                @endforeach
+            </select>
+            @error('product_id') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
 
-        // AJAX form submit with spinner and PDF download
-        $('#purchaseForm').on('submit', async function(e) {
-            e.preventDefault();
+        <div class="mb-3">
+            <label for="model_id" class="form-label">মডেল (Model)</label>
+            <select id="model_id" name="model_id" class="form-select" required>
+                <option value="">মডেল নির্বাচন করুন</option>
+            </select>
+            @error('model_id') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
 
-            const saveBtn = $('#saveBtn');
-            const saveSpinner = $('#saveSpinner');
-            const saveText = $('#saveText');
+        <div class="mb-3">
+            <label for="sales_price" class="form-label">মূল্য (Sales Price)</label>
+            <input type="number" name="sales_price" class="form-control" required>
+            @error('sales_price') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
 
-            saveBtn.prop('disabled', true);
-            saveSpinner.removeClass('d-none');
-            saveText.text('Saving...');
+        <div class="mb-3">
+            <label for="down_price" class="form-label">ডাউন পেমেন্ট (Down Price)</label>
+            <input type="number" name="down_price" class="form-control" required>
+            @error('down_price') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
 
-            const form = this;
-            const formData = new FormData(form);
+        <div class="mb-3">
+            <label for="net_price" class="form-label">নেট পেমেন্ট (Net Price)</label>
+            <input type="number" name="net_price" class="form-control" required>
+            @error('net_price') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
 
-            try {
-                const response = await fetch(form.action, {
-                    method: form.method,
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/pdf'
-                    }
-                });
+        <div class="mb-3">
+            <label for="emi_plan" class="form-label">EMI Plan (মাস)</label>
+            <input type="number" name="emi_plan" class="form-control" required min="1">
+            @error('emi_plan') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
 
-                if (!response.ok) throw new Error('Network response was not OK');
+        <button type="submit" class="btn btn-primary">ক্রয় সংরক্ষণ করুন</button>
+    </form>
+</div>
+@endsection
 
-                const blob = await response.blob();
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    // Initialize Select2 for customer
+    $('.select2').select2({
+        ajax: {
+            url: "{{ route('autocomplete') }}",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return { term: params.term };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map(item => ({
+                        id: item.id,
+                        text: item.customer_name + ' (' + item.customer_phone + ')'
+                    }))
+                };
+            },
+            cache: true
+        },
+        placeholder: 'গ্রাহকের নাম লিখুন...',
+        minimumInputLength: 2
+    });
 
-                // Download PDF
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
+    // Load models when product is selected
+    $('#product_id').on('change', function () {
+        const productId = $(this).val();
+        $('#model_id').empty().append('<option value="">লোড হচ্ছে...</option>');
 
-                // Extract filename from header if present
-                let filename = 'purchase.pdf';
-                const disposition = response.headers.get('Content-Disposition');
-                if (disposition && disposition.indexOf('filename=') !== -1) {
-                    const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
-                    if (filenameMatch.length > 1) filename = filenameMatch[1];
+        if (productId) {
+            $.ajax({
+                url: `/purchases/models/${productId}`,
+                method: 'GET',
+                success: function (models) {
+                    $('#model_id').empty().append('<option value="">মডেল নির্বাচন করুন</option>');
+                    models.forEach(model => {
+                        $('#model_id').append(`<option value="${model.id}">${model.model_name}</option>`);
+                    });
                 }
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-
-                a.remove();
-                window.URL.revokeObjectURL(url);
-
-            } catch (error) {
-                alert('Error: ' + error.message);
-            } finally {
-                saveBtn.prop('disabled', false);
-                saveSpinner.addClass('d-none');
-                saveText.text('Save');
-            }
-        });
-    </script>
-@endpush
+            });
+        }
+    });
+</script>
+@endsection
