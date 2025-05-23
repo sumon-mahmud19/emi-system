@@ -10,7 +10,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        {{-- Payment Form --}}
+        {{-- Purchase & EMI Summary --}}
         <form action="{{ route('installments.pay-multiple') }}" method="POST">
             @csrf
             <input type="hidden" name="customer_id" value="{{ $customer->id }}">
@@ -106,37 +106,38 @@
             </div>
         </form>
 
-
-        <h3 class="mb-3 text-center fw-bold text-primary">Payment History</h3>
-
-        <table class="table table-bordered table-striped table-hover shadow-sm">
-            <thead class="table-primary text-center">
-                <tr>
-                    <th style="width: 25%;">তারিখ</th>
-                    <th style="width: 50%;">পণ্য</th>
-                    <th style="width: 25%;">জমা (৳)</th>
-                    {{-- <th>Installment ID</th> --}}
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($paymentHistory as $payment)
-                    <tr class="text-center align-middle">
-                        <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
-                        <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
-                        <td class="fw-semibold text-success">{{ number_format($payment->amount, 2) }}</td>
-                        {{-- <td>{{ $payment->installment_id }}</td> --}}
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="text-center fst-italic text-muted py-4">
-                            কোন পেমেন্ট পাওয়া যায়নি।
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-
-
+        {{-- Payment History with EMI Summary design --}}
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+                কিস্তির পেমেন্ট ইতিহাস
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 25%;">তারিখ</th>
+                            <th style="width: 50%;">পণ্য</th>
+                            <th style="width: 25%;">জমা (৳)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($paymentHistory as $payment)
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
+                                <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
+                                <td class="text-success fw-semibold">{{ number_format($payment->amount, 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="text-center fst-italic text-muted py-4">
+                                    কোন পেমেন্ট পাওয়া যায়নি।
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 @endsection
