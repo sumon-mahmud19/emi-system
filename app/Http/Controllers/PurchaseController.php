@@ -101,13 +101,11 @@ class PurchaseController extends Controller
         ]);
 
         if ($request->down_price > $request->net_price) {
-            return back()->withErrors(['down_price' => 'Down payment cannot exceed total price.']);
+            return back()->withErrors(['down_price' => 'Down payment cannot exceed total price.'])->withInput();
         }
 
-        // Calculate total due after down payment
         $totalDue = $request->net_price - $request->down_price;
 
-        // Create purchase record
         $purchase = Purchase::create([
             'customer_id' => $request->customer_id,
             'product_id'  => $request->product_id,
@@ -118,21 +116,14 @@ class PurchaseController extends Controller
             'emi_plan'    => $request->emi_plan,
         ]);
 
-        // === Installment generation based on totalDue ===
-
-        $rawEmi = $totalDue / $request->emi_plan;
-        $emiAmount = floor($rawEmi); // base amount
-        $decimalDiff = $totalDue - ($emiAmount * $request->emi_plan);
+        // === Installment Calculation ===
+        $baseAmount = floor($totalDue / $request->emi_plan);
+        $remainder  = $totalDue - ($baseAmount * $request->emi_plan);
 
         $installments = [];
 
         for ($i = 0; $i < $request->emi_plan; $i++) {
-            $amount = $emiAmount;
-
-            // Distribute the remaining difference (distribute 1 extra unit to first few)
-            if ($i < round($decimalDiff)) {
-                $amount += 1;
-            }
+            $amount = $baseAmount + ($i < round($remainder) ? 1 : 0);
 
             $installments[] = Installment::create([
                 'customer_id' => $purchase->customer_id,
@@ -144,11 +135,8 @@ class PurchaseController extends Controller
             ]);
         }
 
-        // === PDF invoice generation ===
-
-        $invoices = Invoice::all();
+        // === PDF Invoice Generation ===
         $data = [
-            'invoices'     => $invoices,
             'purchase'     => $purchase,
             'installments' => $installments,
             'customer'     => $purchase->customer,
@@ -176,53 +164,8 @@ class PurchaseController extends Controller
 
         $html = view('reports.pdf', $data)->render();
         $mpdf->WriteHTML($html);
-        return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
-    }
-
-
-
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Purchase $purchase)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Purchase $purchase)
-    {
-        $customers = Customer::all();
-        $products = Product::all();
-        $locations = Location::all();
-        return view('purchases.edit', compact('purchase', 'customers', 'products', 'locations'));
-    }
-
-    public function update(Request $request, Purchase $purchase)
-    {
-        $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'product_id' => 'required|exists:products,id',
-            'total_price' => 'required|numeric',
-            'down_payment' => 'required|numeric',
-            'emi_plan' => 'required|integer|min:1'
-        ]);
-
-        $purchase->update($request->all());
-
-        return redirect()->route('purchases.index')->with('success', 'Purchase updated successfully.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Purchase $purchase)
-    {
-        $purchase->delete();
-        return redirect()->route('purchases.index')->with('success', 'Purchase deleted successfully.');
+        return response($mpdf->Output('Roman_Emi_Invoice.pdf', 'S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Roman_Emi_Invoice.pdf"');
     }
 }
