@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InstallmentPayment;
 use App\Models\Payment;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
@@ -57,13 +58,10 @@ class InstallmentController extends Controller
             }
 
             // Insert summary in new payments table
-            \App\Models\Payment::create([
-                'customer_id' => $customerId,
-                'purchase_id' => $purchaseId,
-                'product_id' => $productId,
-                'amount' => $originalAmount,
-                'status' => ($amount === 0) ? 'paid' : 'partial',
-                'paid_at' => now(),
+            InstallmentPayment::create([
+                'installment_id' => $installment->id, // replace with your actual installment ID
+                'amount' => $payNow,                  // replace with payment amount
+                'paid_at' => now(),                   // or a custom date
             ]);
 
             // Mark purchase paid if all its installments are paid
