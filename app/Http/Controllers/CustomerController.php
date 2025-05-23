@@ -204,15 +204,14 @@ class CustomerController extends Controller
 
 
     public function customerEmiPlans($id)
-{
-    $customer = Customer::with([
-        'purchases.product',
-        'purchases.installments.payments'
-    ])->findOrFail($id);
+    {
 
-    return view('customers.emi_plans', compact('customer'));
-}
 
+        $customer = Customer::with('purchases.installments')->findOrFail($id);
+
+        return view('customers.emi_plans', compact('customer'));
+        // return view('customers.emi_plans', compact('customer'));
+    }
 
 
     public function showByLocation(Request $request, $id)
