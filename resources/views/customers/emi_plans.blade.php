@@ -77,16 +77,17 @@
                             @endforeach
 
                             {{-- Totals Row --}}
+                            {{-- Totals Row --}}
                             <tr class="fw-bold">
                                 <td colspan="7" class="p-3">
-                                    <div class="d-flex flex-column flex-md-row gap-3">
-                                        <div class="flex-fill bg-light rounded p-3 shadow-sm text-center">
+                                    <div class="bg-light rounded p-3 shadow-sm text-center">
+                                        <div class="mb-2">
                                             মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                         </div>
-                                        <div class="flex-fill bg-light rounded p-3 shadow-sm text-center">
+                                        <div class="mb-2">
                                             মোট জমা: <strong>{{ number_format($grandTotalPaid, 2) }} ৳</strong>
                                         </div>
-                                        <div class="flex-fill bg-light rounded p-3 shadow-sm text-center">
+                                        <div>
                                             <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
                                                 মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
                                             </strong>
@@ -94,6 +95,7 @@
                                     </div>
                                 </td>
                             </tr>
+
 
                         </tbody>
                     </table>
