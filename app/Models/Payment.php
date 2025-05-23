@@ -15,4 +15,9 @@ class Payment extends Model
         return $this->belongsTo(Installment::class, 'installment_id');
     }
     
+
+    public function customers()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }

@@ -22,14 +22,18 @@ class Customer extends Model
     }
 
 
-    public function purchases() {
+    public function purchases()
+    {
         return $this->hasMany(Purchase::class);
     }
-    
-    public function installments() {
+
+    public function installments()
+    {
         return $this->hasManyThrough(Installment::class, Purchase::class);
     }
-    
-    
 
-}    
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+}

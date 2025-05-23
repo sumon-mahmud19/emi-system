@@ -14,8 +14,11 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('installment_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('purchase_id');
+            $table->unsignedBigInteger('product_id');
             $table->decimal('amount', 10, 2);
+            $table->enum('status', ['paid', 'partial'])->default('partial');
             $table->date('paid_at');
             $table->timestamps();
         });
