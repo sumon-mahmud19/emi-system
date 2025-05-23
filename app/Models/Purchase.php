@@ -10,12 +10,13 @@ class Purchase extends Model
         'customer_id',
         'product_id',
         'model_id',
-        'total_price',
         'sales_price',
+        'down_price',
+        'net_price',
         'emi_plan',
     ];
 
-
+   
     public function customer()
     {
         return $this->belongsTo(Customer::class);
