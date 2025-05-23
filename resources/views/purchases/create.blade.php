@@ -87,9 +87,9 @@
               <!-- EMI Plan -->
             <div class="mb-3">
                 <label class="form-label">EMI Plan (months)</label>
-                <input type="number" name="emi_plan" class="form-control" value="{{ $purchase->emi_plan }}" required>
+                <input type="number" name="emi_plan" class="form-control" value="{{ $emi_plan }}" required>
             </div>
-            
+
             <!-- Save Button -->
             <button type="submit" id="saveBtn" class="btn btn-primary d-flex align-items-center gap-2">
                 <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="saveSpinner"></span>
