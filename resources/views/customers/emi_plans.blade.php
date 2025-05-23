@@ -37,27 +37,23 @@
                                 $grandTotalPrice = 0;
                                 $grandTotalPaid = 0;
                                 $grandTotalDue = 0;
-                                $grandTotalDownPayment = 0; // Initialize down payment sum
                             @endphp
-
                             @foreach ($customer->purchases as $purchase)
                                 @php
                                     $product = $purchase->product;
                                     $totalPrice = $purchase->net_price;
-                                    $downPayment = $purchase->down_price;
+                                    $total = $purchase->down_price;
                                     $totalPaid = $purchase->installments->sum('paid_amount');
                                     $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
-
                                     $grandTotalPrice += $totalPrice;
                                     $grandTotalPaid += $totalPaid;
                                     $grandTotalDue += $totalDue;
-                                    $grandTotalDownPayment += $downPayment;
                                 @endphp
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
-                                    <td>{{ number_format($totalPaid + $downPayment, 2) }} ৳</td>
+                                    <td>{{ number_format($totalPaid + $total, 2) }} ৳</td>
                                     <td>
                                         <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
                                             {{ number_format($totalDue, 2) }} ৳
@@ -65,14 +61,14 @@
                                     </td>
                                     <td>
                                         <input type="number" name="payments[{{ $purchase->id }}]"
-                                               class="form-control form-control-sm w-100" value="0" min="0"
-                                               max="{{ $totalDue }}" step="0.01"
-                                               {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                            class="form-control form-control-sm w-100" value="0" min="0"
+                                            max="{{ $totalDue }}" step="0.01"
+                                            {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                     </td>
                                     <td>
                                         @if (auth()->user()->hasRole('admin'))
                                             <button type="submit" class="btn btn-success btn-sm w-100"
-                                                    {{ $totalDue <= 0 ? 'disabled' : '' }}>
+                                                {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                                 Pay
                                             </button>
                                         @endif
@@ -89,7 +85,7 @@
                                             মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                         </div>
                                         <div>
-                                            মোট জমা: <strong>{{ number_format($grandTotalPaid + $grandTotalDownPayment, 2) }} ৳</strong>
+                                            মোট জমা: <strong>{{ number_format($grandTotalPaid + $total, 2) }} ৳</strong>
                                         </div>
                                         <div>
                                             <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
@@ -99,6 +95,7 @@
                                     </div>
                                 </td>
                             </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -132,11 +129,11 @@
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a href="{{ route('payments.edit', $payment->id) }}"
-                                               class="btn btn-warning btn-sm">
+                                                class="btn btn-warning btn-sm">
                                                 Edit
                                             </a>
                                             <form action="{{ route('payments.destroy', $payment->id) }}" method="POST"
-                                                  onsubmit="return confirm('Are you sure you want to delete this payment?');">
+                                                onsubmit="return confirm('Are you sure you want to delete this payment?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="btn btn-danger btn-sm" type="submit">Delete</button>
@@ -157,5 +154,7 @@
                 </table>
             </div>
         </div>
+
+
     </div>
 @endsection
