@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
 use App\Models\Installment;
 use App\Models\InstallmentPayment;
@@ -49,133 +50,149 @@ class PurchaseController extends Controller
 
     public function autocomplete(Request $request)
     {
-         $results = [];
+        $results = [];
 
-    if ($request->filled('q')) {
-        $query = $request->get('q');
+        if ($request->filled('q')) {
+            $query = $request->get('q');
 
-        $customers = Customer::select('id', 'customer_name', 'customer_phone')
-            ->where('customer_name', 'LIKE', "%{$query}%")
-            ->orWhere('customer_phone', 'LIKE', "%{$query}%")
-            ->limit(10)
-            ->get();
+            $customers = Customer::select('id', 'customer_name', 'customer_phone')
+                ->where('customer_name', 'LIKE', "%{$query}%")
+                ->orWhere('customer_phone', 'LIKE', "%{$query}%")
+                ->limit(10)
+                ->get();
 
-        foreach ($customers as $customer) {
-            $results[] = [
-                'id' => $customer->id,
-                'customer_name' => $customer->customer_name,
-                'customer_phone' => $customer->customer_phone,
-            ];
+            foreach ($customers as $customer) {
+                $results[] = [
+                    'id' => $customer->id,
+                    'customer_name' => $customer->customer_name,
+                    'customer_phone' => $customer->customer_phone,
+                ];
+            }
         }
-    }
 
-    return response()->json($results);
+        return response()->json($results);
     }
 
 
     public function store(Request $request)
     {
-        $request->validate([
-            'customer_id'  => 'required|exists:customers,id',
-            'product_id'   => 'required|exists:products,id',
-            'model_id'     => 'required',
-            'sales_price'  => 'required|numeric',
-            'down_price'   => 'required|numeric',
-            'net_price'    => 'required|numeric',
-            'emi_plan'     => 'required|integer|min:1',
-        ]);
+        DB::beginTransaction();
 
-        $purchase = Purchase::create([
-            'customer_id' => $request->customer_id,
-            'product_id'  => $request->product_id,
-            'model_id'    => $request->model_id,
-            'sales_price' => $request->sales_price,
-            'down_price'  => $request->down_price,
-            'net_price'   => $request->net_price,
-            'emi_plan'    => $request->emi_plan,
-        ]);
-
-        $totalDue = $purchase->net_price;
-        $rawEmiAmount = $totalDue / $purchase->emi_plan;
-        $baseEmi = floor($rawEmiAmount);
-        $decimalPart = $rawEmiAmount - $baseEmi;
-        $emiAmount = ($decimalPart >= 0.5) ? $baseEmi + 1 : $baseEmi;
-
-        $installments = [];
-        for ($i = 0; $i < $purchase->emi_plan; $i++) {
-            $installments[] = Installment::create([
-                'customer_id' => $purchase->customer_id,
-                'product_id'  => $purchase->product_id,
-                'purchase_id' => $purchase->id,
-                'amount'      => $emiAmount,
-                'status'      => 'pending',
-                'due_date'    => Carbon::now()->addMonths($i + 1)->startOfMonth(),
+        try {
+            $request->validate([
+                'customer_id'  => 'required|exists:customers,id',
+                'product_id'   => 'required|exists:products,id',
+                'model_id'     => 'required',
+                'sales_price'  => 'required|numeric',
+                'down_price'   => 'required|numeric',
+                'net_price'    => 'required|numeric',
+                'emi_plan'     => 'required|integer|min:1',
             ]);
-        }
 
-        $totalInstallmentSum = $emiAmount * $purchase->emi_plan;
-        $adjustment = $totalInstallmentSum - $totalDue;
+            $purchase = Purchase::create([
+                'customer_id' => $request->customer_id,
+                'product_id'  => $request->product_id,
+                'model_id'    => $request->model_id,
+                'sales_price' => $request->sales_price,
+                'down_price'  => $request->down_price,
+                'net_price'   => $request->net_price,
+                'emi_plan'    => $request->emi_plan,
+            ]);
 
-        if ($adjustment !== 0) {
-            $lastInstallment = end($installments);
-            $lastInstallment->amount -= $adjustment;
-            $lastInstallment->save();
-        }
+            $totalDue = $purchase->net_price;
+            $rawEmiAmount = $totalDue / $purchase->emi_plan;
+            $baseEmi = floor($rawEmiAmount);
+            $decimalPart = $rawEmiAmount - $baseEmi;
+            $emiAmount = ($decimalPart >= 0.5) ? $baseEmi + 1 : $baseEmi;
 
-        // ✅ Apply Down Payment to First Installment
-        if ($purchase->down_price > 0 && !empty($installments)) {
-            $firstInstallment = $installments[0];
-            $firstInstallment->paid_amount += $purchase->down_price;
-
-            if ($firstInstallment->paid_amount >= $firstInstallment->amount) {
-                $firstInstallment->status = 'paid';
-            } elseif ($firstInstallment->paid_amount > 0) {
-                $firstInstallment->status = 'partial';
+            $installments = [];
+            for ($i = 0; $i < $purchase->emi_plan; $i++) {
+                $installments[] = Installment::create([
+                    'customer_id' => $purchase->customer_id,
+                    'product_id'  => $purchase->product_id,
+                    'purchase_id' => $purchase->id,
+                    'amount'      => $emiAmount,
+                    'status'      => 'pending',
+                    'due_date'    => Carbon::now()->addMonths($i + 1)->startOfMonth(),
+                ]);
             }
 
-            $firstInstallment->save();
+            $totalInstallmentSum = $emiAmount * $purchase->emi_plan;
+            $adjustment = $totalInstallmentSum - $totalDue;
 
-            InstallmentPayment::create([
-                'installment_id' => $firstInstallment->id,
-                'amount' => $purchase->down_price,
-                'paid_at' => now(),
-            ]);
-        }
+            if ($adjustment !== 0) {
+                $lastInstallment = end($installments);
+                $lastInstallment->amount -= $adjustment;
+                $lastInstallment->save();
+            }
 
-        // PDF Invoice Generation
-        $invoices = Invoice::all();
-        $data = [
-            'invoices'     => $invoices,
-            'purchase'     => $purchase,
-            'emiAmount'    => $emiAmount,
-            'installments' => $installments,
-            'customer'     => $purchase->customer,
-            'product'      => $purchase->product,
-        ];
+            // ✅ Prevent double saving down payment
+            if ($purchase->down_price > 0 && !empty($installments)) {
+                $firstInstallment = $installments[0];
 
-        $defaultConfig = (new ConfigVariables())->getDefaults();
-        $fontDirs = $defaultConfig['fontDir'];
-        $defaultFontConfig = (new FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata'];
-        $path = public_path('fonts');
+                $existingPayment = InstallmentPayment::where('installment_id', $firstInstallment->id)
+                    ->where('amount', $purchase->down_price)
+                    ->first();
 
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'fontDir' => array_merge($fontDirs, [$path]),
-            'fontdata' => $fontData + [
-                'solaimanlipi' => [
-                    'R' => 'SolaimanLipi.ttf',
-                    'useOTL' => 0xFF,
+                if (!$existingPayment) {
+                    $firstInstallment->paid_amount += $purchase->down_price;
+
+                    if ($firstInstallment->paid_amount >= $firstInstallment->amount) {
+                        $firstInstallment->status = 'paid';
+                    } elseif ($firstInstallment->paid_amount > 0) {
+                        $firstInstallment->status = 'partial';
+                    }
+
+                    $firstInstallment->save();
+
+                    InstallmentPayment::create([
+                        'installment_id' => $firstInstallment->id,
+                        'amount' => $purchase->down_price,
+                        'paid_at' => now(),
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            // PDF Invoice Generation
+            $invoices = Invoice::all();
+            $data = [
+                'invoices'     => $invoices,
+                'purchase'     => $purchase,
+                'emiAmount'    => $emiAmount,
+                'installments' => $installments,
+                'customer'     => $purchase->customer,
+                'product'      => $purchase->product,
+            ];
+
+            $defaultConfig = (new ConfigVariables())->getDefaults();
+            $fontDirs = $defaultConfig['fontDir'];
+            $defaultFontConfig = (new FontVariables())->getDefaults();
+            $fontData = $defaultFontConfig['fontdata'];
+            $path = public_path('fonts');
+
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4',
+                'fontDir' => array_merge($fontDirs, [$path]),
+                'fontdata' => $fontData + [
+                    'solaimanlipi' => [
+                        'R' => 'SolaimanLipi.ttf',
+                        'useOTL' => 0xFF,
+                    ],
                 ],
-            ],
-            'default_font' => 'solaimanlipi'
-        ]);
+                'default_font' => 'solaimanlipi'
+            ]);
 
-        $html = view('reports.pdf', $data)->render();
-        $mpdf->WriteHTML($html);
+            $html = view('reports.pdf', $data)->render();
+            $mpdf->WriteHTML($html);
 
-        return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
+            return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to save purchase: ' . $e->getMessage());
+        }
     }
 
 
