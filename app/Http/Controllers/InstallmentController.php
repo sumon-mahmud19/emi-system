@@ -10,62 +10,61 @@ use Illuminate\Http\Request;
 class InstallmentController extends Controller
 {
 
-    public function payMultiple(Request $request)
-    {
-        $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'payments' => 'required|array',
-        ]);
+   public function payMultiple(Request $request)
+{
+    $request->validate([
+        'customer_id' => 'required|exists:customers,id',
+        'payments' => 'required|array',
+    ]);
 
-        $customerId = $request->customer_id;
+    $customerId = $request->customer_id;
 
-        foreach ($request->payments as $purchaseId => $amount) {
-            $amount = floatval($amount);
-            if ($amount <= 0) continue;
+    foreach ($request->payments as $purchaseId => $amount) {
+        $amount = floatval($amount);
+        if ($amount <= 0) continue;
 
-            $purchase = Purchase::with(['installments' => function ($q) {
-                $q->orderBy('due_date');
-            }, 'product'])->findOrFail($purchaseId);
+        $purchase = Purchase::with(['installments' => function ($q) {
+            $q->orderBy('due_date');
+        }, 'product'])->findOrFail($purchaseId);
 
-            $originalAmount = $amount; // Keep track for full record
-            $productId = $purchase->product_id;
+        $productId = $purchase->product_id;
+        $originalAmount = $amount;
 
-            foreach ($purchase->installments as $installment) {
-                $due = $installment->amount - $installment->paid_amount;
+        // Get the first unpaid or partial installment
+        $installment = $purchase->installments->first(function ($inst) {
+            return $inst->status != 'paid';
+        });
 
-                if ($due <= 0) continue;
+        if (!$installment) continue;
 
-                $payNow = min($amount, $due);
-                $installment->paid_amount += $payNow;
+        $due = $installment->amount - $installment->paid_amount;
+        $installment->paid_amount += $amount;
 
-                // Update status
-                if ($installment->paid_amount >= $installment->amount) {
-                    $installment->status = 'paid';
-                } elseif ($installment->paid_amount > 0) {
-                    $installment->status = 'partial';
-                }
-
-                $installment->save();
-
-                $amount -= $payNow;
-                if ($amount <= 0) break;
-            }
-
-            // Insert summary in new payments table
-            InstallmentPayment::create([
-                'installment_id' => $installment->id, // replace with your actual installment ID
-                'amount' => $payNow,                  // replace with payment amount
-                'paid_at' => now(),                   // or a custom date
-            ]);
-
-            // Mark purchase paid if all its installments are paid
-            $unpaid = $purchase->installments()->where('status', '!=', 'paid')->count();
-            if ($unpaid === 0) {
-                $purchase->status = 'paid';
-                $purchase->save();
-            }
+        // Update status
+        if ($installment->paid_amount >= $installment->amount) {
+            $installment->status = 'paid';
+        } elseif ($installment->paid_amount > 0) {
+            $installment->status = 'partial';
         }
 
-        return back()->with('success', 'Payments submitted successfully!');
+        $installment->save();
+
+        // Log the full payment to installment_payments table
+        InstallmentPayment::create([
+            'installment_id' => $installment->id,
+            'amount' => $originalAmount,
+            'paid_at' => now(),
+        ]);
+
+        // Optionally mark the whole purchase as paid
+        $unpaid = $purchase->installments()->where('status', '!=', 'paid')->count();
+        if ($unpaid === 0) {
+            $purchase->status = 'paid';
+            $purchase->save();
+        }
     }
+
+    return back()->with('success', 'Payments submitted successfully!');
+}
+
 }
