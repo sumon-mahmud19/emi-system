@@ -33,17 +33,26 @@ class PurchaseController extends Controller
 
     public function create()
     {
-        $customers = Customer::all();
         $products = Product::all();
         $locations = Location::all();
-        return view('purchases.create', compact('customers', 'products', 'locations'));
+        return view('purchases.create', compact('products', 'locations'));
     }
 
     public function getModels($productId)
     {
         $product = Product::findOrFail($productId);
-        $models = $product->models;
-        return response()->json($models);
+        return response()->json($product->models);
+    }
+
+    public function autocomplete(Request $request)
+    {
+        $search = $request->input('term');
+
+        $results = Customer::where('customer_name', 'like', "%$search%")
+            ->orWhere('customer_phone', 'like', "%$search%")
+            ->get(['id', 'customer_name', 'customer_phone']);
+
+        return response()->json($results);
     }
 
     public function store(Request $request)
@@ -87,15 +96,16 @@ class PurchaseController extends Controller
             ]);
         }
 
+        // Adjust last installment
         $totalInstallment = $emiAmount * $purchase->emi_plan;
         $adjustment = $totalInstallment - $totalDue;
-
         if ($adjustment != 0) {
             $last = end($installments);
             $last->amount -= $adjustment;
             $last->save();
         }
 
+        // PDF data
         $data = [
             'purchase' => $purchase,
             'emiAmount' => $emiAmount,
@@ -105,16 +115,17 @@ class PurchaseController extends Controller
             'invoices' => Invoice::all(),
         ];
 
+        // mPDF config for Bangla font
         $defaultConfig = (new ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
+
         $defaultFontConfig = (new FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
-        $path = public_path('fonts');
 
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
-            'fontDir' => array_merge($fontDirs, [$path]),
+            'fontDir' => array_merge($fontDirs, [public_path('fonts')]),
             'fontdata' => $fontData + [
                 'solaimanlipi' => [
                     'R' => 'SolaimanLipi.ttf',
@@ -127,12 +138,9 @@ class PurchaseController extends Controller
         $html = view('reports.pdf', $data)->render();
         $mpdf->WriteHTML($html);
 
-        return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
-    }
-
-    public function show(Purchase $purchase)
-    {
-        //
+        return response($mpdf->Output('Roman_Emi_Invoice.pdf', 'S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="Roman_Emi_Invoice.pdf"');
     }
 
     public function edit(Purchase $purchase)
