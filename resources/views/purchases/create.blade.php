@@ -91,10 +91,31 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary">ক্রয় সংরক্ষণ করুন</button>
+            <button type="submit" class="btn btn-primary">
+                <span id="btn-text">Save Purchase</span>
+                <span id="btn-spinner" class="spinner-border spinner-border-sm d-none"></span>
+            </button>
+
+
         </form>
     </div>
 @endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('purchaseForm').addEventListener('submit', function (e) {
+        const btnText = document.getElementById('btn-text');
+        const btnSpinner = document.getElementById('btn-spinner');
+
+        // Show spinner and disable form
+        btnText.textContent = 'সংরক্ষণ হচ্ছে...';
+        btnSpinner.classList.remove('d-none');
+        this.querySelector('button').disabled = true;
+    });
+</script>
+@endsection
+
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {{-- ✅ jQuery CDN --}}
@@ -143,7 +164,7 @@
                                 models.forEach(model => {
                                     $('#model_id').append(
                                         `<option value="${model.id}">${model.model_name}</option>`
-                                        );
+                                    );
                                 });
                                 $('#model_section').show(); // ✅ Show section
                             } else {
