@@ -31,6 +31,6 @@ class Product extends Model
 
     public function models()
     {
-        return $this->hasMany(ProductModel::class);
+        return $this->hasMany(ProductModel::class,'product_id');
     }
 }
