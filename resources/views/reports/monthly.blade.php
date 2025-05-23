@@ -9,8 +9,8 @@
         <div class="col-md-3">
             <select name="filter" class="form-select">
                 <option value="month" {{ $filter == 'month' ? 'selected' : '' }}>🗓️ মাস</option>
-                <option value="week" {{ $filter == 'week' ? 'selected' : '' }}>📅 সপ্তাহ</option>
-                <option value="year" {{ $filter == 'year' ? 'selected' : '' }}>📆 বছর</option>
+                {{-- <option value="week" {{ $filter == 'week' ? 'selected' : '' }}>📅 সপ্তাহ</option>
+                <option value="year" {{ $filter == 'year' ? 'selected' : '' }}>📆 বছর</option> --}}
             </select>
         </div>
         <div class="col-md-3">
