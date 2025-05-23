@@ -10,7 +10,7 @@
             <!-- Customer Dropdown (Select2 AJAX) -->
             <div class="mb-3">
                 <label for="search" class="form-label">Select Customer</label>
-                <select class="form-select select2" id="search" name="customer_id" style="width:100%;">
+                <select class="form-select select2" id="search" name="customer_id" style="width:100%;" required>
                     <option value="">Search and Select Customer</option>
                 </select>
             </div>
@@ -34,25 +34,22 @@
                 </select>
             </div>
 
-
             <!-- Sales Price -->
             <div class="mb-3">
-                <label class="form-label">Sales Price</label>
+                <label class="form-label">MRP Price</label>
                 <input type="number" name="sales_price" class="form-control" required>
             </div>
 
-            <!-- Total Price -->
+            <!-- Down Price -->
             <div class="mb-3">
-                <label class="form-label">Cash Price</label>
-                <input type="number" name="total_price" class="form-control" required>
+                <label class="form-label">Down Payment</label>
+                <input type="number" name="down_price" class="form-control" required>
             </div>
 
-
-
-            <!-- EMI Plan -->
+            <!-- Net (Cash) Price -->
             <div class="mb-3">
-                <label class="form-label">EMI Plan (months)</label>
-                <input type="number" name="emi_plan" class="form-control" required>
+                <label class="form-label">Net Price</label>
+                <input type="number" name="net_price" class="form-control" required>
             </div>
 
             <!-- Save Button -->
@@ -68,18 +65,13 @@
 @endsection
 
 @push('styles')
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
 
 @push('scripts')
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 
     <script>
         $('form').on('submit', function() {
@@ -87,10 +79,7 @@
             $('#saveSpinner').removeClass('d-none');
             $('#saveText').text('Saving...');
         });
-    </script>
 
-
-    <script type="text/javascript">
         // Select2 Customer Search
         $('#search').select2({
             placeholder: 'Search and Select Customer',
