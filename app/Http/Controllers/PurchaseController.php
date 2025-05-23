@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Installment;
+use App\Models\InstallmentPayment;
 use App\Models\Invoice;
 use App\Models\Location;
 use App\Models\Product;
@@ -11,6 +12,7 @@ use App\Models\ProductModel;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
 use Mpdf\Config\ConfigVariables;
 use Mpdf\Config\FontVariables;
@@ -84,20 +86,115 @@ class PurchaseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'customer_id'    => 'required|exists:customers,id',
+    //         'product_id'     => 'required|exists:products,id',
+    //         'model_id'       => 'required',
+    //         'sales_price'    => 'required|numeric',
+    //         'down_price'    => 'required|numeric',
+    //         'net_price'    => 'required|numeric',
+    //         'emi_plan'       => 'required|integer|min:1',
+    //     ]);
+
+
+    //     // Save purchase info
+    //     $purchase = Purchase::create([
+    //         'customer_id' => $request->customer_id,
+    //         'product_id' => $request->product_id,
+    //         'model_id' => $request->model_id,
+    //         'sales_price' => $request->sales_price,
+    //         'down_price' => $request->down_price,
+    //         'net_price' => $request->net_price,
+    //         'emi_plan' => $request->emi_plan,
+    //     ]);
+
+    //     // Total due = sales_price - cash (no down payment logic anymore)
+    //     $totalDue = $purchase->net_price - $purchase->down_price;
+
+    //     // EMI amount calculation
+    //     $rawEmiAmount = $totalDue / $purchase->emi_plan;
+    //     $baseEmi = floor($rawEmiAmount);
+    //     $decimalPart = $rawEmiAmount - $baseEmi;
+    //     $emiAmount = ($decimalPart >= 0.5) ? $baseEmi + 1 : $baseEmi;
+
+    //     // Generate installments
+    //     $installments = [];
+    //     for ($i = 0; $i < $purchase->emi_plan; $i++) {
+    //         $installments[] = Installment::create([
+    //             'customer_id'  => $purchase->customer_id,
+    //             'product_id'   => $purchase->product_id,
+    //             'purchase_id'  => $purchase->id,
+    //             'amount'       => $emiAmount,
+    //             'status'       => 'pending',
+    //             'due_date'     => Carbon::now()->addMonths($i + 1)->startOfMonth(),
+    //         ]);
+    //     }
+
+    //     // Adjust the last installment if there's any rounding difference
+    //     $totalInstallmentSum = $emiAmount * $purchase->emi_plan;
+    //     $adjustment = $totalInstallmentSum - $totalDue;
+
+    //     if ($adjustment !== 0) {
+    //         $lastInstallment = end($installments);
+    //         $lastInstallment->amount -= $adjustment;
+    //         $lastInstallment->save();
+    //     }
+
+    //     // Invoice + PDF
+    //     $invoices = Invoice::all();
+    //     $data = [
+    //         'invoices' => $invoices,
+    //         'purchase' => $purchase,
+    //         'emiAmount' => $emiAmount,
+    //         'installments' => $installments,
+    //         'customer' => $purchase->customer,
+    //         'product' => $purchase->product,
+    //     ];
+
+    //     $defaultConfig = (new ConfigVariables())->getDefaults();
+    //     $fontDirs = $defaultConfig['fontDir'];
+    //     $defaultFontConfig = (new FontVariables())->getDefaults();
+    //     $fontData = $defaultFontConfig['fontdata'];
+    //     $path = public_path('fonts');
+
+    //     $mpdf = new Mpdf([
+    //         'mode' => 'utf-8',
+    //         'format' => 'A4',
+    //         'fontDir' => array_merge($fontDirs, [$path]),
+    //         'fontdata' => $fontData + [
+    //             'solaimanlipi' => [
+    //                 'R' => 'SolaimanLipi.ttf',
+    //                 'useOTL' => 0xFF,
+    //             ],
+    //         ],
+    //         'default_font' => 'solaimanlipi'
+    //     ]);
+
+    //     $html = view('reports.pdf', $data)->render();
+    //     $mpdf->WriteHTML($html);
+
+    //     return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
+    // }
+
+
     public function store(Request $request)
-    {
-        $request->validate([
-            'customer_id'    => 'required|exists:customers,id',
-            'product_id'     => 'required|exists:products,id',
-            'model_id'       => 'required',
-            'sales_price'    => 'required|numeric',
-            'down_price'    => 'required|numeric',
-            'net_price'    => 'required|numeric',
-            'emi_plan'       => 'required|integer|min:1',
-        ]);
+{
+    $request->validate([
+        'customer_id'  => 'required|exists:customers,id',
+        'product_id'   => 'required|exists:products,id',
+        'model_id'     => 'required',
+        'sales_price'  => 'required|numeric',
+        'down_price'   => 'required|numeric',
+        'net_price'    => 'required|numeric',
+        'emi_plan'     => 'required|integer|min:1',
+    ]);
 
+    DB::beginTransaction();
 
-        // Save purchase info
+    try {
+        // Save purchase
         $purchase = Purchase::create([
             'customer_id' => $request->customer_id,
             'product_id' => $request->product_id,
@@ -108,31 +205,30 @@ class PurchaseController extends Controller
             'emi_plan' => $request->emi_plan,
         ]);
 
-        // Total due = sales_price - cash (no down payment logic anymore)
+        // Total due = net - down
         $totalDue = $purchase->net_price - $purchase->down_price;
 
-        // EMI amount calculation
-        $rawEmiAmount = $totalDue / $purchase->emi_plan;
-        $baseEmi = floor($rawEmiAmount);
-        $decimalPart = $rawEmiAmount - $baseEmi;
-        $emiAmount = ($decimalPart >= 0.5) ? $baseEmi + 1 : $baseEmi;
+        // EMI rounding
+        $rawEmi = $totalDue / $purchase->emi_plan;
+        $baseEmi = floor($rawEmi);
+        $emiAmount = ($rawEmi - $baseEmi) >= 0.5 ? $baseEmi + 1 : $baseEmi;
 
-        // Generate installments
+        // Create installments
         $installments = [];
         for ($i = 0; $i < $purchase->emi_plan; $i++) {
             $installments[] = Installment::create([
-                'customer_id'  => $purchase->customer_id,
-                'product_id'   => $purchase->product_id,
-                'purchase_id'  => $purchase->id,
-                'amount'       => $emiAmount,
-                'status'       => 'pending',
-                'due_date'     => Carbon::now()->addMonths($i + 1)->startOfMonth(),
+                'customer_id' => $purchase->customer_id,
+                'product_id' => $purchase->product_id,
+                'purchase_id' => $purchase->id,
+                'amount' => $emiAmount,
+                'status' => 'pending',
+                'due_date' => Carbon::now()->addMonths($i + 1)->startOfMonth(),
             ]);
         }
 
-        // Adjust the last installment if there's any rounding difference
-        $totalInstallmentSum = $emiAmount * $purchase->emi_plan;
-        $adjustment = $totalInstallmentSum - $totalDue;
+        // Rounding adjustment
+        $totalInstallment = $emiAmount * $purchase->emi_plan;
+        $adjustment = $totalInstallment - $totalDue;
 
         if ($adjustment !== 0) {
             $lastInstallment = end($installments);
@@ -140,7 +236,18 @@ class PurchaseController extends Controller
             $lastInstallment->save();
         }
 
-        // Invoice + PDF
+        // Apply down payment to first installment
+        if ($purchase->down_price > 0 && isset($installments[0])) {
+            InstallmentPayment::create([
+                'installment_id' => $installments[0]->id,
+                'amount' => $purchase->down_price,
+                'paid_at' => now(),
+            ]);
+        }
+
+        DB::commit();
+
+        // PDF & invoice
         $invoices = Invoice::all();
         $data = [
             'invoices' => $invoices,
@@ -174,7 +281,11 @@ class PurchaseController extends Controller
         $mpdf->WriteHTML($html);
 
         return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return back()->withErrors(['error' => 'Error: ' . $e->getMessage()]);
     }
+}
 
 
 
