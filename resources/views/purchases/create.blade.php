@@ -32,7 +32,6 @@
             @error('product_id') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
-        <!-- Hidden initially -->
         <div class="mb-3" id="model_section" style="display: none;">
             <label for="model_id" class="form-label">মডেল (Model)</label>
             <select id="model_id" name="model_id" class="form-select">
@@ -43,19 +42,19 @@
 
         <div class="mb-3">
             <label for="sales_price" class="form-label">মূল্য (Sales Price)</label>
-            <input type="number" name="sales_price" class="form-control" required>
+            <input type="number" name="sales_price" class="form-control" required step="0.01" min="0">
             @error('sales_price') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
         <div class="mb-3">
             <label for="down_price" class="form-label">ডাউন পেমেন্ট (Down Price)</label>
-            <input type="number" name="down_price" class="form-control" required>
+            <input type="number" name="down_price" class="form-control" required step="0.01" min="0">
             @error('down_price') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
         <div class="mb-3">
             <label for="net_price" class="form-label">নেট পেমেন্ট (Net Price)</label>
-            <input type="number" name="net_price" class="form-control" required>
+            <input type="number" name="net_price" class="form-control" required step="0.01" min="0">
             @error('net_price') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
@@ -73,7 +72,7 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    // Initialize Select2 for customer
+    // Initialize Select2 for customer autocomplete
     $('.select2').select2({
         ajax: {
             url: "{{ route('autocomplete') }}",
@@ -96,11 +95,11 @@
         minimumInputLength: 2
     });
 
-    // Load models when product is selected
+    // Load models dynamically when product changes
     $('#product_id').on('change', function () {
         const productId = $(this).val();
         $('#model_id').empty().append('<option value="">লোড হচ্ছে...</option>');
-        $('#model_section').hide(); // Always hide before fetching
+        $('#model_section').hide();
 
         if (productId) {
             $.ajax({
@@ -112,7 +111,7 @@
                         models.forEach(model => {
                             $('#model_id').append(`<option value="${model.id}">${model.model_name}</option>`);
                         });
-                        $('#model_section').show(); // Show only if models exist
+                        $('#model_section').show();
                     }
                 }
             });
