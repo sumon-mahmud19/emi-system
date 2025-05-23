@@ -7,6 +7,7 @@ use App\Models\Installment;
 use App\Models\Invoice;
 use App\Models\Location;
 use App\Models\Product;
+use App\Models\ProductModel;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -47,12 +48,11 @@ class PurchaseController extends Controller
     }
 
 
-    public function getModels($productId)
-    {
-        $product = Product::findOrFail($productId);
-        $models = $product->models()->select('id', 'model_name')->get();
-        return response()->json($models);
-    }
+   public function getModels($productId)
+{
+    $models = ProductModel::where('product_id', $productId)->get(['id', 'model_name']);
+    return response()->json($models);
+}
 
 
 

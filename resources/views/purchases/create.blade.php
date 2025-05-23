@@ -46,17 +46,19 @@
             @error('sales_price') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
+         <div class="mb-3">
+            <label for="net_price" class="form-label">নেট পেমেন্ট (Net Price)</label>
+            <input type="number" name="net_price" class="form-control" required step="0.01" min="0">
+            @error('net_price') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
         <div class="mb-3">
             <label for="down_price" class="form-label">ডাউন পেমেন্ট (Down Price)</label>
             <input type="number" name="down_price" class="form-control" required step="0.01" min="0">
             @error('down_price') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
-        <div class="mb-3">
-            <label for="net_price" class="form-label">নেট পেমেন্ট (Net Price)</label>
-            <input type="number" name="net_price" class="form-control" required step="0.01" min="0">
-            @error('net_price') <small class="text-danger">{{ $message }}</small> @enderror
-        </div>
+       
 
         <div class="mb-3">
             <label for="emi_plan" class="form-label">EMI Plan (মাস)</label>
@@ -70,52 +72,61 @@
 @endsection
 
 @section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {{-- ✅ jQuery CDN --}}
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    // Initialize Select2 for customer autocomplete
-    $('.select2').select2({
-        ajax: {
-            url: "{{ route('autocomplete') }}",
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return { term: params.term };
+    $(document).ready(function () {
+        // ✅ Initialize Select2 for customer autocomplete
+        $('#customer_id').select2({
+            ajax: {
+                url: "{{ route('autocomplete') }}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { term: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.map(item => ({
+                            id: item.id,
+                            text: item.customer_name + ' (' + item.customer_phone + ')'
+                        }))
+                    };
+                },
+                cache: true
             },
-            processResults: function (data) {
-                return {
-                    results: data.map(item => ({
-                        id: item.id,
-                        text: item.customer_name + ' (' + item.customer_phone + ')'
-                    }))
-                };
-            },
-            cache: true
-        },
-        placeholder: 'গ্রাহকের নাম লিখুন...',
-        minimumInputLength: 2
-    });
+            placeholder: 'গ্রাহকের নাম লিখুন...',
+            minimumInputLength: 2
+        });
 
-    // Load models dynamically when product changes
-    $('#product_id').on('change', function () {
-        const productId = $(this).val();
-        $('#model_id').empty().append('<option value="">লোড হচ্ছে...</option>');
-        $('#model_section').hide();
+        // ✅ Load models dynamically when product changes
+        $('#product_id').on('change', function () {
+            const productId = $(this).val();
+            $('#model_id').empty().append('<option value="">লোড হচ্ছে...</option>');
+            $('#model_section').hide();
 
-        if (productId) {
-            $.ajax({
-                url: `/purchases/models/${productId}`,
-                method: 'GET',
-                success: function (models) {
-                    if (models.length > 0) {
-                        $('#model_id').empty().append('<option value="">মডেল নির্বাচন করুন</option>');
-                        models.forEach(model => {
-                            $('#model_id').append(`<option value="${model.id}">${model.model_name}</option>`);
-                        });
-                        $('#model_section').show();
+            if (productId) {
+                $.ajax({
+                    url: `/purchases/models/${productId}`,
+                    method: 'GET',
+                    success: function (models) {
+                        if (models.length > 0) {
+                            $('#model_id').empty().append('<option value="">মডেল নির্বাচন করুন</option>');
+                            models.forEach(model => {
+                                $('#model_id').append(`<option value="${model.id}">${model.model_name}</option>`);
+                            });
+                            $('#model_section').show(); // ✅ Show section
+                        } else {
+                            $('#model_id').empty().append('<option value="">কোন মডেল পাওয়া যায়নি</option>');
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error('Model load error:', xhr.responseText);
+                        $('#model_id').empty().append('<option value="">লোড করতে ব্যর্থ</option>');
                     }
-                }
-            });
-        }
+                });
+            }
+        });
     });
 </script>
 @endsection
