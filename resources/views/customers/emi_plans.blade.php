@@ -46,10 +46,12 @@
                                 $down = $purchase->down_price;
                                 $totalPaid = $purchase->installments->sum('paid_amount');
                                 $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
+                                $totalDeposit = $totalPaid + $down;
+
                                 $grandTotalPrice += $totalPrice;
                                 $grandTotalPaid += $totalPaid;
                                 $grandTotalDown += $down;
-                                $totalDeposit = $totalPaid + $down;
+                                $grandTotalDue += $totalDue; // ✅ FIXED: added this line
                             @endphp
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
