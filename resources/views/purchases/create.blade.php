@@ -101,25 +101,11 @@
     </div>
 @endsection
 
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.getElementById('purchaseForm').addEventListener('submit', function (e) {
-        const btnText = document.getElementById('btn-text');
-        const btnSpinner = document.getElementById('btn-spinner');
-
-        // Show spinner and disable form
-        btnText.textContent = 'সংরক্ষণ হচ্ছে...';
-        btnSpinner.classList.remove('d-none');
-        this.querySelector('button').disabled = true;
-    });
-</script>
-@endsection
-
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {{-- ✅ jQuery CDN --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             // ✅ Initialize Select2 for customer autocomplete
@@ -182,4 +168,18 @@
             });
         });
     </script>
+
+
+<script>
+    document.getElementById('purchaseForm').addEventListener('submit', function (e) {
+        const btnText = document.getElementById('btn-text');
+        const btnSpinner = document.getElementById('btn-spinner');
+
+        // Show spinner and disable form
+        btnText.textContent = 'সংরক্ষণ হচ্ছে...';
+        btnSpinner.classList.remove('d-none');
+        this.querySelector('button').disabled = true;
+    });
+</script>
+
 @endsection
