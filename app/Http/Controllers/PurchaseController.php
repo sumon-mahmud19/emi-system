@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
 use Mpdf\Config\ConfigVariables;
 use Mpdf\Config\FontVariables;
@@ -62,18 +63,16 @@ class PurchaseController extends Controller
 
     public function autocomplete(Request $request)
     {
+        $search = $request->get('term'); // Select2 uses 'term'
 
-        $data = [];
+        $customers = Customer::where('customer_name', 'like', "%$search%")
+            ->select('id', DB::raw("CONCAT(customer_name, ' - ', customer_phone) as text"))
+            ->limit(10)
+            ->get();
 
-        if ($request->filled('q')) {
-            $data = Customer::select("customer_name", "id")
-                ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
-                ->take(10)
-                ->get();
-        }
-
-        return response()->json($data);
+        return response()->json(['results' => $customers]);
     }
+
 
 
     /**
@@ -91,7 +90,7 @@ class PurchaseController extends Controller
             'emi_plan'       => 'required|integer|min:1',
         ]);
 
-    
+
         // Save purchase info
         $purchase = Purchase::create([
             'customer_id' => $request->customer_id,
