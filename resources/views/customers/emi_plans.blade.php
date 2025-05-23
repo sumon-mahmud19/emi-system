@@ -79,27 +79,22 @@
                             {{-- Totals Row --}}
                             <tr class="fw-bold">
                                 <td colspan="7" class="p-3">
-                                    <div class="row text-start">
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
-                                                মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
-                                            </div>
+                                    <div class="d-flex flex-column flex-md-row gap-3">
+                                        <div class="flex-fill bg-light rounded p-3 shadow-sm text-center">
+                                            মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                         </div>
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
-                                                মোট জমা: <strong>{{ number_format($grandTotalPaid, 2) }} ৳</strong>
-                                            </div>
+                                        <div class="flex-fill bg-light rounded p-3 shadow-sm text-center">
+                                            মোট জমা: <strong>{{ number_format($grandTotalPaid, 2) }} ৳</strong>
                                         </div>
-                                        <div class="col-12 col-md-4">
-                                            <div class="bg-light rounded p-2 shadow-sm text-start text-md-center">
-                                                <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
-                                                    মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
-                                                </strong>
-                                            </div>
+                                        <div class="flex-fill bg-light rounded p-3 shadow-sm text-center">
+                                            <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
+                                                মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
+                                            </strong>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
+
                         </tbody>
                     </table>
                 </div>
