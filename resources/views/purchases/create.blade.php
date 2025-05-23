@@ -53,25 +53,16 @@
                 <label for="model" class="form-label">Model</label>
                 <select name="model_id" id="model" class="form-select @error('model_id') is-invalid @enderror" required>
                     <option value="">Select Model</option>
+                    {{-- Options loaded dynamically via AJAX --}}
                 </select>
                 @error('model_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-              <!-- Net Price -->
-            <div class="mb-3">
-                <label class="form-label">Sales Price:</label>
-                <input type="number" name="net_price" class="form-control @error('net_price') is-invalid @enderror"
-                    value="{{ old('net_price') }}" required>
-                @error('net_price')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
             <!-- Sales Price -->
             <div class="mb-3">
-                <label class="form-label">Net Price</label>
+                <label class="form-label">Sales Price</label>
                 <input type="number" name="sales_price" class="form-control @error('sales_price') is-invalid @enderror"
                     value="{{ old('sales_price') }}" required>
                 @error('sales_price')
@@ -79,8 +70,17 @@
                 @enderror
             </div>
 
+            <!-- Net Price -->
+            <div class="mb-3">
+                <label class="form-label">Net Price</label>
+                <input type="number" name="net_price" class="form-control @error('net_price') is-invalid @enderror"
+                    value="{{ old('net_price') }}" required>
+                @error('net_price')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-            <!-- Down Price -->
+            <!-- Down Payment -->
             <div class="mb-3">
                 <label class="form-label">Down Payment</label>
                 <input type="number" name="down_price" class="form-control @error('down_price') is-invalid @enderror"
@@ -89,8 +89,6 @@
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
-
-          
 
             <!-- EMI Plan -->
             <div class="mb-3">
@@ -113,7 +111,7 @@
 @endsection
 
 @push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
 
@@ -122,103 +120,108 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        // Select2 Customer Search
-        $('#search').select2({
-            placeholder: 'Search and Select Customer',
-            ajax: {
-                url: "{{ route('autocomplete') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.customer_name + ' (' + item.customer_phone + ')',
-                                id: item.id
-                            };
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
-
-        // Dependent Model Dropdown
-        $('#product').on('change', function() {
-            let productID = $(this).val();
-            if (productID) {
-                $.ajax({
-                    url: '/get-models/' + productID,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#model').empty().append('<option value="">Select Model</option>');
-                        $.each(data, function(index, model) {
-                            $('#model').append(
-                                `<option value="${model.id}">${model.model_name}</option>`
-                            );
-                        });
-                    }
-                });
-            } else {
-                $('#model').empty().append('<option value="">Select Model</option>');
-            }
-        });
-
-        // AJAX form submit with spinner and PDF download
-        $('#purchaseForm').on('submit', async function(e) {
-            e.preventDefault();
-
-            const saveBtn = $('#saveBtn');
-            const saveSpinner = $('#saveSpinner');
-            const saveText = $('#saveText');
-
-            saveBtn.prop('disabled', true);
-            saveSpinner.removeClass('d-none');
-            saveText.text('Saving...');
-
-            const form = this;
-            const formData = new FormData(form);
-
-            try {
-                const response = await fetch(form.action, {
-                    method: form.method,
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/pdf'
-                    }
-                });
-
-                if (!response.ok) throw new Error('Network response was not OK');
-
-                const blob = await response.blob();
-
-                // Download PDF
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-
-                // Extract filename from header if present
-                let filename = 'purchase.pdf';
-                const disposition = response.headers.get('Content-Disposition');
-                if (disposition && disposition.indexOf('filename=') !== -1) {
-                    const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
-                    if (filenameMatch.length > 1) filename = filenameMatch[1];
+        $(document).ready(function() {
+            // Initialize Select2 for Customer Search with AJAX
+            $('#search').select2({
+                placeholder: 'Search and Select Customer',
+                ajax: {
+                    url: "{{ route('autocomplete') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    text: item.customer_name + ' (' + item.customer_phone + ')',
+                                    id: item.id
+                                };
+                            })
+                        };
+                    },
+                    cache: true
                 }
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
+            });
 
-                a.remove();
-                window.URL.revokeObjectURL(url);
+            // Load Models dynamically when product changes
+            $('#product').on('change', function() {
+                let productID = $(this).val();
+                if (productID) {
+                    $.ajax({
+                        url: '/get-models/' + productID,
+                        type: 'GET',
+                        success: function(data) {
+                            $('#model').empty().append('<option value="">Select Model</option>');
+                            $.each(data, function(index, model) {
+                                $('#model').append(
+                                    `<option value="${model.id}">${model.model_name}</option>`
+                                );
+                            });
+                        },
+                        error: function() {
+                            $('#model').empty().append('<option value="">Select Model</option>');
+                        }
+                    });
+                } else {
+                    $('#model').empty().append('<option value="">Select Model</option>');
+                }
+            });
 
-            } catch (error) {
-                alert('Error: ' + error.message);
-            } finally {
-                saveBtn.prop('disabled', false);
-                saveSpinner.addClass('d-none');
-                saveText.text('Save');
-            }
+            // AJAX form submit with spinner and PDF download
+            $('#purchaseForm').on('submit', async function(e) {
+                e.preventDefault();
+
+                const saveBtn = $('#saveBtn');
+                const saveSpinner = $('#saveSpinner');
+                const saveText = $('#saveText');
+
+                saveBtn.prop('disabled', true);
+                saveSpinner.removeClass('d-none');
+                saveText.text('Saving...');
+
+                const form = this;
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: form.method,
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/pdf'
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Network response was not OK');
+
+                    const blob = await response.blob();
+
+                    // Download PDF
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+
+                    // Extract filename from header if present
+                    let filename = 'purchase.pdf';
+                    const disposition = response.headers.get('Content-Disposition');
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
+                        if (filenameMatch.length > 1) filename = filenameMatch[1];
+                    }
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                } finally {
+                    saveBtn.prop('disabled', false);
+                    saveSpinner.addClass('d-none');
+                    saveText.text('Save');
+                }
+            });
         });
     </script>
 @endpush
