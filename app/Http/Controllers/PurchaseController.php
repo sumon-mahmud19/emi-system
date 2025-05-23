@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Installment;
+use App\Models\InstallmentPayment;
 use App\Models\Invoice;
 use App\Models\Location;
 use App\Models\Product;
@@ -16,7 +17,7 @@ use Mpdf\Config\FontVariables;
 
 class PurchaseController extends Controller
 {
-     public function __construct()
+    public function __construct()
     {
         $this->middleware(['permission:purchase-list|purchase-create|purchase-edit|purchase-delete'], ['only' => ['index', 'show']]);
         $this->middleware(['permission:purchase-create'], ['only' => ['create', 'store']]);
@@ -50,13 +51,14 @@ class PurchaseController extends Controller
     {
         $data = [];
         if ($request->filled('q')) {
-            $data = Customer::select("customer_name", "id")
+            $data = Customer::select("customer_name", "customer_id")
                 ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
                 ->take(10)
                 ->get();
         }
         return response()->json($data);
     }
+
 
     public function store(Request $request)
     {
@@ -80,10 +82,7 @@ class PurchaseController extends Controller
             'emi_plan'    => $request->emi_plan,
         ]);
 
-        // Use net price as total due for EMI calculations
         $totalDue = $purchase->net_price;
-
-        // Calculate EMI amount
         $rawEmiAmount = $totalDue / $purchase->emi_plan;
         $baseEmi = floor($rawEmiAmount);
         $decimalPart = $rawEmiAmount - $baseEmi;
@@ -108,6 +107,26 @@ class PurchaseController extends Controller
             $lastInstallment = end($installments);
             $lastInstallment->amount -= $adjustment;
             $lastInstallment->save();
+        }
+
+        // ✅ Apply Down Payment to First Installment
+        if ($purchase->down_price > 0 && !empty($installments)) {
+            $firstInstallment = $installments[0];
+            $firstInstallment->paid_amount += $purchase->down_price;
+
+            if ($firstInstallment->paid_amount >= $firstInstallment->amount) {
+                $firstInstallment->status = 'paid';
+            } elseif ($firstInstallment->paid_amount > 0) {
+                $firstInstallment->status = 'partial';
+            }
+
+            $firstInstallment->save();
+
+            InstallmentPayment::create([
+                'installment_id' => $firstInstallment->id,
+                'amount' => $purchase->down_price,
+                'paid_at' => now(),
+            ]);
         }
 
         // PDF Invoice Generation
@@ -145,6 +164,7 @@ class PurchaseController extends Controller
 
         return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
     }
+
 
     public function show(Purchase $purchase)
     {
