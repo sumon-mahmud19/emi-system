@@ -209,7 +209,7 @@ class CustomerController extends Controller
 
         $customer = Customer::with('purchases.installments')->findOrFail($id);
 
-        return view('customers.emi_plans', compact('customer', 'paymentHistory'));
+        return view('customers.emi_plans', compact('customer'));
         // return view('customers.emi_plans', compact('customer'));
     }
 
