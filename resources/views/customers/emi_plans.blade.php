@@ -41,7 +41,7 @@
                             @foreach ($customer->purchases as $purchase)
                                 @php
                                     $product = $purchase->product;
-                                    $totalPrice = $purchase->sales_price;
+                                    $totalPrice = $purchase->total_price;
                                     $totalPaid = $purchase->installments->sum('paid_amount');
                                     $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
                                     $grandTotalPrice += $totalPrice;
@@ -112,7 +112,7 @@
                     <th>Date</th>
                     <th>Product</th>
                     <th>Amount Paid (৳)</th>
-                    <th>Installment ID</th>
+                    {{-- <th>Installment ID</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -121,7 +121,7 @@
                         <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
                         <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
                         <td>{{ number_format($payment->amount, 2) }}</td>
-                        <td>{{ $payment->installment_id }}</td>
+                        {{-- <td>{{ $payment->installment_id }}</td> --}}
                     </tr>
                 @empty
                     <tr>
