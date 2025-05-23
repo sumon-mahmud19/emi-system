@@ -23,38 +23,42 @@ class ReportController extends Controller
 
     public function monthlyReport(Request $request)
     {
+        $filter = $request->input('filter', 'month'); // 'month', 'week', or 'year'
+        $date = $request->input('date', now()->format('Y-m'));
 
-        // Get the selected month from the request or default to the current month
-        $selectedMonth = $request->input('month', now()->format('Y-m'));
+        if ($filter === 'month') {
+            $start = Carbon::createFromFormat('Y-m', $date)->startOfMonth();
+            $end = Carbon::createFromFormat('Y-m', $date)->endOfMonth();
+        } elseif ($filter === 'week') {
+            $start = Carbon::parse($date)->startOfWeek();
+            $end = Carbon::parse($date)->endOfWeek();
+        } else { // year
+            $start = Carbon::createFromFormat('Y', $date)->startOfYear();
+            $end = Carbon::createFromFormat('Y', $date)->endOfYear();
+        }
 
-        // Get the start and end dates of the selected month
-        $startOfMonth = Carbon::createFromFormat('Y-m', $selectedMonth)->startOfMonth();
-        $endOfMonth = Carbon::createFromFormat('Y-m', $selectedMonth)->endOfMonth();
-
-        // Get purchases for the selected month
         $purchases = Purchase::with('product', 'installments')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->paginate(3);
+            ->whereBetween('created_at', [$start, $end])
+            ->paginate(10);
 
-        // Debugging the total purchase calculation
         $totalPurchase = $purchases->sum('total_price');
 
-
-        // Sum downpayments and installment payments for total paid
         $totalPaid = $purchases->sum(function ($purchase) {
-            $downpayment = $purchase->downpayment ?? 0;
+            $down = $purchase->down_price ?? 0;
             $installmentPaid = $purchase->installments->sum('paid_amount');
-            return $downpayment + $installmentPaid;
+            return $down + $installmentPaid;
         });
 
-
-        // Calculate total due by subtracting paid amounts from the total installment amount
         $totalDue = $purchases->sum(function ($purchase) {
-            return $purchase->installments->sum(fn($installment) => $installment->amount - $installment->paid_amount);
+            return $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
         });
 
+        $totalCost = $purchases->sum(function ($purchase) {
+            return $purchase->product->cost_price ?? 0;
+        });
 
-        // Pass data to the view
-        return view('reports.monthly', compact('totalPurchase', 'totalPaid', 'totalDue', 'purchases'));
+        $profit = $totalPaid - $totalCost;
+
+        return view('reports.monthly', compact('totalPurchase', 'totalPaid', 'totalDue', 'profit', 'purchases', 'filter', 'date'));
     }
 }
