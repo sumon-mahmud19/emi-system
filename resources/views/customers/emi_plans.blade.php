@@ -53,7 +53,7 @@
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>{{ number_format($totalPrice, 2) }} ৳</td>
-                                    <td>{{ number_format($totalPaid+$total, 2) }} ৳</td>
+                                    <td>{{ number_format($totalPaid + $total, 2) }} ৳</td>
                                     <td>
                                         <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
                                             {{ number_format($totalDue, 2) }} ৳
@@ -107,30 +107,35 @@
         </form>
 
 
-        <table class="table table-bordered">
-            <thead>
+        <h3 class="mb-3 text-center fw-bold text-primary">Payment History</h3>
+
+        <table class="table table-bordered table-striped table-hover shadow-sm">
+            <thead class="table-primary text-center">
                 <tr>
-                    <th>Date</th>
-                    <th>Product</th>
-                    <th>Amount Paid (৳)</th>
+                    <th style="width: 25%;">তারিখ</th>
+                    <th style="width: 50%;">পণ্য</th>
+                    <th style="width: 25%;">জমা (৳)</th>
                     {{-- <th>Installment ID</th> --}}
                 </tr>
             </thead>
             <tbody>
                 @forelse($paymentHistory as $payment)
-                    <tr>
+                    <tr class="text-center align-middle">
                         <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
                         <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
-                        <td>{{ number_format($payment->amount, 2) }}</td>
+                        <td class="fw-semibold text-success">{{ number_format($payment->amount, 2) }}</td>
                         {{-- <td>{{ $payment->installment_id }}</td> --}}
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center">No payments found.</td>
+                        <td colspan="3" class="text-center fst-italic text-muted py-4">
+                            কোন পেমেন্ট পাওয়া যায়নি।
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+
 
 
     </div>
