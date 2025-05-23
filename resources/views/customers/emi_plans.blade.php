@@ -102,18 +102,21 @@
             </div>
         </form>
 
-        {{-- Payment History with EMI Summary design --}}
+        {{-- Payment History with EMI Summary --}}
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white fw-bold fs-5">
-                Payment History
+            <div class="card-header bg-primary text-white fw-bold fs-5 d-flex justify-content-between align-items-center">
+                <span>Payment History</span>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle text-center mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 25%;">তারিখ</th>
-                            <th style="width: 50%;">পণ্য</th>
-                            <th style="width: 25%;">জমা (৳)</th>
+                            <th style="width: 20%;">তারিখ</th>
+                            <th style="width: 40%;">পণ্য</th>
+                            <th style="width: 20%;">জমা (৳)</th>
+                            @if (auth()->user()->hasRole('admin'))
+                                <th style="width: 20%;">অ্যাকশন</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -122,10 +125,27 @@
                                 <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
                                 <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
                                 <td class="text-success fw-semibold">{{ number_format($payment->amount, 2) }}</td>
+                                @if (auth()->user()->hasRole('admin'))
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href="{{ route('payments.edit', $payment->id) }}"
+                                                class="btn btn-warning btn-sm">
+                                                Edit
+                                            </a>
+                                            <form action="{{ route('payments.destroy', $payment->id) }}" method="POST"
+                                                onsubmit="return confirm('Are you sure you want to delete this payment?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center fst-italic text-muted py-4">
+                                <td colspan="{{ auth()->user()->hasRole('admin') ? 4 : 3 }}"
+                                    class="text-center fst-italic text-muted py-4">
                                     কোন পেমেন্ট পাওয়া যায়নি।
                                 </td>
                             </tr>
@@ -134,6 +154,7 @@
                 </table>
             </div>
         </div>
+
 
     </div>
 @endsection
