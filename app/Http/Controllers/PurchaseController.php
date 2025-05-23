@@ -60,20 +60,28 @@ class PurchaseController extends Controller
     }
 
 
-    public function autocomplete(Request $request)
-    {
+  public function autocomplete(Request $request)
+{
+    $results = [];
 
-        $data = [];
+    if ($request->filled('q')) {
+        $search = $request->get('q');
 
-        if ($request->filled('q')) {
-            $data = Customer::select("customer_name", "id")
-                ->where('customer_name', 'LIKE', '%' . $request->get('q') . '%')
-                ->take(10)
-                ->get();
+        $customers = Customer::select('id', 'customer_name')
+            ->where('customer_name', 'LIKE', "%{$search}%")
+            ->limit(10)
+            ->get();
+
+        foreach ($customers as $customer) {
+            $results[] = [
+                'id' => $customer->id,
+                'text' => $customer->customer_name,  // Select2 expects a 'text' key
+            ];
         }
-
-        return response()->json($data);
     }
+
+    return response()->json(['results' => $results]);
+}
 
 
     /**
