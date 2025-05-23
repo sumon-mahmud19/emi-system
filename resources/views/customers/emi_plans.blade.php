@@ -105,26 +105,7 @@
             </div>
         </form>
 
-       @foreach($paymentsByDate as $date => $payments)
-    <tr>
-        <td colspan="4" class="fw-bold">Date: {{ $date }}</td>
-    </tr>
-    @foreach($payments as $payment)
-    <tr>
-        <td>{{ $date }}</td>
-        <td>{{ $payment['product'] }}</td>
-        <td>{{ number_format($payment['amount'], 2) }} ৳</td>
-        <td>
-            <span class="badge
-                {{ $payment['status'] === 'paid' ? 'bg-success' : ($payment['status'] === 'partial' ? 'bg-warning text-dark' : 'bg-danger') }}">
-                {{ ucfirst($payment['status']) }}
-            </span>
-        </td>
-    </tr>
-    @endforeach
-@endforeach
-
-
+       
     </div>
 
 
