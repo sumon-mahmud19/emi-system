@@ -43,7 +43,7 @@ class CustomerController extends Controller
         }
 
         // Paginate the results
-        $customers = $query->paginate(100); // Show 100 results per page
+        $customers = $query->paginate(1000); // Show 100 results per page
 
         // If the request is an AJAX request, return the HTML only
         if ($request->ajax()) {
