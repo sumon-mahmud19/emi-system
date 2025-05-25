@@ -11,7 +11,9 @@ class Customer extends Model
         'customer_id',
         'customer_phone',
         'customer_image',
+        'landlord_name',
         'location_id',
+        'location_details',
     ];
 
 
