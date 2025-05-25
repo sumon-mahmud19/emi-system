@@ -57,7 +57,7 @@
 
                         <div class="mt-3">
                             <img id="image_preview"
-                                src="{{ $customer->customer_image ? asset('storage/' . $customer->customer_image) : '#' }}"
+                                src="{{ $customer->customer_image ? asset($customer->customer_image) : '#' }}"
                                 alt="Preview" class="img-thumbnail {{ $customer->customer_image ? '' : 'd-none' }}"
                                 style="width: 100px; height: 100px;">
                         </div>
