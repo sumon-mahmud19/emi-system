@@ -9,7 +9,8 @@
 
         <div class="mb-3">
             <label for="paid_at" class="form-label">তারিখ</label>
-            <input type="date" name="paid_at" class="form-control" value="{{ $payment->paid_at->format('Y-m-d') }}" required>
+            <input type="date" name="paid_at" class="form-control" value="{{ \Carbon\Carbon::parse($payment->paid_at)->format('Y-m-d') }}" required>
+
         </div>
 
         <div class="mb-3">
