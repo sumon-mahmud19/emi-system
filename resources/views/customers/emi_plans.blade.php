@@ -116,9 +116,9 @@
                     <thead class="table-light">
                         <tr>
                             <th style="width: 20%;">তারিখ</th>
-                            <th style="width: 40%;">পণ্য</th>
+                            <th style="width: 30%;">পণ্য</th>
                             <th style="width: 20%;">জমা (৳)</th>
-                            <th style="width: 20%;">ডিলিট</th> <!-- New column -->
+                            <th style="width: 30%;">অ্যাকশন</th> <!-- Action column -->
                         </tr>
                     </thead>
                     <tbody>
@@ -128,7 +128,11 @@
                                 <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
                                 <td class="text-success fw-semibold">{{ number_format($payment->amount, 2) }}</td>
                                 <td>
+                                    <a href="{{ route('payments.edit', $payment->id) }}"
+                                        class="btn btn-sm btn-warning">এডিট</a>
+
                                     <form action="{{ route('payments.destroy', $payment->id) }}" method="POST"
+                                        class="d-inline"
                                         onsubmit="return confirm('আপনি কি নিশ্চিতভাবে এই পেমেন্ট মুছতে চান?');">
                                         @csrf
                                         @method('DELETE')
@@ -147,6 +151,7 @@
                 </table>
             </div>
         </div>
+
 
     </div>
 @endsection
