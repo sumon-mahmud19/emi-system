@@ -118,7 +118,9 @@
                             <th style="width: 20%;">তারিখ</th>
                             <th style="width: 30%;">পণ্য</th>
                             <th style="width: 20%;">জমা (৳)</th>
-                            <th style="width: 30%;">অ্যাকশন</th> <!-- Action column -->
+                            @role('admin')
+                                <th style="width: 30%;">অ্যাকশন</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>
@@ -127,22 +129,25 @@
                                 <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
                                 <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
                                 <td class="text-success fw-semibold">{{ number_format($payment->amount, 2) }}</td>
-                                <td>
-                                    <a href="{{ route('payments.edit', $payment->id) }}"
-                                        class="btn btn-sm btn-warning">এডিট</a>
+                                @role('admin')
+                                    <td>
+                                        <a href="{{ route('payments.edit', $payment->id) }}"
+                                            class="btn btn-sm btn-warning">এডিট</a>
 
-                                    <form action="{{ route('payments.destroy', $payment->id) }}" method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm('আপনি কি নিশ্চিতভাবে এই পেমেন্ট মুছতে চান?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
-                                    </form>
-                                </td>
+                                        <form action="{{ route('payments.destroy', $payment->id) }}" method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm('আপনি কি নিশ্চিতভাবে এই পেমেন্ট মুছতে চান?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
+                                        </form>
+                                    </td>
+                                @endrole
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center fst-italic text-muted py-4">
+                                <td colspan="@role('admin')4 @else 3 @endrole"
+                                    class="text-center fst-italic text-muted py-4">
                                     কোন পেমেন্ট পাওয়া যায়নি।
                                 </td>
                             </tr>
@@ -151,6 +156,7 @@
                 </table>
             </div>
         </div>
+
 
 
     </div>
