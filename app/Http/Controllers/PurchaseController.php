@@ -283,7 +283,7 @@ class PurchaseController extends Controller
             // return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
 
             // Redirect using named route
-            return redirect()->route('customers.emi-plans', ['id' => $purchase->customer_id])
+            return redirect()->to('/customers/' . $purchase->customer_id . '/emi-plans')
                 ->with('success', 'Purchase created successfully and EMI plan generated.');
         } catch (\Throwable $e) {
             DB::rollBack();
