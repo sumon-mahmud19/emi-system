@@ -38,7 +38,7 @@
                     @foreach ($customers as $customer)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $customer->customer_name }}</td>
+                            <td><a href="{{ route('customers.emi_plans', $customer->id) }}">{{ $customer->customer_name }}</td></a>
                             <td>{{ $customer->customer_id }}</td>
                             <td>
                                 @can('customer-edit')
@@ -55,12 +55,7 @@
                                             onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i></button>
                                     </form>
                                 @endcan
-
-                                <a href="{{ route('customers.emi_plans', $customer->id) }}"
-                                    class="btn btn-primary btn-sm"><i class="fas fa-eye"></i>
-
-
-                                </a>
+                                
                             </td>
                             <td>
                                 <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
