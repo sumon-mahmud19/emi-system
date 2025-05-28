@@ -77,12 +77,11 @@
                                             </button>
 
                                             {{-- Delete Form --}}
-                                            <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
-                                                onsubmit="return confirm('আপনি কি নিশ্চিতভাবে এই ক্রয়টি মুছতে চান?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm w-100">Delete</button>
-                                            </form>
+                                            <a href="{{ route('purchases.destroy', $purchase->id) }}"
+                                                class="btn btn-danger btn-sm w-100"
+                                                onclick="return confirm('আপনি কি নিশ্চিতভাবে এই ক্রয়টি মুছতে চান?');">
+                                                Delete
+                                            </a>
                                         @endif
                                     </td>
                                 </tr>
