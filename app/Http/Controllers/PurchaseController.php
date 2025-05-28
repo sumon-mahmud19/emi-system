@@ -50,11 +50,11 @@ class PurchaseController extends Controller
     }
 
 
-   public function getModels($productId)
-{
-    $models = ProductModel::where('product_id', $productId)->get(['id', 'model_name']);
-    return response()->json($models);
-}
+    public function getModels($productId)
+    {
+        $models = ProductModel::where('product_id', $productId)->get(['id', 'model_name']);
+        return response()->json($models);
+    }
 
 
 
@@ -180,112 +180,116 @@ class PurchaseController extends Controller
 
 
     public function store(Request $request)
-{
-    $request->validate([
-        'customer_id'  => 'required|exists:customers,id',
-        'product_id'   => 'required|exists:products,id',
-        'model_id'     => 'required',
-        'sales_price'  => 'required|numeric',
-        'down_price'   => 'required|numeric',
-        'net_price'    => 'required|numeric',
-        'emi_plan'     => 'required|integer|min:1',
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-        // Save purchase
-        $purchase = Purchase::create([
-            'customer_id' => $request->customer_id,
-            'product_id' => $request->product_id,
-            'model_id' => $request->model_id,
-            'sales_price' => $request->sales_price,
-            'down_price' => $request->down_price,
-            'net_price' => $request->net_price,
-            'emi_plan' => $request->emi_plan,
+    {
+        $request->validate([
+            'customer_id'  => 'required|exists:customers,id',
+            'product_id'   => 'required|exists:products,id',
+            'model_id'     => 'required',
+            'sales_price'  => 'required|numeric',
+            'down_price'   => 'required|numeric',
+            'net_price'    => 'required|numeric',
+            'emi_plan'     => 'required|integer|min:1',
         ]);
 
-        // Total due = net - down
-        $totalDue = $purchase->net_price - $purchase->down_price;
+        DB::beginTransaction();
 
-        // EMI rounding
-        $rawEmi = $totalDue / $purchase->emi_plan;
-        $baseEmi = floor($rawEmi);
-        $emiAmount = ($rawEmi - $baseEmi) >= 0.5 ? $baseEmi + 1 : $baseEmi;
-
-        // Create installments
-        $installments = [];
-        for ($i = 0; $i < $purchase->emi_plan; $i++) {
-            $installments[] = Installment::create([
-                'customer_id' => $purchase->customer_id,
-                'product_id' => $purchase->product_id,
-                'purchase_id' => $purchase->id,
-                'amount' => $emiAmount,
-                'status' => 'pending',
-                'due_date' => Carbon::now()->addMonths($i + 1)->startOfMonth(),
+        try {
+            // Save purchase
+            $purchase = Purchase::create([
+                'customer_id' => $request->customer_id,
+                'product_id' => $request->product_id,
+                'model_id' => $request->model_id,
+                'sales_price' => $request->sales_price,
+                'down_price' => $request->down_price,
+                'net_price' => $request->net_price,
+                'emi_plan' => $request->emi_plan,
             ]);
-        }
 
-        // Rounding adjustment
-        $totalInstallment = $emiAmount * $purchase->emi_plan;
-        $adjustment = $totalInstallment - $totalDue;
+            // Total due = net - down
+            $totalDue = $purchase->net_price - $purchase->down_price;
 
-        if ($adjustment !== 0) {
-            $lastInstallment = end($installments);
-            $lastInstallment->amount -= $adjustment;
-            $lastInstallment->save();
-        }
+            // EMI rounding
+            $rawEmi = $totalDue / $purchase->emi_plan;
+            $baseEmi = floor($rawEmi);
+            $emiAmount = ($rawEmi - $baseEmi) >= 0.5 ? $baseEmi + 1 : $baseEmi;
 
-        // Apply down payment to first installment
-        if ($purchase->down_price > 0 && isset($installments[0])) {
-            InstallmentPayment::create([
-                'installment_id' => $installments[0]->id,
-                'amount' => $purchase->down_price,
-                'paid_at' => now(),
-            ]);
-        }
+            // Create installments
+            $installments = [];
+            for ($i = 0; $i < $purchase->emi_plan; $i++) {
+                $installments[] = Installment::create([
+                    'customer_id' => $purchase->customer_id,
+                    'product_id' => $purchase->product_id,
+                    'purchase_id' => $purchase->id,
+                    'amount' => $emiAmount,
+                    'status' => 'pending',
+                    'due_date' => Carbon::now()->addMonths($i + 1)->startOfMonth(),
+                ]);
+            }
 
-        DB::commit();
+            // Rounding adjustment
+            $totalInstallment = $emiAmount * $purchase->emi_plan;
+            $adjustment = $totalInstallment - $totalDue;
 
-        // PDF & invoice
-        $invoices = Invoice::all();
-        $data = [
-            'invoices' => $invoices,
-            'purchase' => $purchase,
-            'emiAmount' => $emiAmount,
-            'installments' => $installments,
-            'customer' => $purchase->customer,
-            'product' => $purchase->product,
-        ];
+            if ($adjustment !== 0) {
+                $lastInstallment = end($installments);
+                $lastInstallment->amount -= $adjustment;
+                $lastInstallment->save();
+            }
 
-        $defaultConfig = (new ConfigVariables())->getDefaults();
-        $fontDirs = $defaultConfig['fontDir'];
-        $defaultFontConfig = (new FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata'];
-        $path = public_path('fonts');
+            // Apply down payment to first installment
+            if ($purchase->down_price > 0 && isset($installments[0])) {
+                InstallmentPayment::create([
+                    'installment_id' => $installments[0]->id,
+                    'amount' => $purchase->down_price,
+                    'paid_at' => now(),
+                ]);
+            }
 
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'fontDir' => array_merge($fontDirs, [$path]),
-            'fontdata' => $fontData + [
-                'solaimanlipi' => [
-                    'R' => 'SolaimanLipi.ttf',
-                    'useOTL' => 0xFF,
+            DB::commit();
+
+            // PDF & invoice
+            $invoices = Invoice::all();
+            $data = [
+                'invoices' => $invoices,
+                'purchase' => $purchase,
+                'emiAmount' => $emiAmount,
+                'installments' => $installments,
+                'customer' => $purchase->customer,
+                'product' => $purchase->product,
+            ];
+
+            $defaultConfig = (new ConfigVariables())->getDefaults();
+            $fontDirs = $defaultConfig['fontDir'];
+            $defaultFontConfig = (new FontVariables())->getDefaults();
+            $fontData = $defaultFontConfig['fontdata'];
+            $path = public_path('fonts');
+
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4',
+                'fontDir' => array_merge($fontDirs, [$path]),
+                'fontdata' => $fontData + [
+                    'solaimanlipi' => [
+                        'R' => 'SolaimanLipi.ttf',
+                        'useOTL' => 0xFF,
+                    ],
                 ],
-            ],
-            'default_font' => 'solaimanlipi'
-        ]);
+                'default_font' => 'solaimanlipi'
+            ]);
 
-        $html = view('reports.pdf', $data)->render();
-        $mpdf->WriteHTML($html);
+            $html = view('reports.pdf', $data)->render();
+            $mpdf->WriteHTML($html);
 
-        return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
-    } catch (\Throwable $e) {
-        DB::rollBack();
-        return back()->withErrors(['error' => 'Error: ' . $e->getMessage()]);
+            // return $mpdf->Output('Roman_Emi_Invoice.pdf', 'I');
+
+            // Redirect using named route
+            return redirect()->route('customers.emi-plans', ['id' => $purchase->customer_id])
+                ->with('success', 'Purchase created successfully and EMI plan generated.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error: ' . $e->getMessage()]);
+        }
     }
-}
 
 
 
