@@ -76,12 +76,12 @@
                                                 Pay
                                             </button>
 
-                                            <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
+                                            <a action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
                                                 onsubmit="return confirm('Are you sure you want to delete this purchase and all EMIs?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                            </form>
+                                            </a>
                                         @endif
                                     </td>
                                 </tr>
