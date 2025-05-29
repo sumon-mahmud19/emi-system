@@ -333,13 +333,28 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        $installment = Installment::findOrFail($id);
+        DB::beginTransaction();
 
-        $customerId = $installment->customer_id;
+        try {
+            $purchase = Purchase::findOrFail($id);
 
-        $installment->delete();
+            // Delete related installment payments
+            foreach ($purchase->installments as $installment) {
+                $installment->payments()->delete(); // if Installment hasMany InstallmentPayment
+            }
 
-        return redirect()->to('/customers/' . $customerId . '/emi-plans')
-            ->with('success', 'Installment deleted successfully');
+            // Delete installments
+            $purchase->installments()->delete();
+
+            // Delete purchase
+            $purchase->delete();
+
+            DB::commit();
+
+            return back()->with('success', 'Purchase and related EMI data deleted successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Delete failed: ' . $e->getMessage()]);
+        }
     }
 }
