@@ -11,58 +11,60 @@
         @endif
 
         {{-- Purchase & EMI Summary --}}
-        <form action="{{ route('installments.pay-multiple') }}" method="POST">
-            @csrf
-            <input type="hidden" name="customer_id" value="{{ $customer->id }}">
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <strong>Purchase & EMI Summary</strong>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle text-center">
-                        <thead class="table-light">
-                            <tr>
-                                <th>তারিখ</th>
-                                <th>পণ্য</th>
-                                <th>মূল্য</th>
-                                <th>জমা</th>
-                                <th>বাকি</th>
-                                <th style="min-width: 120px;">কিস্তি</th>
-                                <th>অ্যাকশন</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <strong>Purchase & EMI Summary</strong>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>তারিখ</th>
+                            <th>পণ্য</th>
+                            <th>মূল্য</th>
+                            <th>জমা</th>
+                            <th>বাকি</th>
+                            <th style="min-width: 120px;">কিস্তি</th>
+                            <th>অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $grandTotalPrice = 0;
+                            $grandTotalPaid = 0;
+                            $grandTotalDue = 0;
+                            $grandTotalDown = 0;
+                        @endphp
+                        @foreach ($customer->purchases as $purchase)
                             @php
-                                $grandTotalPrice = 0;
-                                $grandTotalPaid = 0;
-                                $grandTotalDue = 0;
-                                $grandTotalDown = 0;
-                            @endphp
-                            @foreach ($customer->purchases as $purchase)
-                                @php
-                                    $product = $purchase->product;
-                                    $totalPrice = $purchase->net_price;
-                                    $down = $purchase->down_price;
-                                    $totalPaid = $purchase->installments->sum('paid_amount');
-                                    $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
-                                    $totalDeposit = $totalPaid + $down;
+                                $product = $purchase->product;
+                                $totalPrice = $purchase->net_price;
+                                $down = $purchase->down_price;
+                                $totalPaid = $purchase->installments->sum('paid_amount');
+                                $totalDue = $purchase->installments->sum(fn($i) => $i->amount - $i->paid_amount);
+                                $totalDeposit = $totalPaid + $down;
 
-                                    $grandTotalPrice += $totalPrice;
-                                    $grandTotalPaid += $totalPaid;
-                                    $grandTotalDown += $down;
-                                    $grandTotalDue += $totalDue; // ✅ FIXED: added this line
-                                @endphp
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
-                                    <td>{{ $product->product_name }}</td>
-                                    <td>{{ number_format($totalPrice, 2) }} ৳</td>
-                                    <td>{{ number_format($totalDeposit, 2) }} ৳</td>
-                                    <td>
-                                        <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
-                                            {{ number_format($totalDue, 2) }} ৳
-                                        </span>
-                                    </td>
+                                $grandTotalPrice += $totalPrice;
+                                $grandTotalPaid += $totalPaid;
+                                $grandTotalDown += $down;
+                                $grandTotalDue += $totalDue; // ✅ FIXED: added this line
+                            @endphp
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d-m-Y') }}</td>
+                                <td>{{ $product->product_name }}</td>
+                                <td>{{ number_format($totalPrice, 2) }} ৳</td>
+                                <td>{{ number_format($totalDeposit, 2) }} ৳</td>
+                                <td>
+                                    <span class="fw-bold {{ $totalDue > 0 ? 'text-danger' : 'text-success' }}">
+                                        {{ number_format($totalDue, 2) }} ৳
+                                    </span>
+                                </td>
+
+                                <form action="{{ route('installments.pay-multiple') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="customer_id" value="{{ $customer->id }}">
+
                                     <td>
                                         <input type="number" name="payments[{{ $purchase->id }}]"
                                             class="form-control form-control-sm w-100" value="0" min="0"
@@ -75,44 +77,44 @@
                                                 {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                                 Pay
                                             </button>
+                                </form>
 
-                                            <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
-                                                class="d-inline"
-                                                onsubmit="return confirm('আপনি কি নিশ্চিতভাবে মুছতে চান?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
+                                <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
+                                    class="d-inline" onsubmit="return confirm('আপনি কি নিশ্চিতভাবে মুছতে চান?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
+                                </form>
+                        @endif
+                        </td>
+                        </tr>
+                        @endforeach
 
-                            {{-- Totals Row --}}
-                            <tr class="fw-bold">
-                                <td colspan="7" class="p-3">
-                                    <div
-                                        class="bg-light rounded shadow-sm p-3 text-center d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
-                                        <div>
-                                            মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
-                                        </div>
-                                        <div>
-                                            মোট জমা: <strong>{{ number_format($grandTotalPaid + $grandTotalDown, 2) }}
-                                                ৳</strong>
-                                        </div>
-                                        <div>
-                                            <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
-                                                মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
-                                            </strong>
-                                        </div>
+                        {{-- Totals Row --}}
+                        <tr class="fw-bold">
+                            <td colspan="7" class="p-3">
+                                <div
+                                    class="bg-light rounded shadow-sm p-3 text-center d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+                                    <div>
+                                        মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                    <div>
+                                        মোট জমা: <strong>{{ number_format($grandTotalPaid + $grandTotalDown, 2) }}
+                                            ৳</strong>
+                                    </div>
+                                    <div>
+                                        <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
+                                            মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
+                                        </strong>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </form>
+        </div>
+
 
         {{-- Payment History --}}
         <div class="card shadow-sm">
