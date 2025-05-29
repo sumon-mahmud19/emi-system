@@ -77,10 +77,18 @@
                                             </button>
 
                                             {{-- Delete Form --}}
-                                            <a href="{{ route('purchases.destroy', $purchase->id) }}" @method('DELETE')
-                                                class="btn btn-danger btn-sm w-100">
+                                            <a href="#" class="btn btn-danger btn-sm w-100"
+                                                onclick="event.preventDefault(); if(confirm('আপনি কি নিশ্চিতভাবে এই ক্রয়টি মুছতে চান?')) document.getElementById('delete-form-{{ $purchase->id }}').submit();">
                                                 Delete
                                             </a>
+
+                                            <form id="delete-form-{{ $purchase->id }}"
+                                                action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                            
                                         @endif
                                     </td>
                                 </tr>
