@@ -83,7 +83,7 @@
                                     class="d-inline" onsubmit="return confirm('আপনি কি নিশ্চিতভাবে মুছতে চান?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
+                                    <button type="submit" class="btn btn-sm btn-danger w-100">ডিলিট</button>
                                 </form>
                         @endif
                         </td>
