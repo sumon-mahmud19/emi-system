@@ -6,9 +6,9 @@
         
         <div style="text-align: center; margin: 20px 0;">
             <div style="display: inline-block; overflow: hidden; white-space: nowrap;">
-                <h3 style="display: inline-block; animation: scrollText 10s linear infinite;">
-                    সফটওয়ারে কাজ চলছে, দয়া অপেক্ষা করুন।
-                </h3>
+                <h4 style="display: inline-block; animation: scrollText 10s linear infinite;">
+                    সফটওয়ার আপডেট করা হয়েছে। এখন আপনি প্রত্যেকটা পারচেস ডিলিট করতে পারবেন। 
+                </h4>
             </div>
         </div>
 
