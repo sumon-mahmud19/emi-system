@@ -6,9 +6,9 @@
         
         <div style="text-align: center; margin: 20px 0;">
             <div style="display: inline-block; overflow: hidden; white-space: nowrap;">
-                <div style="display: inline-block; animation: scrollText 10s linear infinite;">
-                    সফটওয়ারে কাজ চলছে...
-                </div>
+                <h3 style="display: inline-block; animation: scrollText 10s linear infinite;">
+                    সফটওয়ারে কাজ চলছে, দয়া অপেক্ষা করুন।
+                </h3>
             </div>
         </div>
 
