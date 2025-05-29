@@ -75,94 +75,95 @@
                                                 {{ $totalDue <= 0 ? 'disabled' : '' }}>
                                                 Pay
                                             </button>
-        </form>
 
-        <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
-            onsubmit="return confirm('Are you sure you want to delete this purchase and all EMIs?');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-        </form>
-        @endif
-        </td>
-        </tr>
-        @endforeach
+                                            <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
+                                                class="d-inline"
+                                                onsubmit="return confirm('আপনি কি নিশ্চিতভাবে মুছতে চান?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
+                                            </form>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
 
-        {{-- Totals Row --}}
-        <tr class="fw-bold">
-            <td colspan="7" class="p-3">
-                <div
-                    class="bg-light rounded shadow-sm p-3 text-center d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
-                    <div>
-                        মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
-                    </div>
-                    <div>
-                        মোট জমা: <strong>{{ number_format($grandTotalPaid + $grandTotalDown, 2) }}
-                            ৳</strong>
-                    </div>
-                    <div>
-                        <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
-                            মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
-                        </strong>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-        </table>
-    </div>
-    </div>
-
-
-    {{-- Payment History --}}
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white fw-bold fs-5">
-            Payment History
-        </div>
-        <div class="table-responsive">
-            <table class="table table-striped table-hover align-middle text-center mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width: 20%;">তারিখ</th>
-                        <th style="width: 30%;">পণ্য</th>
-                        <th style="width: 20%;">জমা (৳)</th>
-                        @role('admin')
-                            <th style="width: 30%;">অ্যাকশন</th>
-                        @endrole
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($paymentHistory as $payment)
-                        <tr>
-                            <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
-                            <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
-                            <td class="text-success fw-semibold">{{ number_format($payment->amount, 2) }}</td>
-                            @role('admin')
-                                <td>
-                                    <a href="{{ route('payments.edit', $payment->id) }}"
-                                        class="btn btn-sm btn-warning">এডিট</a>
-
-                                    <form action="{{ route('payments.destroy', $payment->id) }}" method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm('আপনি কি নিশ্চিতভাবে এই পেমেন্ট মুছতে চান?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
-                                    </form>
+                            {{-- Totals Row --}}
+                            <tr class="fw-bold">
+                                <td colspan="7" class="p-3">
+                                    <div
+                                        class="bg-light rounded shadow-sm p-3 text-center d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+                                        <div>
+                                            মোট মূল্য: <strong>{{ number_format($grandTotalPrice, 2) }} ৳</strong>
+                                        </div>
+                                        <div>
+                                            মোট জমা: <strong>{{ number_format($grandTotalPaid + $grandTotalDown, 2) }}
+                                                ৳</strong>
+                                        </div>
+                                        <div>
+                                            <strong class="{{ $grandTotalDue > 0 ? 'text-danger' : 'text-success' }}">
+                                                মোট বাকি: {{ number_format($grandTotalDue, 2) }} ৳
+                                            </strong>
+                                        </div>
+                                    </div>
                                 </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+
+        {{-- Payment History --}}
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white fw-bold fs-5">
+                Payment History
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 20%;">তারিখ</th>
+                            <th style="width: 30%;">পণ্য</th>
+                            <th style="width: 20%;">জমা (৳)</th>
+                            @role('admin')
+                                <th style="width: 30%;">অ্যাকশন</th>
                             @endrole
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="@role('admin')4 @else 3 @endrole" class="text-center fst-italic text-muted py-4">
-                                কোন পেমেন্ট পাওয়া যায়নি।
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($paymentHistory as $payment)
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($payment->paid_at)->format('d M Y') }}</td>
+                                <td>{{ $payment->installment->purchase->product->product_name ?? 'N/A' }}</td>
+                                <td class="text-success fw-semibold">{{ number_format($payment->amount, 2) }}</td>
+                                @role('admin')
+                                    <td>
+                                        <a href="{{ route('payments.edit', $payment->id) }}"
+                                            class="btn btn-sm btn-warning">এডিট</a>
+
+                                        <form action="{{ route('payments.destroy', $payment->id) }}" method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm('আপনি কি নিশ্চিতভাবে এই পেমেন্ট মুছতে চান?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">ডিলিট</button>
+                                        </form>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="@role('admin')4 @else 3 @endrole"
+                                    class="text-center fst-italic text-muted py-4">
+                                    কোন পেমেন্ট পাওয়া যায়নি।
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
 
 

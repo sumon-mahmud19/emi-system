@@ -331,30 +331,9 @@ class PurchaseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Purchase $purchase)
     {
-        DB::beginTransaction();
-
-        try {
-            $purchase = Purchase::findOrFail($id);
-
-            // Delete related installment payments
-            foreach ($purchase->installments as $installment) {
-                $installment->payments()->delete(); // if Installment hasMany InstallmentPayment
-            }
-
-            // Delete installments
-            $purchase->installments()->delete();
-
-            // Delete purchase
-            $purchase->delete();
-
-            DB::commit();
-
-            return back()->with('success', 'Purchase and related EMI data deleted successfully.');
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Delete failed: ' . $e->getMessage()]);
-        }
+        $purchase->delete();
+        return redirect()->route('purchases.index')->with('success', 'Purchase deleted successfully.');
     }
 }
