@@ -77,7 +77,7 @@
                                             </button>
 
                                             {{-- Delete Form --}}
-                                            <a href="{{ url('purchases'.$purchase->id) }}"
+                                            <a href="{{ url('purchases/'.$purchase->id) }}"
                                                 class="btn btn-danger btn-sm w-100"
                                                 onclick="return confirm('আপনি কি নিশ্চিতভাবে এই ক্রয়টি মুছতে চান?');">
                                                 Delete
