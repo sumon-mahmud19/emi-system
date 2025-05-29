@@ -271,6 +271,31 @@
         </div>
     </nav>
 
+    <div style="text-align: center; margin: 20px 0;">
+    <div style="display: inline-block; overflow: hidden; white-space: nowrap; width: 100%;">
+        <h4 style="
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollText 20s linear infinite;
+            padding-left: 100%;
+        ">
+            সফটওয়ার আপডেট করা হয়েছে। এখন আপনি প্রত্যেকটা পারচেস ডিলিট করতে পারবেন।
+        </h4>
+    </div>
+</div>
+
+<style>
+@keyframes scrollText {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+</style>
+
+
     {{-- Main Content --}}
     <main class="container mt-3">
         @yield('content')

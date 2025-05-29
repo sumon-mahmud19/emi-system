@@ -3,26 +3,6 @@
 @section('content')
     <div class="container">
         
-        
-        <div style="text-align: center; margin: 20px 0;">
-            <div style="display: inline-block; overflow: hidden; white-space: nowrap;">
-                <h4 style="display: inline-block; animation: scrollText 10s linear infinite;">
-                    সফটওয়ার আপডেট করা হয়েছে। এখন আপনি প্রত্যেকটা পারচেস ডিলিট করতে পারবেন। 
-                </h4>
-            </div>
-        </div>
-
-        <style>
-            @keyframes scrollText {
-                0% {
-                    transform: translateX(100%);
-                }
-
-                100% {
-                    transform: translateX(-100%);
-                }
-            }
-        </style>
 
         <h2 class="mb-4">Customers</h2>
 
