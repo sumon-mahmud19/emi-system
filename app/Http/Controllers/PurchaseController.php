@@ -331,11 +331,15 @@ class PurchaseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
+        $installment = Installment::findOrFail($id);
 
-        $data = Installment::find($id);
-        $data->delete();
-        return redirect()->to('/customers/' . $request->customer_id . '/emi-plans')->with('success', 'Purchase deleted successfully');
+        $customerId = $installment->customer_id;
+
+        $installment->delete();
+
+        return redirect()->to('/customers/' . $customerId . '/emi-plans')
+            ->with('success', 'Installment deleted successfully');
     }
 }
