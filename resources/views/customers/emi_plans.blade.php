@@ -77,7 +77,7 @@
                                             </button>
 
                                             {{-- Delete Form --}}
-                                            <a href="{{ route('purchases.destroy', $purchase->id) }}"
+                                            <a href="{{ route('purchases.destroy', $purchase->id) }}" @method('DELETE')
                                                 class="btn btn-danger btn-sm w-100">
                                                 Delete
                                             </a>
