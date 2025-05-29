@@ -76,7 +76,7 @@
                                                 Pay
                                             </button>
 
-                                            <a action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
+                                            <a href="{{ route('purchases.destroy', $purchase->id) }}"
                                                 onsubmit="return confirm('Are you sure you want to delete this purchase and all EMIs?');">
                                                 @csrf
                                                 @method('DELETE')
