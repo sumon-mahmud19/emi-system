@@ -2,6 +2,28 @@
 
 @section('content')
     <div class="container">
+        
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <div style="display: inline-block; overflow: hidden; white-space: nowrap;">
+                <div style="display: inline-block; animation: scrollText 10s linear infinite;">
+                    সফটওয়ারে কাজ চলছে...
+                </div>
+            </div>
+        </div>
+
+        <style>
+            @keyframes scrollText {
+                0% {
+                    transform: translateX(100%);
+                }
+
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+        </style>
+
         <h2 class="mb-4">Customers</h2>
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3 gap-3">
@@ -38,7 +60,8 @@
                     @foreach ($customers as $customer)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td><a href="{{ route('customers.emi_plans', $customer->id) }}">{{ $customer->customer_name }}</td></a>
+                            <td><a href="{{ route('customers.emi_plans', $customer->id) }}">{{ $customer->customer_name }}
+                            </td></a>
                             <td>{{ $customer->customer_id }}</td>
                             <td>
                                 @can('customer-edit')
@@ -55,7 +78,7 @@
                                             onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i></button>
                                     </form>
                                 @endcan
-                                
+
                             </td>
                             <td>
                                 <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
