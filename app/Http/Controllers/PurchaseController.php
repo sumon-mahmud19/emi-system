@@ -334,7 +334,7 @@ class PurchaseController extends Controller
     public function destroy(Purchase $purchase)
     {
         $purchase->delete();
-        return redirect()->route('/customers' . $purchase->customer_id . '/emi-plans')
+        return redirect()->route('/customers/' . $purchase->customer_id . '/emi-plans')
                 ->with('success', 'Purchase deleted successfully');
     }
 }
