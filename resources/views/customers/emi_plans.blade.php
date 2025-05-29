@@ -77,13 +77,14 @@
                                             </button>
 
                                             {{-- Delete Form --}}
-                                            <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
-                                                onsubmit="return confirm('Are you sure you want to delete this purchase?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm w-100">Delete</button>
-                                            </form>
-                                            
+                                             {{-- Delete Form --}}
+                                        <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete this purchase?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                        
                                         @endif
                                     </td>
                                 </tr>
