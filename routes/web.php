@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductModelController;
@@ -58,12 +59,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/reports/monthly', [ReportController::class, 'monthlyReport'])
     ->name('report')
     ->middleware('role:admin');
-    
-    Auth::routes();
-    
+
+Auth::routes();
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('role:admin');
 
 
 // ?aaz,hH.{b5p
 // Route::get('invoices', InvoiceController::class);
 Route::get('/pdf', [InvoiceController::class, 'getPdf']);
+
+
+
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // Notice Controller 
+    Route::resource('notices', NoticeController::class)->middleware('role:admin');
+});

@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Installment;
 use App\Models\InstallmentPayment;
 use App\Models\Location;
+use App\Models\Notice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -29,6 +30,8 @@ class CustomerController extends Controller
 
     public function index(Request $request)
     {
+        $notices = Notice::all();
+
         $query = Customer::with('location')
             ->orderBy('created_at', 'desc'); // Add orderBy to sort by created_at in descending order
 
@@ -59,7 +62,7 @@ class CustomerController extends Controller
         }
 
         // Return the view with the paginated customers
-        return view('customers.index', compact('customers'));
+        return view('customers.index', compact('customers', 'notices'));
     }
 
 
