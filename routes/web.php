@@ -24,8 +24,8 @@ Route::resource('users', UserController::class);
 
 
 Route::resource('customers', CustomerController::class);
-Route::get('/customers/{id}/emi-plans', [CustomerController::class, 'customerEmiPlans'])->name('customers.emi_plans');
-Route::get('/locations/{id}/customers', [CustomerController::class, 'showByLocation'])->name('location.customers');
+Route::get('/customers/{id}/emi-plans', [CustomerController::class, 'customerEmiPlans'])->name('customers.emi_plans')->middleware('auth');
+Route::get('/locations/{id}/customers', [CustomerController::class, 'showByLocation'])->name('location.customers')->middleware('auth');
 
 
 Route::resource('purchases', PurchaseController::class);
