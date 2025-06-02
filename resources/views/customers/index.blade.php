@@ -39,7 +39,9 @@
             @endcan
 
             <div class="d-flex flex-column flex-md-row gap-3 w-100">
-                <input type="text" id="liveSearch" class="form-control" value="{{ request('search') }}" placeholder="Search customer...">
+                <input type="text" id="liveSearch" class="form-control" placeholder="Search customer.."
+                    value="{{ request('search') }}">
+
 
                 <div class="mb-2 mb-md-0">
                     <strong>Total Results: </strong>
