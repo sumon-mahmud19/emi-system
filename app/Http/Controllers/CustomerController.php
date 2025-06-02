@@ -149,43 +149,43 @@ class CustomerController extends Controller
      * Update the specified resource in storage.
      */
 
-   public function update(Request $request, $id)
-{
-    $customer = Customer::findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $customer = Customer::findOrFail($id);
 
-    $validated = $request->validate([
-        'customer_name'    => 'required|string|max:255',
-        'customer_id'      => 'required|integer',
-        'customer_phone'   => 'required|string|unique:customers,customer_phone,' . $customer->id,
-        'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
-        'landlord_name'    => 'nullable|string|max:255',
-        'location_id'      => 'required|exists:locations,id',
-        'location_details' => 'nullable|string|max:255',
-    ]);
+        $validated = $request->validate([
+            'customer_name'    => 'required|string|max:255',
+            'customer_id'      => 'required|integer',
+            'customer_phone'   => 'required|string|unique:customers,customer_phone,' . $customer->id,
+            'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
+            'landlord_name'    => 'nullable|string|max:255',
+            'location_id'      => 'required|exists:locations,id',
+            'location_details' => 'nullable|string|max:255',
+        ]);
 
-    if ($request->hasFile('customer_image')) {
-        $image = $request->file('customer_image');
-        $imageName = time() . '.' . $image->getClientOriginalExtension();
-        $image->move(public_path('image/customers'), $imageName);
-        $customer->customer_image = 'image/customers/' . $imageName;
+        if ($request->hasFile('customer_image')) {
+            $image = $request->file('customer_image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('image/customers'), $imageName);
+            $customer->customer_image = 'image/customers/' . $imageName;
+        }
+
+        $customer->customer_name    = $validated['customer_name'];
+        $customer->customer_id      = $validated['customer_id'];
+        $customer->customer_phone   = $validated['customer_phone'];
+        $customer->landlord_name    = $validated['landlord_name'];
+        $customer->location_id      = $validated['location_id'];
+        $customer->location_details = $validated['location_details'];
+        $customer->save();
+
+        // Redirect back with search query if it exists
+        // At the end of the update() method
+        $search = $request->input('search');
+
+        return redirect()->route('customers.index', ['search' => $search])
+            ->with('success', 'Customer updated successfully.');
+
     }
-
-    $customer->customer_name    = $validated['customer_name'];
-    $customer->customer_id      = $validated['customer_id'];
-    $customer->customer_phone   = $validated['customer_phone'];
-    $customer->landlord_name    = $validated['landlord_name'];
-    $customer->location_id      = $validated['location_id'];
-    $customer->location_details = $validated['location_details'];
-    $customer->save();
-
-    // Redirect back with search query if it exists
-    $redirectUrl = route('customers.index');
-    if ($request->has('search')) {
-        $redirectUrl .= '?search=' . urlencode($request->input('search'));
-    }
-
-    return redirect($redirectUrl)->with('success', 'Customer updated successfully.');
-}
 
 
 
@@ -202,21 +202,21 @@ class CustomerController extends Controller
 
 
 
-// app/Http/Controllers/CustomerController.php
+    // app/Http/Controllers/CustomerController.php
 
-public function customerEmiPlans($id)
-{
-    $customer = Customer::with('purchases.installments')->findOrFail($id);
+    public function customerEmiPlans($id)
+    {
+        $customer = Customer::with('purchases.installments')->findOrFail($id);
 
-    $paymentHistory = InstallmentPayment::with('installment.purchase.product')
-        ->whereHas('installment.purchase', function ($query) use ($id) {
-            $query->where('customer_id', $id);
-        })
-        ->orderBy('paid_at', 'desc')
-        ->get();
+        $paymentHistory = InstallmentPayment::with('installment.purchase.product')
+            ->whereHas('installment.purchase', function ($query) use ($id) {
+                $query->where('customer_id', $id);
+            })
+            ->orderBy('paid_at', 'desc')
+            ->get();
 
-    return view('customers.emi_plans', compact('customer', 'paymentHistory'));
-}
+        return view('customers.emi_plans', compact('customer', 'paymentHistory'));
+    }
 
 
 
