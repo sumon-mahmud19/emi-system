@@ -149,44 +149,43 @@ class CustomerController extends Controller
      * Update the specified resource in storage.
      */
 
-    public function update(Request $request, $id)
-    {
-        // Find the customer
-        $customer = Customer::findOrFail($id);
+   public function update(Request $request, $id)
+{
+    $customer = Customer::findOrFail($id);
 
-        // Validate the request data
-        $validated = $request->validate([
-            'customer_name'    => 'required|string|max:255',
-            'customer_id'      => 'required|integer',
-            'customer_phone'   => 'required|string|unique:customers,customer_phone,' . $customer->id,
-            'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
-            'landlord_name'    => 'nullable|string|max:255',
-            'location_id'      => 'required|exists:locations,id',
-            'location_details' => 'nullable|string|max:255',
-        ]);
+    $validated = $request->validate([
+        'customer_name'    => 'required|string|max:255',
+        'customer_id'      => 'required|integer',
+        'customer_phone'   => 'required|string|unique:customers,customer_phone,' . $customer->id,
+        'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
+        'landlord_name'    => 'nullable|string|max:255',
+        'location_id'      => 'required|exists:locations,id',
+        'location_details' => 'nullable|string|max:255',
+    ]);
 
-        // Handle image upload (if a new image is uploaded)
-        if ($request->hasFile('customer_image')) {
-            $image = $request->file('customer_image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('image/customers'), $imageName);
-            $customer->customer_image = 'image/customers/' . $imageName;
-        }
-
-        // Update other fields
-        $customer->customer_name    = $validated['customer_name'];
-        $customer->customer_id      = $validated['customer_id'];
-        $customer->customer_phone   = $validated['customer_phone'];
-        $customer->landlord_name    = $validated['landlord_name'];
-        $customer->location_id      = $validated['location_id'];
-        $customer->location_details = $validated['location_details'];
-
-        // Save changes
-        $customer->save();
-
-        // Redirect with success message
-        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+    if ($request->hasFile('customer_image')) {
+        $image = $request->file('customer_image');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('image/customers'), $imageName);
+        $customer->customer_image = 'image/customers/' . $imageName;
     }
+
+    $customer->customer_name    = $validated['customer_name'];
+    $customer->customer_id      = $validated['customer_id'];
+    $customer->customer_phone   = $validated['customer_phone'];
+    $customer->landlord_name    = $validated['landlord_name'];
+    $customer->location_id      = $validated['location_id'];
+    $customer->location_details = $validated['location_details'];
+    $customer->save();
+
+    // Redirect back with search query if it exists
+    $redirectUrl = route('customers.index');
+    if ($request->has('search')) {
+        $redirectUrl .= '?search=' . urlencode($request->input('search'));
+    }
+
+    return redirect($redirectUrl)->with('success', 'Customer updated successfully.');
+}
 
 
 
