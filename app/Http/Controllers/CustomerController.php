@@ -31,7 +31,7 @@ class CustomerController extends Controller
         $notices = Notice::all();
 
         $query = Customer::with([
-            'location' => function ($query) {
+            'locations' => function ($query) {
                 $query->select(['id', 'customer_name', 'customer_id', 'customer_phone']); // Only select needed columns
             }
         ])
