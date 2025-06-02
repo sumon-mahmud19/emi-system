@@ -7,10 +7,12 @@
             @csrf
             @method('PUT')
           
+            <input type="hidden" name="search" value="{{ request('search') }}">
+            
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                          <input type="hidden" name="search" value="{{ request('search') }}">
+                         
                         <label for="customer_name">কাস্টমারের নাম</label>
                         <input type="text" name="customer_name" class="form-control"
                             value="{{ old('customer_name', $customer->customer_name) }}">

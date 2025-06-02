@@ -178,12 +178,10 @@ class CustomerController extends Controller
         $customer->location_details = $validated['location_details'];
         $customer->save();
 
-        // At the end of update() method
         $search = $request->input('search');
 
-        return redirect()->route('customers.index', ['search' => $request->input('search')])
-                 ->with('success', 'Customer updated successfully.');
-
+        return redirect()->route('customers.index', ['search' => $search])
+            ->with('success', 'Customer updated successfully.');
     }
 
 
