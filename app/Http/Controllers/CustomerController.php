@@ -29,13 +29,12 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $notices = Notice::all();
+        $search = $request->input('search'); // ✅ capture search string
 
         $query = Customer::with('location')
-            ->orderBy('created_at', 'desc'); // Add orderBy to sort by created_at in descending order
+            ->orderBy('created_at', 'desc');
 
-        // Check if search query is filled
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('customer_name', 'like', "%{$search}%")
                     ->orWhere('customer_id', 'like', "%{$search}%")
@@ -43,14 +42,14 @@ class CustomerController extends Controller
             });
         }
 
-        // Paginate the results
-        $customers = $query->paginate(500); // Show 100 results per page
+        // Retain search parameter on pagination
+        $customers = $query->paginate(500)->appends(['search' => $search]);
 
-        // If the request is an AJAX request, return the HTML only
+        // AJAX response
         if ($request->ajax()) {
             $html = view('customers.partials.customer_table_rows', compact('customers'))->render();
-            $pagination = $customers->links(); // Get the pagination links
-            $count = $customers->total(); // Total number of matching customers
+            $pagination = $customers->links()->toHtml(); // Ensure rendered HTML
+            $count = $customers->total();
 
             return response()->json([
                 'html' => $html,
@@ -59,9 +58,10 @@ class CustomerController extends Controller
             ]);
         }
 
-        // Return the view with the paginated customers
-        return view('customers.index', compact('customers', 'notices'));
+        // Non-AJAX view
+        return view('customers.index', compact('customers', 'notices', 'search'));
     }
+
 
 
 
@@ -178,13 +178,11 @@ class CustomerController extends Controller
         $customer->location_details = $validated['location_details'];
         $customer->save();
 
-        // Redirect back with search query if it exists
-        // At the end of the update() method
+        // At the end of update() method
         $search = $request->input('search');
 
-        return redirect()->route('customers.index', ['search' => $search])
+        return redirect()->route('customers.index', $search ? ['search' => $search] : [])
             ->with('success', 'Customer updated successfully.');
-
     }
 
 
