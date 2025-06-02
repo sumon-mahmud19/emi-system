@@ -2,34 +2,34 @@
 
 @section('content')
     <div class="container">
-        
-         <div style="text-align: center; margin: 20px 0;">
-        <div style="display: inline-block; overflow: hidden; white-space: nowrap; width: 100%;">
-            @foreach ($notices as $notice)
-                <h4
-                    style="
+
+        <div style="text-align: center; margin: 20px 0;">
+            <div style="display: inline-block; overflow: hidden; white-space: nowrap; width: 100%;">
+                @foreach ($notices as $notice)
+                    <h4
+                        style="
             display: inline-block;
             white-space: nowrap;
             animation: scrollText 20s linear infinite;
             padding-left: 100%;
         ">
-                    {{ $notice->name }}
-                </h4>
-            @endforeach
+                        {{ $notice->name }}
+                    </h4>
+                @endforeach
+            </div>
         </div>
-    </div>
 
-    <style>
-        @keyframes scrollText {
-            0% {
-                transform: translateX(0%);
-            }
+        <style>
+            @keyframes scrollText {
+                0% {
+                    transform: translateX(0%);
+                }
 
-            100% {
-                transform: translateX(-100%);
+                100% {
+                    transform: translateX(-100%);
+                }
             }
-        }
-    </style>
+        </style>
 
         <h2 class="mb-4">Customers</h2>
 
@@ -39,8 +39,9 @@
             @endcan
 
             <div class="d-flex flex-column flex-md-row gap-3 w-100">
-                <input type="text" id="liveSearch" class="form-control w-100 w-md-auto"
-                    placeholder="Search customer (e.g. shakil-fan-pl)">
+                <input type="text" id="liveSearch" class="form-control" value="{{ request('search') }}"
+                    placeholder="Search customer...">
+
 
                 <div class="mb-2 mb-md-0">
                     <strong>Total Results: </strong>
@@ -158,43 +159,55 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function() {
-            // Live search
             let debounceTimer;
 
+            // Load search result if there's a query in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('search');
+            if (searchQuery) {
+                $('#liveSearch').val(searchQuery);
+                performSearch(searchQuery);
+            }
+
+            // Live search input listener
             $('#liveSearch').on('keyup', function() {
                 const query = $(this).val();
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(function() {
-                    $('#resultCount').text('Loading...');
-                    $.ajax({
-                        url: '{{ route('customers.index') }}',
-                        method: 'GET',
-                        data: {
-                            search: query
-                        },
-                        success: function(response) {
-                            $('#customerBody').html(response.html);
-                            $('#resultCount').text(response.count + ' results');
-                            $('#paginationLinks').html(response.pagination);
-                        }
-                    });
-                }, 500);
+                    // Update URL
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.set('search', query);
+                    window.history.replaceState(null, '', newUrl);
+
+                    performSearch(query);
+                }, 400);
             });
+
+            function performSearch(query) {
+                $('#resultCount').text('Loading...');
+                $.ajax({
+                    url: '{{ route('customers.index') }}',
+                    method: 'GET',
+                    data: {
+                        search: query
+                    },
+                    success: function(response) {
+                        $('#customerBody').html(response.html);
+                        $('#resultCount').text(response.count + ' results');
+                        $('#paginationLinks').html(response.pagination);
+                    }
+                });
+            }
 
             // Modal population
             $('#customerTable').on('click', '.show-customer-modal', function() {
                 const button = $(this);
-                const name = button.data('name');
-                const id = button.data('id');
-                const phone = button.data('phone');
-                const location = button.data('location');
-                const image = button.data('image') || '{{ asset('images/default.png') }}';
-
-                $('#modalCustomerName').text(name);
-                $('#modalCustomerID').text(id);
-                $('#modalCustomerPhone').text(phone);
-                $('#modalCustomerLocation').text(location);
-                $('#modalCustomerImage').attr('src', image);
+                $('#modalCustomerName').text(button.data('name'));
+                $('#modalCustomerID').text(button.data('id'));
+                $('#modalCustomerPhone').text(button.data('phone'));
+                $('#modalCustomerLocation').text(button.data('location'));
+                $('#modalCustomerImage').attr('src', button.data('image') ||
+                    '{{ asset('images/default.png') }}');
             });
         });
     </script>

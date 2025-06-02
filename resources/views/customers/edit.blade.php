@@ -95,6 +95,9 @@
                 <a href="{{ route('customers.index') }}" class="btn btn-secondary">বাতিল করুন</a>
             </div>
         </form>
+
+        <a href="{{ route('customers.index', ['search' => request('search')]) }}" class="btn btn-secondary mb-3">← Back</a>
+
     </div>
 @endsection
 
