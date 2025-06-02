@@ -9,8 +9,6 @@ use App\Models\InstallmentPayment;
 use App\Models\Location;
 use App\Models\Notice;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 
 class CustomerController extends Controller
 {
@@ -32,8 +30,13 @@ class CustomerController extends Controller
     {
         $notices = Notice::all();
 
-        $query = Customer::with('location')
-            ->orderBy('created_at', 'desc'); // Add orderBy to sort by created_at in descending order
+        $query = Customer::with([
+            'location' => function ($query) {
+                $query->select(['id', 'customer_name', 'customer_id', 'customer_phone']); // Only select needed columns
+            }
+        ])
+            ->orderBy('created_at', 'desc')
+            ->select('customers.*');
 
         // Check if search query is filled
         if ($request->filled('search')) {
@@ -46,7 +49,7 @@ class CustomerController extends Controller
         }
 
         // Paginate the results
-        $customers = $query->paginate(1000); // Show 100 results per page
+        $customers = $query->paginate(400); // Show 400 results per page
 
         // If the request is an AJAX request, return the HTML only
         if ($request->ajax()) {
@@ -205,21 +208,21 @@ class CustomerController extends Controller
 
 
 
-// app/Http/Controllers/CustomerController.php
+    // app/Http/Controllers/CustomerController.php
 
-public function customerEmiPlans($id)
-{
-    $customer = Customer::with('purchases.installments')->findOrFail($id);
+    public function customerEmiPlans($id)
+    {
+        $customer = Customer::with('purchases.installments')->findOrFail($id);
 
-    $paymentHistory = InstallmentPayment::with('installment.purchase.product')
-        ->whereHas('installment.purchase', function ($query) use ($id) {
-            $query->where('customer_id', $id);
-        })
-        ->orderBy('paid_at', 'desc')
-        ->get();
+        $paymentHistory = InstallmentPayment::with('installment.purchase.product')
+            ->whereHas('installment.purchase', function ($query) use ($id) {
+                $query->where('customer_id', $id);
+            })
+            ->orderBy('paid_at', 'desc')
+            ->get();
 
-    return view('customers.emi_plans', compact('customer', 'paymentHistory'));
-}
+        return view('customers.emi_plans', compact('customer', 'paymentHistory'));
+    }
 
 
 
