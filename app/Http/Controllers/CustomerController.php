@@ -27,38 +27,38 @@ class CustomerController extends Controller
 
 
     public function index(Request $request)
-{
-    $notices = Notice::all();
-    $search = $request->input('search');
+    {
+        $notices = Notice::all();
+        $search = $request->input('search');
 
-    $query = Customer::with('location')->orderBy('created_at', 'desc');
+        $query = Customer::with('location')->orderBy('created_at', 'desc');
 
-    if (!empty($search)) {
-        $query->where(function ($q) use ($search) {
-            $q->where('customer_name', 'like', "%{$search}%")
-              ->orWhere('customer_id', 'like', "%{$search}%")
-              ->orWhere('customer_phone', 'like', "%{$search}%");
-        });
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('customer_name', 'like', "%{$search}%")
+                    ->orWhere('customer_id', 'like', "%{$search}%")
+                    ->orWhere('customer_phone', 'like', "%{$search}%");
+            });
+        }
+
+        // Important: persist search in pagination
+        $customers = $query->paginate(20)->appends(['search' => $search]);
+
+        // AJAX request response
+        if ($request->ajax()) {
+            $html = view('customers.partials.customer_table_rows', compact('customers'))->render();
+            $pagination = $customers->links()->toHtml();
+
+            return response()->json([
+                'html' => $html,
+                'count' => $customers->total(),
+                'pagination' => $pagination
+            ]);
+        }
+
+        // Non-AJAX normal full page load
+        return view('customers.index', compact('customers', 'notices', 'search'));
     }
-
-    // Important: persist search in pagination
-    $customers = $query->paginate(20)->appends(['search' => $search]);
-
-    // AJAX request response
-    if ($request->ajax()) {
-        $html = view('customers.partials.customer_table_rows', compact('customers'))->render();
-        $pagination = $customers->links()->toHtml();
-
-        return response()->json([
-            'html' => $html,
-            'count' => $customers->total(),
-            'pagination' => $pagination
-        ]);
-    }
-
-    // Non-AJAX normal full page load
-    return view('customers.index', compact('customers', 'notices', 'search'));
-}
 
 
 
