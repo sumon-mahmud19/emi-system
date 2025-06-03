@@ -177,7 +177,7 @@ class CustomerController extends Controller
         $customer->save();
 
         $search = $request->input('search');
-
+        dd(request()->all());
 
         return redirect()->route('customers.index', ['search' => $search])
             ->with('success', 'Customer updated successfully.');
