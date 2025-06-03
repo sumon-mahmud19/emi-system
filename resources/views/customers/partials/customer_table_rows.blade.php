@@ -1,6 +1,4 @@
 
-  <input type="text" id="liveSearch" class="form-control" value="{{ request('search') }}" placeholder="Search customer">
-
 @foreach ($customers as $customer)
     <tr>
         <td>{{ $loop->iteration }}</td>
