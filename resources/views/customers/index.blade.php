@@ -59,7 +59,7 @@
 
                             </td>
                             <td>
-                                <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a><br><br>
+                                <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a>
                                 <br><a href="tel:{{ $customer->customer_phone2 }}">{{ $customer->customer_phone2 }}</a>
                             </td>
                             <td>
