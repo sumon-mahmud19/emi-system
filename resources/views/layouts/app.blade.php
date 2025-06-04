@@ -123,11 +123,9 @@
 <body>
 
     <!-- Scrolling Notices Bar -->
-    <div class="bg-danger py-2 shadow-sm" style="overflow: hidden;">
+    <div class="bg-warning py-2 shadow-sm" style="overflow: hidden;">
         <div class="container position-relative d-flex align-items-center">
-            <div class="btn btn-success">
-                New
-            </div>
+           
             <div class="scrolling-text">
                 @foreach ($notices as $notice)
                     <span class="me-5">{{ $notice->name }}</span>
