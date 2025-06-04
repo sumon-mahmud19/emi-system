@@ -231,7 +231,7 @@ class CustomerController extends Controller
             ]);
         }
 
-        $customers = $customersQuery->latest()->paginate(10);
+        $customers = $customersQuery->latest()->paginate(500);
 
         return view('customers.show', compact('location', 'customers'));
     }

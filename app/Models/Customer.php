@@ -10,6 +10,7 @@ class Customer extends Model
         'customer_name',
         'customer_id',
         'customer_phone',
+        'customer_phone2',
         'customer_image',
         'landlord_name',
         'location_id',
