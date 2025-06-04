@@ -28,7 +28,7 @@ class CustomerController extends Controller
 
     public function index(Request $request)
     {
-        $notices = Notice::all();
+        
         $search = $request->input('search');
 
         $query = Customer::with('location')->orderBy('created_at', 'desc');
@@ -57,7 +57,7 @@ class CustomerController extends Controller
         }
 
         // Non-AJAX normal full page load
-        return view('customers.index', compact('customers', 'notices', 'search'));
+        return view('customers.index', compact('customers', 'search'));
     }
 
 

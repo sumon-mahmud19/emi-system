@@ -3,34 +3,6 @@
 @section('content')
     <div class="container">
 
-        <div style="text-align: center; margin: 20px 0;">
-            <div style="display: inline-block; overflow: hidden; white-space: nowrap; width: 100%;">
-                @foreach ($notices as $notice)
-                    <h4
-                        style="
-            display: inline-block;
-            white-space: nowrap;
-            animation: scrollText 20s linear infinite;
-            padding-left: 100%;
-        ">
-                        {{ $notice->name }}
-                    </h4>
-                @endforeach
-            </div>
-        </div>
-
-        <style>
-            @keyframes scrollText {
-                0% {
-                    transform: translateX(0%);
-                }
-
-                100% {
-                    transform: translateX(-100%);
-                }
-            }
-        </style>
-
         <h2 class="mb-4">Customers</h2>
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3 gap-3">

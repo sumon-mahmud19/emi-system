@@ -19,6 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
 // Users Route:
 Route::resource('users', UserController::class);
 

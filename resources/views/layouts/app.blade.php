@@ -8,6 +8,8 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
@@ -119,6 +121,39 @@
 </head>
 
 <body>
+
+    <!-- Scrolling Notices Bar -->
+    <div class="bg-warning py-2 shadow-sm" style="overflow: hidden;">
+        <div class="container position-relative d-flex align-items-center">
+            <i class="bi bi-megaphone-fill text-dark me-2 fs-4"></i>
+            <div class="scrolling-text">
+                @foreach ($notices as $notice)
+                    <span class="me-5">{{ $notice->name }}</span>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    <!-- Scrolling Text CSS -->
+    <style>
+        .scrolling-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollText 20s linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes scrollText {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+
 
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top"
         style="background-color: var(--bs-primary); border-radius: 0 0 12px 12px;">
@@ -271,7 +306,7 @@
         </div>
     </nav>
 
-   
+
 
 
     {{-- Main Content --}}
