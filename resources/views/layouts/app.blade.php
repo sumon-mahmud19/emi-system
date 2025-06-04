@@ -25,9 +25,9 @@
 
         :root {
             /* Primary (Tailwind Blue) */
-            --bs-primary: #3b82f6;
+            --bs-primary: #222222;
             /* blue-500 */
-            --bs-primary-hover: #2563eb;
+            --bs-primary-hover: #000;
             /* blue-600 */
 
             /* Success (Tailwind Green) */
