@@ -42,7 +42,7 @@ class CustomerController extends Controller
         }
 
         // Important: persist search in pagination
-        $customers = $query->paginate(20)->appends(['search' => $search]);
+        $customers = $query->paginate(500)->appends(['search' => $search]);
 
         // AJAX request response
         if ($request->ajax()) {
