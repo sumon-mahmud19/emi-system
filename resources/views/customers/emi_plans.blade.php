@@ -118,7 +118,7 @@
 
         {{-- Payment History --}}
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white fw-bold fs-5">
+            <div class="card-header text-white fw-bold fs-5" style="background-color: background-color: var(--bs-primary);">
                 Payment History
             </div>
             <div class="table-responsive">
