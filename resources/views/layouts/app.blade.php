@@ -128,7 +128,7 @@
            
             <div class="scrolling-text">
                 @foreach ($notices as $notice)
-                    <span class="me-5">{{ $notice->name }}</span>
+                    <h3 class="me-5">{{ $notice->name }}</h3>
                 @endforeach
             </div>
         </div>
