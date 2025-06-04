@@ -66,7 +66,7 @@
                                 <a class="show-customer-modal" data-bs-toggle="modal" data-bs-target="#customerModal"
                                     data-name="{{ $customer->customer_name }}" data-id="{{ $customer->customer_id }}"
                                     data-phone="tel:{{ $customer->customer_phone }}"
-                                    data-phone="tel:{{ $customer->customer_phone2 }}"
+                                    data-phone2="tel:{{ $customer->customer_phone2 }}"
                                     data-location="{{ $customer->location->name ?? 'N/A' }}"
                                     data-image="{{ asset($customer->customer_image) }}">
                                     <img src="{{ $customer->customer_image ? asset($customer->customer_image) : asset('image/profile.png') }}"
