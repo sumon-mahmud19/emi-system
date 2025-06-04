@@ -157,7 +157,7 @@ class CustomerController extends Controller
             'customer_name'    => 'required|string|max:255',
             'customer_id'      => 'required|integer',
             'customer_phone'   => 'required|string|unique:customers,customer_phone,' . $customer->id,
-            'customer_phone2'   => 'required|string|unique:customers,customer_phone2,' . $customer->id,
+            'customer_phone2'   => 'required',
             'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
             'landlord_name'    => 'nullable|string|max:255',
             'location_id'      => 'required|exists:locations,id',
