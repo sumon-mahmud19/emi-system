@@ -84,6 +84,7 @@ class CustomerController extends Controller
             'customer_name'    => 'required|string|max:255',
             'customer_id' => 'required|integer|unique:customers,customer_id',
             'customer_phone'   => 'required|string|unique:customers,customer_phone',
+            'customer_phone2'   => 'required|string|unique:customers,customer_phone2',
             'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
             'landlord_name'    => 'nullable|string|max:255',
             'location_id'      => 'required|exists:locations,id',
@@ -105,6 +106,7 @@ class CustomerController extends Controller
             'customer_name'    => $validated['customer_name'],
             'customer_id'      => $validated['customer_id'],
             'customer_phone'   => $validated['customer_phone'],
+            'customer_phone2'   => $validated['customer_phone2'],
             'customer_image'   => $customerImage,
             'landlord_name'    => $validated['landlord_name'],
             'location_id'      => $validated['location_id'],
@@ -155,6 +157,7 @@ class CustomerController extends Controller
             'customer_name'    => 'required|string|max:255',
             'customer_id'      => 'required|integer',
             'customer_phone'   => 'required|string|unique:customers,customer_phone,' . $customer->id,
+            'customer_phone2'   => 'required|string|unique:customers,customer_phone2,' . $customer->id,
             'customer_image'   => 'nullable|image|mimes:jpg,jpeg,png',
             'landlord_name'    => 'nullable|string|max:255',
             'location_id'      => 'required|exists:locations,id',
@@ -171,6 +174,7 @@ class CustomerController extends Controller
         $customer->customer_name    = $validated['customer_name'];
         $customer->customer_id      = $validated['customer_id'];
         $customer->customer_phone   = $validated['customer_phone'];
+        $customer->customer_phone2   = $validated['customer_phone2'];
         $customer->landlord_name    = $validated['landlord_name'];
         $customer->location_id      = $validated['location_id'];
         $customer->location_details = $validated['location_details'];

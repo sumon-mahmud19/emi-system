@@ -37,6 +37,14 @@
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="mb-3">
+                        <label for="customer_phone2">মোবাইল নম্বর 2</label>
+                        <input type="text" name="customer_phone2" class="form-control"
+                            value="{{ old('customer_phone2', $customer->customer_phone2) }}">
+                        @error('customer_phone2')
+                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <div class="mb-3">
                         <label for="landlord_name">বাড়িওয়ালার নাম</label>
