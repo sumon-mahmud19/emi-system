@@ -13,7 +13,7 @@
         {{-- Purchase & EMI Summary --}}
 
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header text-white" style="background-color: var(--bs-primary)">
                 <strong>Purchase & EMI Summary</strong>
             </div>
             <div class="table-responsive">
@@ -118,7 +118,8 @@
 
         {{-- Payment History --}}
         <div class="card shadow-sm">
-            <div class="card-header text-white fw-bold fs-5" style="background-color: background-color: var(--bs-primary);">
+          <div class="card-header text-white fw-bold fs-5" style="background-color: var(--bs-primary)">
+
                 Payment History
             </div>
             <div class="table-responsive">
