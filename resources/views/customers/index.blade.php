@@ -59,8 +59,8 @@
 
                             </td>
                             <td>
-                                <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a><br>
-                                <a href="tel:{{ $customer->customer_phone2 }}">{{ $customer->customer_phone2 }}</a>
+                                <a href="tel:{{ $customer->customer_phone }}">{{ $customer->customer_phone }}</a><br><br>
+                                <br><a href="tel:{{ $customer->customer_phone2 }}">{{ $customer->customer_phone2 }}</a>
                             </td>
                             <td>
                                 <a class="show-customer-modal" data-bs-toggle="modal" data-bs-target="#customerModal"
