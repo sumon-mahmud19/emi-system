@@ -122,37 +122,39 @@
 
 <body>
 
-  <!-- Scrolling Notices Bar -->
-<div class="bg-warning py-2 shadow-sm" style="overflow: hidden;">
-    <div class="container px-3 px-md-5 position-relative d-flex align-items-center">
-        <i class="bi bi-megaphone-fill text-dark me-2 fs-4"></i>
-        <div class="scrolling-text">
-            @foreach ($notices as $notice)
-                <span class="me-5">{{ $notice->name }}</span>
-            @endforeach
+    <!-- Scrolling Notices Bar -->
+    <div class="bg-danger py-2 shadow-sm" style="overflow: hidden;">
+        <div class="container position-relative d-flex align-items-center">
+            <div class="btn btn-success">
+                New
+            </div>
+            <div class="scrolling-text">
+                @foreach ($notices as $notice)
+                    <span class="me-5">{{ $notice->name }}</span>
+                @endforeach
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Scrolling Text CSS -->
-<style>
-    .scrolling-text {
-        display: inline-block;
-        white-space: nowrap;
-        animation: scrollText 20s linear infinite;
-        padding-left: 100%;
-    }
-
-    @keyframes scrollText {
-        0% {
-            transform: translateX(0%);
+    <!-- Scrolling Text CSS -->
+    <style>
+        .scrolling-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollText 20s linear infinite;
+            padding-left: 100%;
         }
 
-        100% {
-            transform: translateX(-100%);
+        @keyframes scrollText {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
         }
-    }
-</style>
+    </style>
 
 
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top"
