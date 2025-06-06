@@ -39,9 +39,9 @@ class LocationController extends Controller
 
         Location::create($request->only('name'));
 
-        toastr()->success('Your account has been re-activated.');
-        
-        return redirect()->route('locations.index')->with('success', 'লোকেশন সফলভাবে যুক্ত হয়েছে।');
+         toastr()->addSuccess('Your item has been added to your cart, but may not be reserved until checkout.');
+
+        return redirect()->back();
     }
 
     public function edit(Location $location)
