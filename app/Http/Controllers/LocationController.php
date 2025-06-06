@@ -38,10 +38,8 @@ class LocationController extends Controller
         ]);
 
         Location::create($request->only('name'));
-
-         toastr()->addSuccess('Your item has been added to your cart, but may not be reserved until checkout.');
-
-        // return redirect()->back();
+        
+        return redirect()->route('locations.index')->with('success', 'Location created!');
     }
 
     public function edit(Location $location)
@@ -63,6 +61,6 @@ class LocationController extends Controller
     public function destroy(Location $location)
     {
         $location->delete();
-        return redirect()->route('locations.index')->with('success', 'লোকেশন মুছে ফেলা হয়েছে।');
+        return redirect()->route('locations.index')->with('error', 'লোকেশন মুছে ফেলা হয়েছে।');
     }
 }
