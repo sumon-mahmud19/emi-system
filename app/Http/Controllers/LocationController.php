@@ -41,7 +41,7 @@ class LocationController extends Controller
 
          toastr()->addSuccess('Your item has been added to your cart, but may not be reserved until checkout.');
 
-        return redirect()->back();
+        // return redirect()->back();
     }
 
     public function edit(Location $location)
