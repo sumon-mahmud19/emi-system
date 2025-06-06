@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function index()
     {
         // Retrieve all products
-        $products = Product::all();
+       $products = Product::orderBy('id', 'desc')->get();
 
         // Return the view with products
         return view('products.index', compact('products'));
@@ -95,6 +95,6 @@ class ProductController extends Controller
         $product->delete();
 
         // Redirect to the product index page with success message
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('products.index')->with('error', 'Product deleted!.');
     }
 }
