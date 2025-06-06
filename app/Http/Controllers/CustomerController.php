@@ -113,10 +113,11 @@ class CustomerController extends Controller
             'location_details' => $validated['location_details'],
         ]);
 
+        toastr()->addSuccess('Customer created!');
         // Mail::to('sclsumonislam@gmail.com')->send(new NewCustomerNotification($customer));
 
         // Redirect to the customer index page with a success message
-        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+        return redirect()->route('customers.index');
     }
 
     /**
