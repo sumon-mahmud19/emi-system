@@ -54,9 +54,8 @@ class ReportController extends Controller
         });
 
 
-        $totalSales = $purchases->sum(function ($purchase) {
-            return $purchase->sales_price ?? 0;
-        });
+        $totalSales = $purchases->sum('net_price');
+         return $totalSales;
 
         $netSales = $purchases->sum(function ($purchase) {
             return $purchase->net_price ?? 0;
