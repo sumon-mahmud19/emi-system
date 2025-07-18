@@ -267,16 +267,7 @@
                             </ul>
                         </li>
 
-                        {{-- রিপোর্ট --}}
-                        @role('admin')
-                            <li class="nav-item dropdown {{ request()->is('reports/*') ? 'active' : '' }}">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">রিপোর্ট</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item {{ request()->is('reports/monthly') ? 'active' : '' }}"
-                                            href="{{ route('report') }}">মাসিক রিপোর্ট</a></li>
-                                </ul>
-                            </li>
-                        @endrole
+                       
                     </ul>
                 @endauth
 
