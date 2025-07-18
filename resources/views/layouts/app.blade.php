@@ -125,7 +125,7 @@
     <!-- Scrolling Notices Bar -->
     <div class="bg-warning py-2 px-2 shadow-sm" style="overflow: hidden;">
         <div class="container position-relative d-flex align-items-center">
-           
+
             <div class="scrolling-text">
                 @foreach ($notices as $notice)
                     <h4 class="me-5">{{ $notice->name }}</h4>
@@ -267,7 +267,7 @@
                             </ul>
                         </li>
 
-                       
+
                     </ul>
                 @endauth
 
@@ -301,8 +301,10 @@
 
 
     {{-- Main Content --}}
+
+    @include('sweetalert::alert')
     <main class="container mt-3">
-        
+
         @yield('content')
     </main>
 
