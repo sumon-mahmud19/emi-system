@@ -30,7 +30,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::paginate(10);
+        $permissions = Permission::all();
 
         return view('roles.create', compact('permissions'));
     }
