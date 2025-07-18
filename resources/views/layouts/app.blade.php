@@ -302,7 +302,7 @@
 
     {{-- Main Content --}}
     <main class="container mt-3">
-        @include('sweetalert::alert')
+        
         @yield('content')
     </main>
 
