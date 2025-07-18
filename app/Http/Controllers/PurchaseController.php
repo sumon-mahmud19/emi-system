@@ -33,7 +33,7 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        $purchases = Purchase::with('customer', 'product')->orderBy('created_at', 'desc')->paginate(500);
+        $purchases = Purchase::with('customer', 'product')->orderBy('created_at', 'desc')->paginate(100);
         $totalPurchases = Purchase::count();
         return view('purchases.index', compact('purchases', 'totalPurchases'));
     }
