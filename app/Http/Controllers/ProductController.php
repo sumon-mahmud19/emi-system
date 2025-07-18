@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductModel;
 use Illuminate\Http\Request;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class ProductController extends Controller
 {
@@ -25,7 +24,7 @@ class ProductController extends Controller
     public function index()
     {
         // Retrieve all products
-        $products = Product::orderBy('id', 'desc')->get();
+       $products = Product::orderBy('id', 'desc')->get();
 
         // Return the view with products
         return view('products.index', compact('products'));
@@ -55,8 +54,8 @@ class ProductController extends Controller
             'product_name' => $validated['product_name'],
         ]);
 
-        Alert::toast('Product created!', 'success');
-        return redirect()->back();
+        // Redirect to the product index page with success message
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
     /**
