@@ -71,7 +71,7 @@
                                     data-image="{{ asset($customer->customer_image) }}">
                                     <img src="{{ $customer->customer_image ? asset($customer->customer_image) : asset('image/profile.png') }}"
                                         class="img-fluid rounded-circle"
-                                        style="height: 50px; width: 50px; object-fit: cover;">
+                                        style="height: 50px; width: 50px; object-fit: cover;" loading="lazy">
 
 
                                 </a>
