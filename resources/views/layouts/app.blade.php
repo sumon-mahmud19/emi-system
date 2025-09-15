@@ -298,8 +298,6 @@
     </nav>
 
 
-<h1>hello!</h1>
-
     {{-- Main Content --}}
     <main class="container mt-3">
 
