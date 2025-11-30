@@ -8,7 +8,7 @@ class Customer extends Component
 {
       
     
-    /**
+       /**
      * Display a listing of the resource.
      */
 
@@ -21,10 +21,7 @@ class Customer extends Component
         $this->middleware(['permission:customer-delete'], ['only' => ['destroy']]);
     }
 
-
-    use WithPagination;
-
-    public function index(Request $request)
+    public function render(Request $request)
     {
         
         $search = $request->input('search');

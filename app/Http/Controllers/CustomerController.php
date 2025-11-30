@@ -9,7 +9,6 @@ use App\Models\InstallmentPayment;
 use App\Models\Location;
 use App\Models\Notice;
 use Illuminate\Http\Request;
-use Livewire\WithPagination;
 
 class CustomerController extends Controller
 {
@@ -28,9 +27,6 @@ class CustomerController extends Controller
         $this->middleware(['permission:customer-edit'], ['only' => ['edit', 'update']]);
         $this->middleware(['permission:customer-delete'], ['only' => ['destroy']]);
     }
-
-
-    use WithPagination;
 
     public function index(Request $request)
     {

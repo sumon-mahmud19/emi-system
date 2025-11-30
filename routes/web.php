@@ -13,6 +13,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Livewire\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -28,8 +29,7 @@ Route::get('/print-report/{id}', [PrintController::class, 'report'])->name('repo
 // Users Route:
 Route::resource('users', UserController::class);
 
-
-Route::resource('customers', CustomerController::class);
+Route::resource('customers', Customer::class);
 Route::get('/customers/{id}/emi-plans', [CustomerController::class, 'customerEmiPlans'])->name('customers.emi_plans')->middleware('auth');
 Route::get('/locations/{id}/customers', [CustomerController::class, 'showByLocation'])->name('location.customers')->middleware('auth');
 
