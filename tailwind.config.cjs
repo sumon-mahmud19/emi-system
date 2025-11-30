@@ -1,0 +1,16 @@
+module.exports = {
+  content: [
+    './resources/views/**/*.blade.php',
+    './resources/js/**/*.js',
+    './resources/js/**/*.vue'
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    require('daisyui'),
+  ],
+  daisyui: {
+    themes: ['light', 'dark'],
+  },
+}
