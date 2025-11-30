@@ -3,6 +3,12 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Mail\NewCustomerNotification;
+use App\Models\Installment;
+use App\Models\InstallmentPayment;
+use App\Models\Location;
+use App\Models\Notice;
+use Illuminate\Http\Request;
 
 class Customer extends Component
 {
@@ -12,16 +18,16 @@ class Customer extends Component
      * Display a listing of the resource.
      */
 
-    public function __construct()
-    {
-        // $this->middleware(['permission:installment-pay|installment-create|installment-edit|installment-delete'], ['only' => ['index', 'show']]);
-        $this->middleware(['permission:customer-list|customer-create|customer-edit|customer-delete'], ['only' => ['index', 'show']]);
-        $this->middleware(['permission:customer-create'], ['only' => ['create', 'store']]);
-        $this->middleware(['permission:customer-edit'], ['only' => ['edit', 'update']]);
-        $this->middleware(['permission:customer-delete'], ['only' => ['destroy']]);
-    }
+    // public function __construct()
+    // {
+    //     // $this->middleware(['permission:installment-pay|installment-create|installment-edit|installment-delete'], ['only' => ['index', 'show']]);
+    //     $this->middleware(['permission:customer-list|customer-create|customer-edit|customer-delete'], ['only' => ['index', 'show']]);
+    //     $this->middleware(['permission:customer-create'], ['only' => ['create', 'store']]);
+    //     $this->middleware(['permission:customer-edit'], ['only' => ['edit', 'update']]);
+    //     $this->middleware(['permission:customer-delete'], ['only' => ['destroy']]);
+    // }
 
-    public function render(Request $request)
+    public function index(Request $request)
     {
         
         $search = $request->input('search');
